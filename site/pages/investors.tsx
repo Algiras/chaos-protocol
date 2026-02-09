@@ -27,6 +27,15 @@ export default function Investors() {
       <Head>
         <title>Invest in CHAOS | Antifragile Treasury Protocol</title>
         <meta name="description" content="CHAOS is a formally verified treasury management protocol that profits from crypto volatility. Backtested +39% outperformance." />
+        <meta property="og:title" content="Invest in CHAOS | Antifragile Treasury Protocol" />
+        <meta property="og:description" content="CHAOS is a formally verified treasury management protocol that profits from crypto volatility. Backtested +39% outperformance." />
+        <meta property="og:image" content="https://chaosprotocol.io/og-image.png" />
+        <meta property="og:url" content="https://chaosprotocol.io/investors" />
+        <meta property="og:type" content="website" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Invest in CHAOS | Antifragile Treasury Protocol" />
+        <meta name="twitter:description" content="CHAOS is a formally verified treasury management protocol that profits from crypto volatility. Backtested +39% outperformance." />
+        <meta name="twitter:image" content="https://chaosprotocol.io/og-image.png" />
       </Head>
 
       {/* Hero Section */}
@@ -127,7 +136,7 @@ export default function Investors() {
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
             </Link>
-            <Link href="/dashboard">
+            <Link href="/coming-soon">
               <Button size="lg" variant="outline" className="text-lg px-8">
                 Launch App
               </Button>
@@ -425,7 +434,7 @@ export default function Investors() {
           </StaggerContainer>
 
           <FadeIn delay={0.4} className="mt-12 text-center">
-            <Link href="/governance">
+            <Link href="/coming-soon">
               <Button size="lg" className="bg-gradient-to-r from-blue-600 to-purple-600 hover:opacity-90 text-lg px-8 shadow-lg shadow-blue-600/25">
                 <Vote className="mr-2 h-5 w-5" />
                 View Governance Portal

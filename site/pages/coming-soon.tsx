@@ -10,6 +10,15 @@ export default function ComingSoon() {
       <Head>
         <title>Coming Soon | CHAOS Protocol</title>
         <meta name="description" content="The CHAOS Protocol app is coming soon. Stay tuned." />
+        <meta property="og:title" content="Coming Soon | CHAOS Protocol" />
+        <meta property="og:description" content="The CHAOS Protocol app is coming soon. Stay tuned." />
+        <meta property="og:image" content="https://chaosprotocol.io/og-image.png" />
+        <meta property="og:url" content="https://chaosprotocol.io/coming-soon" />
+        <meta property="og:type" content="website" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Coming Soon | CHAOS Protocol" />
+        <meta name="twitter:description" content="The CHAOS Protocol app is coming soon. Stay tuned." />
+        <meta name="twitter:image" content="https://chaosprotocol.io/og-image.png" />
       </Head>
 
       <section className="min-h-[80vh] flex items-center justify-center bg-gray-900">

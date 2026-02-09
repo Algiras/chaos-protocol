@@ -18,6 +18,15 @@ export default function Home() {
       <Head>
         <title>CHAOS | Antifragile Treasury Protocol</title>
         <meta name="description" content="CHAOS is a formally verified treasury management protocol that profits from crypto volatility." />
+        <meta property="og:title" content="CHAOS | Antifragile Treasury Protocol" />
+        <meta property="og:description" content="A formally verified treasury protocol that turns volatility into profit. Mathematically proven with zero unproven assumptions." />
+        <meta property="og:image" content="https://chaosprotocol.io/og-image.png" />
+        <meta property="og:url" content="https://chaosprotocol.io" />
+        <meta property="og:type" content="website" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="CHAOS | Antifragile Treasury Protocol" />
+        <meta name="twitter:description" content="A formally verified treasury protocol that turns volatility into profit. Mathematically proven with zero unproven assumptions." />
+        <meta name="twitter:image" content="https://chaosprotocol.io/og-image.png" />
       </Head>
 
       {/* Hero Section */}

@@ -18,10 +18,10 @@ CHAOS is a volatility harvesting protocol that generates positive expected retur
 
 ## Research Publications
 
-- [**Whitepaper**](research/papers/whitepaper/whitepaper.pdf) - Full technical specification
-- [**Proof Paper**](research/papers/whitepaper/proof-paper.pdf) - Mathematical proofs
-- [**Investor Brief**](research/papers/whitepaper/investor-brief.pdf) - Executive summary
-- [**Formal Verification**](research/formal-verification/) - Lean 4 theorem proofs
+- [**Whitepaper**](research/papers/whitepaper/_book/CHAOS-Token--Antifragile-Volatility-Harvesting-on-Cardano.pdf) — Full technical specification (47 pages)
+- [**Proof Paper**](research/papers/whitepaper/proof-paper.pdf) — Lean 4 formal proofs of core theorems
+- [**Investor Brief**](research/papers/whitepaper/investor-brief.pdf) — Executive summary for investors
+- [**Formal Verification**](research/formal-verification/) — Lean 4 theorem proofs source
 
 ## Key Theorems (Formally Verified)
 
@@ -36,7 +36,8 @@ See `research/formal-verification/chaos-theorems/CHAOS/` for complete proofs.
 
 ### Backtests
 
-Historical performance validation:
+Historical performance validation across 5 assets (ADA, BTC, ETH, SOL, DOT):
+
 ```bash
 cd analysis/backtests
 python backtest.py
@@ -44,16 +45,21 @@ python backtest.py
 
 ### Simulations (Jupyter Notebooks)
 
-Interactive notebooks with inline visualizations:
+Interactive notebooks with inline visualizations — click to view rendered results on GitHub:
 
-- `stress_test.ipynb` - Black swan event testing (COVID, Terra, FTX crashes)
-- `equilibrium_dynamics.ipynb` - Cardano staking equilibrium analysis
-- `bitcoin_feasibility.ipynb` - Bitcoin deployment feasibility study
-- `cardano_staking_sim.ipynb` - Nash equilibrium simulations
-- `deep_phase_transition.ipynb` - Pool splitting profitability analysis
+| Notebook | Description |
+|----------|-------------|
+| [Stress Test](analysis/simulations/stress_test.ipynb) | Black swan event testing (COVID, Terra, FTX crashes) |
+| [Equilibrium Dynamics](analysis/simulations/equilibrium_dynamics.ipynb) | Cardano staking equilibrium analysis |
+| [Bitcoin Feasibility](analysis/simulations/bitcoin_feasibility.ipynb) | Bitcoin deployment feasibility study |
+| [Cardano Staking Sim](analysis/simulations/cardano_staking_sim.ipynb) | Nash equilibrium simulations |
+| [Deep Phase Transition](analysis/simulations/deep_phase_transition.ipynb) | Pool splitting profitability analysis |
+
+To run locally:
 
 ```bash
 cd analysis/simulations
+pip install -r requirements.txt
 jupyter notebook
 ```
 
@@ -68,8 +74,8 @@ aiken build
 ```
 
 Key validators:
-- `chaos_vault.ak` - Treasury management with multi-sig
-- `chaos_token.ak` - Token minting policy
+- `chaos_vault.ak` — Treasury management with multi-sig
+- `chaos_token.ak` — Token minting policy
 
 ## Marketing Website
 
@@ -77,8 +83,8 @@ Static Next.js site deployed to GitHub Pages:
 
 ```bash
 cd site
-npm install
-npm run dev
+pnpm install
+pnpm run dev
 ```
 
 Visit [chaosprotocol.io](https://chaosprotocol.io) for the live site.
@@ -104,6 +110,7 @@ chaos-protocol/
 ### Prerequisites
 
 - Node.js 18+
+- pnpm 8+
 - Python 3.10+
 - Aiken 1.1.21+
 - Lean 4 (for formal verification)
@@ -111,7 +118,7 @@ chaos-protocol/
 ### Install Dependencies
 
 ```bash
-npm install
+pnpm install
 cd analysis/simulations && pip install -r requirements.txt
 cd ../../research/formal-verification/chaos-theorems && lake build
 ```
@@ -126,17 +133,8 @@ cd contracts && aiken check
 cd analysis/simulations && python stress_test.py
 
 # Website
-cd site && npm run build
+cd site && pnpm run build
 ```
-
-## Contributing
-
-See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines on:
-
-- Submitting research improvements
-- Adding simulations
-- Improving formal verification
-- Reporting bugs in smart contracts
 
 ## License
 
@@ -146,9 +144,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines on:
 ## Links
 
 - **Website**: [chaosprotocol.io](https://chaosprotocol.io)
-- **Application**: [app.chaosprotocol.io](https://app.chaosprotocol.io)
 - **Documentation**: [docs/](docs/)
-- **GitHub**: [github.com/username/chaos-protocol](https://github.com/username/chaos-protocol)
 
 ## Citation
 

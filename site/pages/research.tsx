@@ -74,6 +74,15 @@ export default function Research() {
       <Head>
         <title>Research & Publications | CHAOS Protocol</title>
         <meta name="description" content="Formally verified theorems and research publications for the CHAOS antifragile treasury protocol." />
+        <meta property="og:title" content="Research & Publications | CHAOS Protocol" />
+        <meta property="og:description" content="Formally verified theorems and research publications for the CHAOS antifragile treasury protocol." />
+        <meta property="og:image" content="https://chaosprotocol.io/og-image.png" />
+        <meta property="og:url" content="https://chaosprotocol.io/research" />
+        <meta property="og:type" content="article" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Research & Publications | CHAOS Protocol" />
+        <meta name="twitter:description" content="Formally verified theorems and research publications for the CHAOS antifragile treasury protocol." />
+        <meta name="twitter:image" content="https://chaosprotocol.io/og-image.png" />
       </Head>
 
       {/* Hero Section */}

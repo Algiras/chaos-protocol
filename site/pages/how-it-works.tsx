@@ -52,6 +52,12 @@ const steps = [
   },
 ];
 
+const gradientMap: Record<string, string> = {
+  blue: 'from-blue-600 to-blue-400',
+  purple: 'from-purple-600 to-purple-400',
+  emerald: 'from-emerald-600 to-emerald-400',
+};
+
 const benefits = [
   {
     title: 'Bounded Drawdown',
@@ -79,6 +85,15 @@ export default function HowItWorks() {
       <Head>
         <title>How It Works | CHAOS Protocol</title>
         <meta name="description" content="Learn how CHAOS turns market volatility into profit through diversification, automatic rebalancing, and LP fee generation." />
+        <meta property="og:title" content="How It Works | CHAOS Protocol" />
+        <meta property="og:description" content="Learn how CHAOS turns market volatility into profit through diversification, automatic rebalancing, and LP fee generation." />
+        <meta property="og:image" content="https://chaosprotocol.io/og-image.png" />
+        <meta property="og:url" content="https://chaosprotocol.io/how-it-works" />
+        <meta property="og:type" content="article" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="How It Works | CHAOS Protocol" />
+        <meta name="twitter:description" content="Learn how CHAOS turns market volatility into profit through diversification, automatic rebalancing, and LP fee generation." />
+        <meta name="twitter:image" content="https://chaosprotocol.io/og-image.png" />
       </Head>
 
       {/* Hero Section */}
@@ -201,7 +216,7 @@ export default function HowItWorks() {
                 <StaggerItem key={idx}>
                   <Card className="h-full bg-gray-800 border-gray-700 hover:border-purple-600/50 transition-all duration-300">
                     <CardHeader>
-                      <div className={`w-14 h-14 bg-gradient-to-br from-${benefit.color}-600 to-${benefit.color}-400 rounded-xl flex items-center justify-center mb-4`}>
+                      <div className={`w-14 h-14 bg-gradient-to-br ${gradientMap[benefit.color]} rounded-xl flex items-center justify-center mb-4`}>
                         <Icon className="w-7 h-7 text-white" />
                       </div>
                       <CardTitle className="text-white text-2xl">{benefit.title}</CardTitle>
