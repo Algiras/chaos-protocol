@@ -4,8 +4,8 @@
   "description": "CHAOS Protocol Marketing Site",
   "private": true,
   "scripts": {
-    "dev": "NEXT_PUBLIC_BUILD_TARGET=marketing NEXT_PUBLIC_SITE_URL=https://chaos.fund next dev -p 3001",
-    "build": "NEXT_PUBLIC_BUILD_TARGET=marketing NEXT_PUBLIC_SITE_URL=https://chaos.fund next build",
+    "dev": "NEXT_PUBLIC_BUILD_TARGET=marketing NEXT_PUBLIC_SITE_URL=https://chaosprotocol.io next dev -p 3001",
+    "build": "NEXT_PUBLIC_BUILD_TARGET=marketing NEXT_PUBLIC_SITE_URL=https://chaosprotocol.io next build",
     "export": "NEXT_PUBLIC_BUILD_TARGET=marketing next export"
   },
   "dependencies": {

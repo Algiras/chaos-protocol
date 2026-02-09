@@ -55,8 +55,8 @@ export function Footer() {
             <h4 className="font-semibold text-white mb-4">Contact</h4>
             <ul className="space-y-2 text-sm">
               <li>
-                <a href="mailto:investors@chaos.fund" className="text-gray-400 hover:text-white transition-colors">
-                  investors@chaos.fund
+                <a href="mailto:investors@chaosprotocol.io" className="text-gray-400 hover:text-white transition-colors">
+                  investors@chaosprotocol.io
                 </a>
               </li>
             </ul>

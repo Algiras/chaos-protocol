@@ -23,8 +23,8 @@ export function MarketingHeader() {
   const router = useRouter();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  const launchAppUrl = process.env.NEXT_PUBLIC_SITE_URL === 'https://chaos.fund'
-    ? 'https://app.chaos.fund'
+  const launchAppUrl = process.env.NEXT_PUBLIC_SITE_URL === 'https://chaosprotocol.io'
+    ? 'https://app.chaosprotocol.io'
     : '/dashboard';
 
   return (

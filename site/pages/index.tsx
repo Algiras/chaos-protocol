@@ -66,7 +66,7 @@ export default function Home() {
 
           <FadeIn delay={0.3}>
             <div className="flex flex-col sm:flex-row gap-4">
-              <a href={process.env.NEXT_PUBLIC_SITE_URL === 'https://chaos.fund' ? 'https://app.chaos.fund' : '/dashboard'}>
+              <a href={process.env.NEXT_PUBLIC_SITE_URL === 'https://chaosprotocol.io' ? 'https://app.chaosprotocol.io' : '/dashboard'}>
                 <Button size="lg" variant="chaos" className="text-lg px-8 py-6">
                   <Sparkles className="mr-3 h-6 w-6" />
                   Launch App
@@ -282,7 +282,7 @@ export default function Home() {
           </FadeIn>
           <FadeIn delay={0.2}>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <a href={process.env.NEXT_PUBLIC_SITE_URL === 'https://chaos.fund' ? 'https://app.chaos.fund' : '/dashboard'}>
+              <a href={process.env.NEXT_PUBLIC_SITE_URL === 'https://chaosprotocol.io' ? 'https://app.chaosprotocol.io' : '/dashboard'}>
                 <Button size="lg" variant="chaos" className="text-lg px-10 py-6">
                   <Sparkles className="mr-3 h-6 w-6" />
                   Launch App

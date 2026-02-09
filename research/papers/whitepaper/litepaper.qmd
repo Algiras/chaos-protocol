@@ -43,7 +43,7 @@ format:
 \begin{center}
 {\fontsize{42}{48}\selectfont\bfseries\color{chaos} CHAOS}\\[6pt]
 {\large\color{gray500} Antifragile Volatility Harvesting on Cardano}\\[4pt]
-{\small\color{gray500} Lite Paper \enspace$\cdot$\enspace February 2026 \enspace$\cdot$\enspace chaos.fund}
+{\small\color{gray500} Lite Paper \enspace$\cdot$\enspace February 2026 \enspace$\cdot$\enspace chaosprotocol.io}
 \end{center}
 
 \vspace{8pt}
@@ -174,7 +174,7 @@ On ADA (2-year backtest): turned a \textbf{$-$31\% loss into +8\%}, \textbf{40\%
 \begin{center}
 \colorbox{chaoslight}{\parbox{0.92\linewidth}{\centering\small
 \textbf{\color{chaos} Get started}\\[3pt]
-\textbf{Web:} chaos.fund \enspace$\cdot$\enspace
+\textbf{Web:} chaosprotocol.io \enspace$\cdot$\enspace
 \textbf{Code:} github.com/Algiras/chaos\\[2pt]
 {\scriptsize\color{gray500} Not financial advice. See the full whitepaper risk disclosure before participating.}
 }}

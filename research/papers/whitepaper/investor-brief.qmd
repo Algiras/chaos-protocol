@@ -60,7 +60,7 @@ format:
         \fancyhead[L]{\small\color{gray500} CHAOS — Investor Brief}
         \fancyhead[R]{\small\color{gray500} February 2026}
         \fancyfoot[C]{\small\color{gray500} \thepage}
-        \fancyfoot[R]{\small\color{gray500} chaos.fund}
+        \fancyfoot[R]{\small\color{gray500} chaosprotocol.io}
 ---
 
 <!-- ==================== COVER / HEADER ==================== -->
@@ -434,8 +434,8 @@ Language      & Aiken (functional, auditable) \\
 \centering
 {\large\bfseries\color{chaos} Get In Touch}\\[6pt]
 {\small
-\textbf{Web:} chaos.fund\\[2pt]
-\textbf{Whitepaper:} chaos.fund/whitepaper\\[2pt]
+\textbf{Web:} chaosprotocol.io\\[2pt]
+\textbf{Whitepaper:} chaosprotocol.io/whitepaper\\[2pt]
 \textbf{GitHub:} github.com/Algiras/chaos\\[2pt]
 }
 \vspace{6pt}

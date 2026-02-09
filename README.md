@@ -81,7 +81,7 @@ npm install
 npm run dev
 ```
 
-Visit [chaos.fund](https://chaos.fund) for the live site.
+Visit [chaosprotocol.io](https://chaosprotocol.io) for the live site.
 
 ## Architecture
 
@@ -145,8 +145,8 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines on:
 
 ## Links
 
-- **Website**: [chaos.fund](https://chaos.fund)
-- **Application**: [app.chaos.fund](https://app.chaos.fund)
+- **Website**: [chaosprotocol.io](https://chaosprotocol.io)
+- **Application**: [app.chaosprotocol.io](https://app.chaosprotocol.io)
 - **Documentation**: [docs/](docs/)
 - **GitHub**: [github.com/username/chaos-protocol](https://github.com/username/chaos-protocol)
 
@@ -159,7 +159,7 @@ If you use this research, please cite:
   title={CHAOS Protocol: Antifragile Volatility Harvesting on Cardano},
   author={CHAOS Protocol Team},
   year={2026},
-  howpublished={\\url{https://chaos.fund}},
+  howpublished={\\url{https://chaosprotocol.io}},
   note={Formally verified in Lean 4}
 }
 ```

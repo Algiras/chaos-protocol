@@ -58,7 +58,7 @@ format:
         \fancyhead[L]{\small\color{gray500} CHAOS — Proof of Concept}
         \fancyhead[R]{\small\color{gray500} February 2026}
         \fancyfoot[C]{\small\color{gray500} \thepage}
-        \fancyfoot[R]{\small\color{gray500} chaos.fund}
+        \fancyfoot[R]{\small\color{gray500} chaosprotocol.io}
 ---
 
 \thispagestyle{empty}
@@ -294,7 +294,7 @@ A--D & Lean 4 proofs, simulation analysis, stress testing, Bitcoin comparison & 
 {\large\bfseries\color{chaos} Request the Full Whitepaper}\\[6pt]
 The complete 186-page whitepaper with full algorithm specification,\\
 smart contract code, and Lean 4 proofs is available under NDA.\\[6pt]
-\textbf{Contact:} chaos.fund\\[4pt]
+\textbf{Contact:} chaosprotocol.io\\[4pt]
 \vspace{4pt}
 }}
 \end{center}

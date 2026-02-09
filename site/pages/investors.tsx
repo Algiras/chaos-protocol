@@ -622,7 +622,7 @@ export default function Investors() {
                     <div className="space-y-3">
                       <p className="text-gray-600">
                         <span className="font-semibold">Web:</span>{' '}
-                        <a href="https://chaos.fund" className="text-blue-600 hover:underline">chaos.fund</a>
+                        <a href="https://chaosprotocol.io" className="text-blue-600 hover:underline">chaosprotocol.io</a>
                       </p>
                       <p className="text-gray-600">
                         <span className="font-semibold">GitHub:</span>{' '}
@@ -630,7 +630,7 @@ export default function Investors() {
                       </p>
                       <p className="text-gray-600">
                         <span className="font-semibold">Email:</span>{' '}
-                        <a href="mailto:investors@chaos.fund" className="text-blue-600 hover:underline">investors@chaos.fund</a>
+                        <a href="mailto:investors@chaosprotocol.io" className="text-blue-600 hover:underline">investors@chaosprotocol.io</a>
                       </p>
                     </div>
                   </div>

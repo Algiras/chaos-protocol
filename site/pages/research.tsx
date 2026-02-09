@@ -264,7 +264,7 @@ export default function Research() {
             </p>
           </FadeIn>
           <FadeIn delay={0.2}>
-            <a href={process.env.NEXT_PUBLIC_SITE_URL === 'https://chaos.fund' ? 'https://app.chaos.fund' : '/dashboard'}>
+            <a href={process.env.NEXT_PUBLIC_SITE_URL === 'https://chaosprotocol.io' ? 'https://app.chaosprotocol.io' : '/dashboard'}>
               <Button size="lg" variant="chaos" className="text-lg px-10 py-6">
                 Launch App
                 <ArrowRight className="ml-2 h-5 w-5" />
