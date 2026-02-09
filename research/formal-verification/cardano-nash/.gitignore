@@ -1,0 +1,21 @@
+# Lean 4 build artifacts
+/build/
+/lake-packages/
+/.lake/
+
+# IDE
+.vscode/
+*.code-workspace
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.tmp
+*~
+*.swp
+*.swo
+
+# Logs
+*.log

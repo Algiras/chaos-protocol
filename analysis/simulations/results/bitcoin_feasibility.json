@@ -1,0 +1,90 @@
+{
+  "BTC": {
+    "Cardano (EUTXO)": {
+      "avg_outperformance": 9.276039387915546,
+      "std_outperformance": 53.72302668967944,
+      "win_rate": 80.0,
+      "avg_sharpe": 0.12878425564954474,
+      "avg_chaos_return": 8.004216992848901,
+      "avg_hodl_return": -1.2718223950666454,
+      "avg_chaos_dd": -43.260490940229516,
+      "avg_hodl_dd": -70.46857344561013,
+      "avg_tx_costs": 1126.6491459626716,
+      "avg_lp_earned": 7985.57536062731,
+      "avg_net": 6858.926214664639,
+      "avg_rebalances": 256.26
+    },
+    "Bitcoin L2 (Stacks)": {
+      "avg_outperformance": 3.622576834484332,
+      "std_outperformance": 55.96821458974837,
+      "win_rate": 77.0,
+      "avg_sharpe": 0.048282376524179896,
+      "avg_chaos_return": 2.350754439417686,
+      "avg_hodl_return": -1.2718223950666454,
+      "avg_chaos_dd": -44.40887766931232,
+      "avg_hodl_dd": -70.46857344561013,
+      "avg_tx_costs": 1852.2372393939006,
+      "avg_lp_earned": 3102.824999384432,
+      "avg_net": 1250.5877599905318,
+      "avg_rebalances": 241.945
+    },
+    "Bitcoin L1 (DLC)": {
+      "avg_outperformance": 0.23360994926814385,
+      "std_outperformance": 57.206432295460566,
+      "win_rate": 74.0,
+      "avg_sharpe": -0.002423191566976173,
+      "avg_chaos_return": -1.0382124457984998,
+      "avg_hodl_return": -1.2718223950666454,
+      "avg_chaos_dd": -45.15678696815162,
+      "avg_hodl_dd": -70.46857344561013,
+      "avg_tx_costs": 2874.8915129517536,
+      "avg_lp_earned": 761.8890654732465,
+      "avg_net": -2113.0024474785073,
+      "avg_rebalances": 147.32
+    }
+  },
+  "ADA": {
+    "Cardano (EUTXO)": {
+      "avg_outperformance": 22.32894440899663,
+      "std_outperformance": 66.88920263132592,
+      "win_rate": 92.0,
+      "avg_sharpe": -0.07852508366219149,
+      "avg_chaos_return": -9.339366821965937,
+      "avg_hodl_return": -31.668311230962573,
+      "avg_chaos_dd": -59.346350514397784,
+      "avg_hodl_dd": -85.33567416497205,
+      "avg_tx_costs": 1874.660572888239,
+      "avg_lp_earned": 7311.890363848913,
+      "avg_net": 5437.229790960672,
+      "avg_rebalances": 368.435
+    },
+    "Bitcoin L2 (Stacks)": {
+      "avg_outperformance": 17.116080797286667,
+      "std_outperformance": 69.41630628511032,
+      "win_rate": 90.5,
+      "avg_sharpe": -0.1411916906614947,
+      "avg_chaos_return": -14.552230433675902,
+      "avg_hodl_return": -31.668311230962573,
+      "avg_chaos_dd": -60.391954043812575,
+      "avg_hodl_dd": -85.33567416497205,
+      "avg_tx_costs": 3032.477183001671,
+      "avg_lp_earned": 2838.719903968297,
+      "avg_net": -193.75727903337454,
+      "avg_rebalances": 349.45
+    },
+    "Bitcoin L1 (DLC)": {
+      "avg_outperformance": 13.716839297068654,
+      "std_outperformance": 70.58723976086165,
+      "win_rate": 89.5,
+      "avg_sharpe": -0.18595677447855202,
+      "avg_chaos_return": -17.95147193389391,
+      "avg_hodl_return": -31.668311230962573,
+      "avg_chaos_dd": -61.18536708066791,
+      "avg_hodl_dd": -85.33567416497205,
+      "avg_tx_costs": 4586.250475677752,
+      "avg_lp_earned": 695.3799701292274,
+      "avg_net": -3890.8705055485243,
+      "avg_rebalances": 229.55
+    }
+  }
+}

@@ -1,0 +1,325 @@
+# Bitcoin Feasibility Analysis {.appendix}
+
+This appendix presents a quantitative comparison of deploying the CHAOS strategy across three blockchain environments: Cardano (EUTXO), Bitcoin L2 (Stacks), and Bitcoin L1 (DLC/multisig). The analysis uses 200 Monte Carlo simulations over 730 days to determine whether the mathematical edge survives real-world deployment friction on each chain.
+
+---
+
+## Motivation
+
+The CHAOS rebalancing premium $\frac{1}{2}\alpha(1-\alpha)\sigma^2$ is asset-agnostic — it works on any volatile asset. But deployment economics differ dramatically across chains:
+
+- **Transaction costs** range from $0.40 (Cardano) to $15+ (Bitcoin L1)
+- **LP yields** range from 2% (Bitcoin L1) to 20% (Cardano)
+- **Smart contract expressiveness** determines whether strategy rules can be enforced on-chain
+
+This appendix answers: **does the math survive contact with Bitcoin's economics?**
+
+---
+
+## Deployment Configurations
+
+| Parameter | Cardano (EUTXO) | Bitcoin L2 (Stacks) | Bitcoin L1 (DLC) |
+|:--|:--|:--|:--|
+| **Smart contracts** | Aiken (full EUTXO) | Clarity (full) | None (DLC + multisig) |
+| **TX cost (variable)** | 0.4% of volume | 0.6% of volume | 0.3% of volume |
+| **TX cost (fixed)** | $0.40 | $1.50 | $15.00 |
+| **LP APY** | 20% | 8% | 2% |
+| **Min rebalance size** | $50 | $100 | $500 |
+| **Finality** | ~1 min | ~10 min | ~60 min |
+| **Stablecoin** | DJED (native) | USDC (bridged) | WBTC-based |
+| **On-chain enforcement** | Full | Full | None |
+
+---
+
+## Simulation Model
+
+We use a regime-switching price generator calibrated to historical volatility:
+
+- **BTC**: ~60% annualized vol, ~3 crash events/year, mild positive drift
+- **ADA**: ~85% annualized vol, ~4 crash events/year, near-zero drift
+
+The CHAOS strategy runs identically across all deployments (50/30/20 allocation, 10% threshold, 30-day MA), with only the cost parameters changing per chain.
+
+---
+
+## Results: BTC as Volatile Asset
+
+```{python}
+#| label: fig-btc-feasibility
+#| fig-cap: "CHAOS performance with BTC as volatile asset across three deployment scenarios (200 Monte Carlo simulations, 730 days, $100K initial). Left: Distribution of outperformance vs HODL. Right: Cost vs LP revenue breakdown."
+#| echo: false
+
+import numpy as np
+import matplotlib.pyplot as plt
+import sys, os
+
+# We inline the simulation to avoid import issues during Quarto render
+def generate_price_series(asset, n_days=730, seed=42):
+    rng = np.random.default_rng(seed)
+    if asset == "BTC":
+        base_vol, crash_prob, crash_size, drift = 0.035, 0.008, -0.12, 0.0003
+        start_price = 42000
+    else:
+        base_vol, crash_prob, crash_size, drift = 0.050, 0.012, -0.15, 0.0001
+        start_price = 0.55
+
+    log_prices = np.zeros(n_days)
+    log_prices[0] = np.log(start_price)
+    for i in range(1, n_days):
+        if rng.random() < crash_prob:
+            ret = crash_size + rng.normal(0, 0.05)
+        else:
+            ret = drift + rng.normal(0, base_vol)
+            if i > 1:
+                ret += 0.1 * abs(log_prices[i-1] - log_prices[i-2]) * rng.normal(0, 1)
+        log_prices[i] = log_prices[i-1] + ret
+    return np.exp(log_prices)
+
+def simulate_chaos(prices, tx_pct, tx_fixed, lp_apy, min_rebal, capital=100000):
+    n = len(prices)
+    ma_w = 30
+    alpha, beta, gamma, threshold = 0.50, 0.30, 0.20, 0.10
+    p0 = prices[ma_w]
+    asset_tokens = (capital * alpha) / p0
+    stable = capital * beta
+    lp = capital * gamma
+    pv, hv = [], []
+    total_costs, total_lp, n_rebal = 0, 0, 0
+    for i in range(ma_w, n):
+        p = prices[i]
+        dlp = lp * (lp_apy / 365)
+        lp += dlp
+        total_lp += dlp
+        av = asset_tokens * p
+        tv = av + stable + lp
+        apct = av / tv if tv > 0 else 0
+        ma = np.mean(prices[max(0, i-ma_w):i+1])
+        do_rebal = abs(apct - alpha) > threshold or p < ma * 0.90 or p > ma * 1.10
+        if do_rebal:
+            tgt = tv * alpha
+            vol = abs(tgt - av)
+            if vol >= min_rebal:
+                cost = vol * tx_pct + tx_fixed
+                tv -= cost
+                total_costs += cost
+                n_rebal += 1
+                asset_tokens = (tv * alpha) / p
+                stable = tv * beta
+                lp = tv * gamma
+                av = asset_tokens * p
+                tv = av + stable + lp
+        pv.append(tv)
+        hv.append(capital * (p / p0))
+    pv, hv = np.array(pv), np.array(hv)
+    cr = (pv[-1] / capital - 1) * 100
+    hr = (hv[-1] / capital - 1) * 100
+    return {'outperf': cr - hr, 'chaos_ret': cr, 'hodl_ret': hr,
+            'tx_costs': total_costs, 'lp_earned': total_lp,
+            'net': total_lp - total_costs, 'n_rebal': n_rebal}
+
+# Run Monte Carlo
+configs = [
+    ("Cardano (EUTXO)", 0.004, 0.40, 0.20, 50),
+    ("Bitcoin L2 (Stacks)", 0.006, 1.50, 0.08, 100),
+    ("Bitcoin L1 (DLC)", 0.003, 15.0, 0.02, 500),
+]
+colors = ['#2563eb', '#f59e0b', '#dc2626']
+
+mc = {name: [] for name, *_ in configs}
+n_sims = 200
+for seed in range(n_sims):
+    prices = generate_price_series("BTC", 730, seed)
+    for name, tp, tf, la, mr in configs:
+        mc[name].append(simulate_chaos(prices, tp, tf, la, mr))
+
+fig, axes = plt.subplots(1, 2, figsize=(14, 5))
+
+# Left: Outperformance distribution
+ax = axes[0]
+for (name, *_), color in zip(configs, colors):
+    vals = [r['outperf'] for r in mc[name]]
+    ax.hist(vals, bins=40, alpha=0.45, color=color,
+            label=f"{name} (μ={np.mean(vals):+.1f}%)", edgecolor='black', linewidth=0.3)
+    ax.axvline(np.mean(vals), color=color, linestyle='--', linewidth=2)
+ax.axvline(0, color='black', linewidth=1)
+ax.set_xlabel('Outperformance vs HODL (%)', fontsize=10)
+ax.set_ylabel('Count', fontsize=10)
+ax.set_title('BTC: Strategy Edge by Deployment', fontsize=11, fontweight='bold')
+ax.legend(fontsize=8)
+ax.grid(alpha=0.2)
+
+# Right: Cost breakdown
+ax = axes[1]
+x = np.arange(3)
+w = 0.25
+costs = [np.mean([r['tx_costs'] for r in mc[n]]) / 1000 for n, *_ in configs]
+lps = [np.mean([r['lp_earned'] for r in mc[n]]) / 1000 for n, *_ in configs]
+nets = [np.mean([r['net'] for r in mc[n]]) / 1000 for n, *_ in configs]
+
+ax.bar(x - w, costs, w, label='TX Costs', color='#dc2626', edgecolor='black', linewidth=0.5)
+ax.bar(x, lps, w, label='LP Earned', color='#10b981', edgecolor='black', linewidth=0.5)
+ax.bar(x + w, nets, w, label='Net',
+       color=['#10b981' if n > 0 else '#dc2626' for n in nets], edgecolor='black', linewidth=0.5)
+ax.set_xticks(x)
+ax.set_xticklabels([n.split('(')[0].strip() for n, *_ in configs], fontsize=9)
+ax.set_ylabel('Amount ($K)', fontsize=10)
+ax.set_title('BTC: Economics per Deployment ($100K, 2yr)', fontsize=11, fontweight='bold')
+ax.legend(fontsize=8)
+ax.axhline(0, color='black', linewidth=0.8)
+ax.grid(axis='y', alpha=0.3)
+
+plt.tight_layout()
+plt.show()
+```
+
+### Key Numbers (BTC, $100K, 2 years)
+
+| Metric | Cardano | Bitcoin L2 | Bitcoin L1 |
+|:--|--:|--:|--:|
+| Avg outperformance | **+9.3%** | +3.6% | +0.2% |
+| Win rate vs HODL | **80%** | 77% | 74% |
+| Avg TX costs | $1,127 | $1,852 | $2,875 |
+| Avg LP earned | $7,986 | $3,103 | $762 |
+| **Net (LP − costs)** | **+$6,859** | +$1,251 | **−$2,113** |
+| Avg rebalances | 256 | 242 | 147 |
+
+---
+
+## Results: ADA as Volatile Asset
+
+```{python}
+#| label: fig-ada-feasibility
+#| fig-cap: "CHAOS performance with ADA as volatile asset. ADA's higher volatility (~85% vs BTC's ~60%) amplifies the rebalancing premium, making the strategy profitable on all deployment layers — but the Cardano advantage is even larger."
+#| echo: false
+
+mc_ada = {name: [] for name, *_ in configs}
+for seed in range(n_sims):
+    prices = generate_price_series("ADA", 730, seed)
+    for name, tp, tf, la, mr in configs:
+        mc_ada[name].append(simulate_chaos(prices, tp, tf, la, mr))
+
+fig, axes = plt.subplots(1, 2, figsize=(14, 5))
+
+# Left: Outperformance
+ax = axes[0]
+for (name, *_), color in zip(configs, colors):
+    vals = [r['outperf'] for r in mc_ada[name]]
+    ax.hist(vals, bins=40, alpha=0.45, color=color,
+            label=f"{name} (μ={np.mean(vals):+.1f}%)", edgecolor='black', linewidth=0.3)
+    ax.axvline(np.mean(vals), color=color, linestyle='--', linewidth=2)
+ax.axvline(0, color='black', linewidth=1)
+ax.set_xlabel('Outperformance vs HODL (%)', fontsize=10)
+ax.set_ylabel('Count', fontsize=10)
+ax.set_title('ADA: Strategy Edge by Deployment', fontsize=11, fontweight='bold')
+ax.legend(fontsize=8)
+ax.grid(alpha=0.2)
+
+# Right: Win rate by portfolio size
+ax = axes[1]
+portfolio_sizes = [10, 25, 50, 100, 250, 500, 1000]
+for (name, tp, tf, la, mr), color in zip(configs, colors):
+    wr = []
+    for cap_k in portfolio_sizes:
+        cap = cap_k * 1000
+        wins = sum(1 for s in range(50)
+                   if simulate_chaos(generate_price_series("BTC", 730, s+1000),
+                                     tp, tf, la, mr, cap)['outperf'] > 0)
+        wr.append(wins / 50 * 100)
+    ax.plot(portfolio_sizes, wr, 'o-', linewidth=2, markersize=6, color=color, label=name)
+ax.axhline(50, color='gray', linestyle='--', alpha=0.5)
+ax.set_xlabel('Portfolio Size ($K)', fontsize=10)
+ax.set_ylabel('Win Rate vs HODL (%)', fontsize=10)
+ax.set_title('BTC: Win Rate Scales with Portfolio Size', fontsize=11, fontweight='bold')
+ax.legend(fontsize=8)
+ax.grid(alpha=0.3)
+ax.set_ylim(0, 100)
+
+plt.tight_layout()
+plt.show()
+```
+
+### Key Numbers (ADA, $100K, 2 years)
+
+| Metric | Cardano | Bitcoin L2 | Bitcoin L1 |
+|:--|--:|--:|--:|
+| Avg outperformance | **+22.3%** | +17.1% | +13.7% |
+| Win rate vs HODL | **92%** | 91% | 90% |
+| Avg TX costs | $1,875 | $3,032 | $4,586 |
+| Avg LP earned | $7,312 | $2,839 | $695 |
+| **Net (LP − costs)** | **+$5,437** | −$194 | **−$3,891** |
+
+---
+
+## Why the EUTXO Model Matters
+
+The performance gap is not just about costs — it reflects a fundamental architectural advantage.
+
+### Bitcoin UTXO: Verify Signatures, Nothing Else
+
+Bitcoin's UTXO model can answer one question: *"Does this signature match this public key?"* With Taproot, it gains Schnorr signatures and basic script trees, but it **cannot**:
+
+- Enforce that a treasury maintains 35–65% allocation bounds
+- Validate oracle price consensus from multiple sources
+- Prevent rebalancing more than once per hour
+- Ensure proportional withdrawal (users get fair share)
+- Implement circuit breakers that pause operations
+
+Every one of these constraints — which CHAOS enforces on-chain via Aiken smart contracts on Cardano — would require a **trusted intermediary** on Bitcoin L1.
+
+### Cardano EUTXO: Arbitrary Validation
+
+Cardano's EUTXO extends Bitcoin's UTXO with:
+
+1. **Datum**: Arbitrary data attached to each output (treasury state, price history, parameters)
+2. **Redeemer**: Input provided by the transaction builder (rebalancing reason, oracle prices)
+3. **Validator script**: Arbitrary logic that must return `True` for the transaction to be valid
+
+This means the entire CHAOS strategy — allocation bounds, oracle consensus, slippage limits, circuit breakers, proportional redemption — is **enforced by the blockchain itself**, with no trusted party.
+
+### The Economic Consequence
+
+The architectural difference has a direct economic consequence visible in the simulation:
+
+$$
+\text{Net Edge} = \underbrace{\frac{1}{2}\alpha(1-\alpha)\sigma^2}_{\text{rebalancing premium}} + \underbrace{r_{\text{LP}} \cdot \gamma}_{\text{LP yield}} - \underbrace{(c_{\text{var}} + c_{\text{fix}}) \cdot N}_{\text{transaction costs}}
+$$
+
+On Cardano, the LP yield term ($7,986) alone covers all costs ($1,127) with a 7× margin. On Bitcoin L1, the LP yield ($762) doesn't even cover costs ($2,875), producing a **net drag** that erodes the mathematical premium.
+
+---
+
+## Portfolio Size Sensitivity
+
+Bitcoin L1 becomes viable only at scale. The fixed $15 per-transaction cost is negligible for a $1M portfolio but devastating for $10K:
+
+| Portfolio Size | Cardano Win Rate | Bitcoin L2 Win Rate | Bitcoin L1 Win Rate |
+|--:|--:|--:|--:|
+| $10K | 78% | 72% | 58% |
+| $50K | 80% | 76% | 72% |
+| $100K | 80% | 77% | 74% |
+| $500K | 82% | 78% | 76% |
+| $1M | 82% | 80% | 78% |
+
+Bitcoin L1 only matches Cardano's win rate at portfolio sizes above $1M — and even then, the absence of LP yield means lower absolute returns.
+
+---
+
+## Summary
+
+| Question | Answer |
+|:--|:--|
+| Does the CHAOS math work on BTC? | **Yes** — the rebalancing premium is asset-agnostic |
+| Can you deploy CHAOS on Bitcoin L2? | **Yes, but with ~60% less edge** than Cardano |
+| Can you deploy CHAOS on Bitcoin L1? | **Barely** — viable only for $500K+ portfolios |
+| Is Cardano the optimal deployment? | **Yes** — EUTXO + low fees + high LP + native stablecoins |
+| Should CHAOS expand to Bitcoin? | **Not yet** — focus on Cardano, revisit when OP_CAT enables covenants |
+
+**Bottom line**: Cardano's EUTXO model is not merely a philosophical preference — it is the **economically optimal platform** for volatility harvesting. The same strategy that generates +9.3% outperformance on Cardano generates +0.2% on Bitcoin L1, because costs eat the premium. CHAOS is Cardano-native by necessity, not by choice.
+
+### Reproducibility
+
+```bash
+python simulations/bitcoin_feasibility.py
+```
+
+Output: `simulations/results/bitcoin_feasibility.png` and `simulations/results/bitcoin_feasibility.json`.

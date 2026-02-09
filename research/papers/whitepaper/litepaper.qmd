@@ -1,0 +1,183 @@
+---
+title: ""
+format:
+  pdf:
+    documentclass: article
+    fontsize: 11pt
+    geometry:
+      - margin=0.75in
+      - top=0.6in
+      - bottom=0.6in
+    colorlinks: true
+    linkcolor: "0033AD"
+    urlcolor: "0033AD"
+    include-in-header:
+      text: |
+        \usepackage{xcolor}
+        \usepackage{tikz}
+        \usepackage{tabularx}
+        \usepackage{booktabs}
+        \usepackage{fontspec}
+        \usepackage{enumitem}
+        \usepackage{multicol}
+        \usepackage{fancyhdr}
+        \usepackage{graphicx}
+        \usepackage{hyperref}
+
+        \definecolor{chaos}{HTML}{2563EB}
+        \definecolor{chaoslight}{HTML}{DBEAFE}
+        \definecolor{green}{HTML}{10B981}
+        \definecolor{greenlight}{HTML}{D1FAE5}
+        \definecolor{red}{HTML}{DC2626}
+        \definecolor{amber}{HTML}{F59E0B}
+        \definecolor{gray500}{HTML}{6B7280}
+        \definecolor{gray200}{HTML}{E5E7EB}
+        \definecolor{gray50}{HTML}{F9FAFB}
+
+        \setlist[itemize]{noitemsep, topsep=4pt, leftmargin=1.2em}
+        \pagestyle{empty}
+        \setlength{\parskip}{6pt}
+        \setlength{\parindent}{0pt}
+---
+
+\begin{center}
+{\fontsize{42}{48}\selectfont\bfseries\color{chaos} CHAOS}\\[6pt]
+{\large\color{gray500} Antifragile Volatility Harvesting on Cardano}\\[4pt]
+{\small\color{gray500} Lite Paper \enspace$\cdot$\enspace February 2026 \enspace$\cdot$\enspace chaos.fund}
+\end{center}
+
+\vspace{8pt}
+\noindent\textcolor{gray200}{\rule{\linewidth}{1pt}}
+
+\begin{multicols}{2}
+
+\subsection*{\color{chaos} The Problem}
+
+When crypto crashes, you lose money. When it goes sideways, you make nothing. The only way to win is to perfectly time the market --- and nobody can do that consistently.
+
+\textbf{What if a strategy could make money \textit{because} of the chaos --- not despite it?}
+
+\subsection*{\color{chaos} The Solution}
+
+CHAOS is a \textbf{treasury management protocol} on Cardano that \textbf{profits from price swings}.
+
+Your capital is split into three parts and automatically rebalanced:
+
+\begin{center}
+\begin{tikzpicture}[
+  box/.style={draw=gray200, fill=gray50, rounded corners=6pt,
+              minimum width=2.2cm, minimum height=1.8cm, align=center,
+              font=\small},
+  arr/.style={->, thick, color=chaos}
+]
+\node[box] (ada) at (0,0) {{\large\bfseries\color{chaos}50\%}\\Volatile\\Asset};
+\node[box] (djed) at (3,0) {{\large\bfseries\color{green}30\%}\\Stable-\\coin};
+\node[box] (lp) at (6,0) {{\large\bfseries\color{amber}20\%}\\LP\\Fees};
+\draw[arr] (ada.east) -- (djed.west);
+\draw[arr] (djed.east) -- (lp.west);
+\end{tikzpicture}
+\end{center}
+
+When prices swing beyond 10\%, the protocol \textbf{sells high and buys low automatically}. Every round-trip generates profit. This is called \textbf{volatility harvesting} --- bigger swings mean bigger gains.
+
+\subsection*{\color{chaos} Real Results}
+
+Tested on \textbf{5 real cryptocurrencies} with live market data:
+
+\vspace{4pt}
+\begin{center}
+{\small
+\begin{tabularx}{\linewidth}{l >{\raggedleft\arraybackslash}X >{\raggedleft\arraybackslash}X >{\raggedleft\arraybackslash}X}
+\toprule
+\textbf{Asset} & \textbf{CHAOS} & \textbf{HODL} & \textbf{Edge} \\
+\midrule
+ADA   & $-$31.8\% & $-$61.9\% & \textcolor{green}{\textbf{+79\%}} \\
+BTC   & $-$4.9\%  & $-$14.2\% & \textcolor{green}{\textbf{+11\%}} \\
+ETH   & +9.5\%    & +3.4\%    & \textcolor{green}{\textbf{+6\%}} \\
+SOL   & $-$9.5\%  & $-$30.4\% & \textcolor{green}{\textbf{+30\%}} \\
+DOT   & $-$34.6\% & $-$65.7\% & \textcolor{green}{\textbf{+91\%}} \\
+\midrule
+\multicolumn{3}{l}{\textbf{Win rate vs HODL}} & \textcolor{green}{\textbf{5 / 5}} \\
+\bottomrule
+\end{tabularx}
+}
+\end{center}
+
+\vspace{2pt}
+On ADA (2-year backtest): turned a \textbf{$-$31\% loss into +8\%}, \textbf{40\% less drawdown}, Sharpe \textbf{1.87} vs 0.42.
+
+\subsection*{\color{chaos} How It's Different}
+
+\begin{center}
+{\small
+\begin{tabularx}{\linewidth}{l X}
+\toprule
+\textcolor{green}{\textbf{Proven}} & 12 theorems verified in Lean~4 --- zero unproven assumptions \\
+\textcolor{green}{\textbf{Stress-tested}} & Survives 8 Black Swan events (COVID, Terra, FTX, flash crashes) \\
+\textcolor{green}{\textbf{Cardano-native}} & EUTXO smart contracts --- 9\% edge vs 0.2\% on Bitcoin L1 \\
+\textcolor{green}{\textbf{Transparent}} & 100\% open source; all trades on-chain \\
+\textcolor{green}{\textbf{Universal}} & Works on any volatile asset, not just ADA \\
+\bottomrule
+\end{tabularx}
+}
+\end{center}
+
+\subsection*{\color{chaos} The CHAOS Token}
+
+\textbf{100 million} fixed supply. No inflation. 90\% community-owned.
+
+\vspace{4pt}
+\begin{center}
+\begin{tikzpicture}[
+  seg/.style={font=\small\bfseries, align=center}
+]
+% Bar segments
+\fill[chaos] (0,0) rectangle (4.8,0.5);
+\fill[green] (4.8,0) rectangle (7.2,0.5);
+\fill[amber] (7.2,0) rectangle (7.6,0.5);
+\fill[gray500] (7.6,0) rectangle (7.84,0.5);
+\fill[gray200] (7.84,0) rectangle (8,0.5);
+% Labels
+\node[seg, color=white] at (2.4,0.25) {60\% ISPO};
+\node[seg, color=white] at (6.0,0.25) {30\% LBP};
+\node[seg, color=white] at (7.4,0.25) {\tiny 5\%};
+\end{tikzpicture}
+\end{center}
+
+\vspace{2pt}
+\begin{itemize}
+  \item \textbf{60\%} community staking rewards (ISPO)
+  \item \textbf{30\%} fair-launch auction (72-hour LBP)
+  \item \textbf{5\%} team (4-year vest, 1-year cliff)
+  \item \textbf{3\%} treasury (DAO grants) + \textbf{2\%} liquidity
+  \item Stake CHAOS to earn \textbf{70\% of all protocol fees}
+\end{itemize}
+
+\subsection*{\color{chaos} Three Ways to Learn More}
+
+\vspace{2pt}
+\begin{center}
+{\small
+\begin{tabularx}{\linewidth}{l l X}
+\toprule
+\textbf{Document} & \textbf{Length} & \textbf{For whom} \\
+\midrule
+\textbf{This Lite Paper} & 1 page & Everyone \\
+\textbf{Investor Brief} & 3 pages & Investors \& partners \\
+\textbf{Full Whitepaper} & 186 pages & Developers \& researchers \\
+\bottomrule
+\end{tabularx}
+}
+\end{center}
+
+\vspace{6pt}
+\begin{center}
+\colorbox{chaoslight}{\parbox{0.92\linewidth}{\centering\small
+\textbf{\color{chaos} Get started}\\[3pt]
+\textbf{Web:} chaos.fund \enspace$\cdot$\enspace
+\textbf{Code:} github.com/Algiras/chaos\\[2pt]
+{\scriptsize\color{gray500} Not financial advice. See the full whitepaper risk disclosure before participating.}
+}}
+\end{center}
+
+\end{multicols}

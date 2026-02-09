@@ -1,0 +1,372 @@
+# Oracle Design
+
+This chapter specifies the multi-source oracle architecture that provides tamper-resistant price data to the CHAOS smart contracts. Accurate, manipulation-resistant price feeds are essential for correct strategy execution.
+
+---
+
+## The Oracle Problem
+
+DeFi protocols depend on external price data to make on-chain decisions. This creates a fundamental trust challenge: **the blockchain cannot natively verify off-chain data**.
+
+**Consequences of Oracle Failure**:
+
+- **Stale prices**: Rebalancing based on outdated data
+- **Manipulated prices**: Attacker triggers false buy/sell signals
+- **Missing data**: No rebalancing when conditions warrant it
+
+CHAOS addresses this with a **defense-in-depth** oracle architecture.
+
+---
+
+## Architecture
+
+```
+┌─────────────┐  ┌─────────────┐  ┌──────────────┐  ┌──────────────┐
+│  Charli3    │  │   Orcfax    │  │ Minswap TWAP │  │  CoinGecko   │
+│ (On-chain)  │  │ (On-chain)  │  │  (On-chain)  │  │  (Off-chain) │
+└──────┬──────┘  └──────┬──────┘  └──────┬───────┘  └──────┬───────┘
+       │                │               │                │
+       └────────────────┴───────┬───────┴────────────────┘
+                                │
+                     ┌──────────▼──────────┐
+                     │  Oracle Aggregator  │
+                     │  (Off-chain Service)│
+                     │                     │
+                     │ • Collect prices    │
+                     │ • Check consensus   │
+                     │ • Detect anomalies  │
+                     │ • Compute median    │
+                     └──────────┬──────────┘
+                                │
+                     ┌──────────▼──────────┐
+                     │   Smart Contract    │
+                     │   Validation        │
+                     │                     │
+                     │ • ≥2 sources agree  │
+                     │ • Within 5% spread  │
+                     │ • Recent (<1 hour)  │
+                     │ • No anomalies      │
+                     └─────────────────────┘
+```
+
+---
+
+## Oracle Sources
+
+### Source 1: Charli3 (Primary On-Chain)
+
+**Type**: Decentralized oracle network native to Cardano
+
+**How It Works**:
+- Network of independent node operators
+- Each node fetches price data from multiple exchanges
+- Consensus mechanism aggregates to single price
+- Published on-chain as reference datum
+
+**Advantages**:
+- Cardano-native (no cross-chain risk)
+- Decentralized (no single point of failure)
+- On-chain publication (verifiable history)
+
+**Limitations**:
+- Smaller node network than Chainlink
+- Update frequency may lag (5-15 minutes)
+
+### Source 2: Orcfax (Secondary On-Chain)
+
+**Type**: Decentralized oracle network for Cardano
+
+**How It Works**:
+- Triangulated data validation from multiple sources
+- CIP-compliant on-chain publication
+- Audit trail for every data point
+
+**Advantages**:
+- Independent from Charli3 (different operators)
+- Strong data provenance guarantees
+- Growing adoption in Cardano ecosystem
+
+### Source 3: Minswap TWAP (On-Chain Verification)
+
+**Type**: Time-Weighted Average Price from on-chain DEX data
+
+**How It Works**:
+- Calculates TWAP from actual ADA/DJED trades on Minswap
+- Weighted by trade volume and time
+- Resistant to flash manipulation (time-averaged)
+
+**Advantages**:
+- Purely on-chain (no external dependency)
+- Reflects actual market prices on Cardano DEXs
+- Volume-weighted (harder to manipulate)
+
+**Limitations**:
+- Can be influenced by large sustained trades
+- Only reflects Cardano DEX prices (not global market)
+- May diverge from centralized exchange prices
+
+### Source 4: CoinGecko API (Off-Chain Backup)
+
+**Type**: Centralized price aggregator API
+
+**How It Works**:
+- Aggregates prices from 100+ exchanges worldwide
+- Free tier provides delayed data (1-5 minute lag)
+- Pro tier provides real-time data
+
+**Advantages**:
+- Most comprehensive exchange coverage
+- Well-established, reliable service
+- Backup when on-chain oracles are unavailable
+
+**Limitations**:
+- Centralized (single company controls data)
+- Off-chain (not verifiable on-chain)
+- API rate limits on free tier
+
+---
+
+## Aggregation Algorithm
+
+```
+ALGORITHM: AGGREGATE_ORACLE_PRICES
+INPUT: source_prices[], staleness_threshold, consensus_threshold
+OUTPUT: aggregated_price or REJECT
+
+1.  // Filter stale sources
+2.  fresh_prices ← []
+3.  FOR EACH (source, price, timestamp) IN source_prices:
+4.      IF NOW() - timestamp ≤ staleness_threshold THEN
+5.          fresh_prices.APPEND((source, price))
+6.      ELSE
+7.          LOG("Stale source rejected: " + source.name)
+8.      END IF
+9.  END FOR
+10.
+11. // Check minimum source count
+12. IF LENGTH(fresh_prices) < 2 THEN
+13.     RETURN REJECT("Insufficient fresh sources")
+14. END IF
+15.
+16. // Check consensus
+17. min_price ← MIN(fresh_prices[].price)
+18. max_price ← MAX(fresh_prices[].price)
+19. spread ← (max_price - min_price) / min_price
+20.
+21. IF spread > consensus_threshold THEN
+22.     // Try removing outlier
+23.     fresh_prices ← REMOVE_MAX_DEVIATION(fresh_prices)
+24.     IF LENGTH(fresh_prices) < 2 THEN
+25.         RETURN REJECT("No consensus after outlier removal")
+26.     END IF
+27.     // Re-check consensus
+28.     spread ← recalculate_spread(fresh_prices)
+29.     IF spread > consensus_threshold THEN
+30.         RETURN REJECT("Oracle disagreement persists")
+31.     END IF
+32. END IF
+33.
+34. // Return median (robust estimator)
+35. RETURN MEDIAN(fresh_prices[].price)
+```
+
+### Configuration Parameters
+
+| Parameter | Value | Rationale |
+|-----------|-------|-----------|
+| **Minimum Sources** | 2 | Balance between safety and availability |
+| **Staleness Threshold** | 1 hour | Reject data older than 1 hour |
+| **Consensus Threshold** | 5% | All sources must agree within 5% |
+| **Anomaly Threshold** | 20% | Reject if price moved >20% in 1 hour |
+| **Update Frequency** | 5 minutes | Match strategy monitoring interval |
+
+---
+
+## Manipulation Resistance
+
+### Attack: DEX Price Manipulation
+
+**Method**: Attacker makes large trade on Minswap to move TWAP.
+
+**Defense**:
+- TWAP averaged over 1 hour (requires sustained capital commitment)
+- Cross-referenced with Charli3 and Orcfax (reflect global prices)
+- Anomaly detection rejects sudden spikes
+- **Cost to sustain**: >$500K for meaningful impact
+
+### Attack: Oracle Node Compromise
+
+**Method**: Attacker controls majority of Charli3 or Orcfax nodes.
+
+**Defense**:
+- Requires compromising decentralized node network
+- Cross-oracle validation catches single-source manipulation
+- Minimum 2 sources must agree
+- **Cost**: >$1M (requires controlling multiple oracle networks)
+
+### Attack: API Man-in-the-Middle
+
+**Method**: Attacker intercepts CoinGecko API responses.
+
+**Defense**:
+- CoinGecko is backup source (not sole authority)
+- HTTPS encryption prevents basic MITM
+- On-chain sources take priority
+- Anomaly detection catches fabricated prices
+
+### Attack: Coordinated Multi-Source Manipulation
+
+**Method**: Attacker simultaneously manipulates multiple oracles.
+
+**Defense**:
+- Requires attacking 3+ independent systems simultaneously
+- Different attack vectors for each source
+- Time delay (1 hour) allows manipulation to unwind
+- Circuit breaker activated if persistent anomalies
+- **Cost**: >$2M with uncertain success
+
+---
+
+## Price Data Flow
+
+### Normal Operation
+
+```
+1. Oracle aggregator polls all 4 sources every 5 minutes
+2. Sources respond with current ADA/USD price
+3. Aggregator validates freshness, consensus, and anomalies
+4. Median price computed and stored
+5. When rebalancing triggered, prices submitted to smart contract
+6. Contract independently validates oracle data (≥2 sources, <5% spread)
+7. Rebalancing executes if all checks pass
+```
+
+### Degraded Operation (1-2 sources unavailable)
+
+```
+1. Aggregator detects missing sources
+2. If ≥2 fresh sources remain: Continue with reduced set
+3. If <2 fresh sources: Pause rebalancing, alert operators
+4. LP fees continue to accrue (no oracle needed)
+5. Resume when sources recover
+```
+
+### Emergency Operation (all sources compromised)
+
+```
+1. All prices fail validation (anomaly or disagreement)
+2. Oracle aggregator enters "dark mode" — no price updates
+3. Operators notified via PagerDuty
+4. Circuit breaker triggered if >4 hours without valid price
+5. Governance vote to resume after root cause analysis
+```
+
+---
+
+## On-Chain Validation
+
+The smart contract performs its own oracle validation, independent of the off-chain aggregator:
+
+```rust
+fn oracle_consensus_valid(prices: OraclePrices) -> Bool {
+  let sources = prices.sources
+
+  and {
+    // Minimum 2 sources
+    length(sources) >= 2,
+
+    // All within 5% of each other
+    let prices_list = map(sources, fn(s) { s.price })
+    let min_p = minimum(prices_list)
+    let max_p = maximum(prices_list)
+    ((max_p - min_p) * 10000) / min_p <= 500,
+
+    // All updated within 1 hour
+    all(sources, fn(s) {
+      prices.timestamp - s.timestamp <= 3600
+    }),
+
+    // No single source >20% from median
+    let median = median_price(prices_list)
+    all(sources, fn(s) {
+      abs(s.price - median) * 10000 / median <= 2000
+    })
+  }
+}
+```
+
+This dual validation (off-chain aggregator + on-chain contract) ensures that even if the off-chain service is compromised, the smart contract will reject invalid data.
+
+---
+
+## Moving Average Computation
+
+The 30-day moving average is maintained as part of the oracle system:
+
+### On-Chain Storage
+
+```rust
+type PricePoint {
+  timestamp: POSIXTime,
+  price_usd: Int         // In micro-USD (1 USD = 1,000,000)
+}
+
+// Stored in treasury datum
+ada_price_history: List<PricePoint>   // Last 30 entries (daily)
+```
+
+### Update Process
+
+1. **Daily**: Oracle aggregator computes daily closing price (median of all 5-minute samples)
+2. **On rebalance**: New price point appended to on-chain history
+3. **Pruning**: Oldest entry removed when list exceeds 30 (sliding window)
+4. **MA Calculation**: Simple average of all stored prices
+
+### Manipulation Resistance
+
+- **30-day window**: Attacker would need to sustain manipulation for weeks
+- **Daily granularity**: Single intraday spike has zero impact on MA
+- **Multiple sources**: Each daily price is median of 4 oracle sources
+
+---
+
+## Monitoring and Alerts
+
+### Health Metrics
+
+| Metric | Threshold | Alert |
+|--------|-----------|-------|
+| Source availability | <3 sources | Warning |
+| Source availability | <2 sources | Critical |
+| Price spread | >3% | Warning |
+| Price spread | >5% | Critical (reject) |
+| Staleness | >30 min | Warning |
+| Staleness | >1 hour | Critical (reject) |
+| Anomalous movement | >10% in 1 hour | Warning |
+| Anomalous movement | >20% in 1 hour | Critical (reject) |
+
+### Alert Channels
+
+- **PagerDuty**: Critical alerts to on-call operator
+- **Discord Bot**: Community notification of oracle issues
+- **Dashboard**: Real-time oracle health on web interface
+
+---
+
+## Future Enhancements
+
+### Phase 2: Decentralized Oracle Network
+
+- Deploy CHAOS-operated oracle nodes
+- Reduce dependence on third-party oracles
+- Stake-weighted consensus among node operators
+
+### Phase 3: Zero-Knowledge Price Proofs
+
+- Use ZK proofs to verify exchange prices without revealing sources
+- Reduce on-chain data footprint
+- Enable cross-chain price verification
+
+---
+
+**In the next chapter**, we present the comprehensive security model and threat analysis for the CHAOS protocol.

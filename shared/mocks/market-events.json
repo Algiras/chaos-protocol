@@ -1,0 +1,128 @@
+[
+  {
+    "date": "2018-01-07",
+    "title": "Crypto Peak",
+    "description": "Bitcoin hits $19,783 - Market euphoria at all-time high",
+    "impact": "positive",
+    "type": "peak"
+  },
+  {
+    "date": "2018-12-15",
+    "title": "Crypto Winter",
+    "description": "ADA drops 94% from peak - Deep bear market",
+    "impact": "negative",
+    "type": "crash"
+  },
+  {
+    "date": "2019-06-26",
+    "title": "Facebook Libra Announced",
+    "description": "Facebook announces Libra, BTC surges to $13,000",
+    "impact": "positive",
+    "type": "adoption"
+  },
+  {
+    "date": "2020-03-12",
+    "title": "COVID-19 Crash",
+    "description": "Black Thursday - Markets crash 50% in single day",
+    "impact": "negative",
+    "type": "crash"
+  },
+  {
+    "date": "2020-07-01",
+    "title": "DeFi Summer Begins",
+    "description": "Decentralized Finance explodes - Yield farming craze",
+    "impact": "positive",
+    "type": "adoption"
+  },
+  {
+    "date": "2021-01-01",
+    "title": "Institutional Adoption",
+    "description": "MicroStrategy, Tesla buy Bitcoin - New bull run",
+    "impact": "positive",
+    "type": "adoption"
+  },
+  {
+    "date": "2021-05-19",
+    "title": "China Mining Ban",
+    "description": "China bans Bitcoin mining - 30% drop in hours",
+    "impact": "negative",
+    "type": "regulatory"
+  },
+  {
+    "date": "2021-11-10",
+    "title": "Bull Run Peak",
+    "description": "BTC hits $69,000 - Market at all-time highs",
+    "impact": "positive",
+    "type": "peak"
+  },
+  {
+    "date": "2022-01-01",
+    "title": "Fed Rate Hikes Begin",
+    "description": "Federal Reserve tightening - Risk assets sell off",
+    "impact": "negative",
+    "type": "regulatory"
+  },
+  {
+    "date": "2022-05-09",
+    "title": "Terra/LUNA Collapse",
+    "description": "$40B wiped out in 48 hours - Stablecoin crisis",
+    "impact": "negative",
+    "type": "crash"
+  },
+  {
+    "date": "2022-06-13",
+    "title": "Celsius Freezes",
+    "description": "Major lender Celsius halts withdrawals - Contagion",
+    "impact": "negative",
+    "type": "crash"
+  },
+  {
+    "date": "2022-11-08",
+    "title": "FTX Collapse",
+    "description": "Second largest exchange implodes - Industry shaken",
+    "impact": "negative",
+    "type": "crash"
+  },
+  {
+    "date": "2023-03-10",
+    "title": "USDC Depeg",
+    "description": "Circle stablecoin breaks $1 peg - Banking crisis",
+    "impact": "negative",
+    "type": "crash"
+  },
+  {
+    "date": "2023-06-15",
+    "title": "BlackRock ETF Filing",
+    "description": "World's largest asset manager enters crypto",
+    "impact": "positive",
+    "type": "adoption"
+  },
+  {
+    "date": "2024-01-10",
+    "title": "Bitcoin ETF Approved",
+    "description": "SEC approves spot Bitcoin ETFs - Institutional era",
+    "impact": "positive",
+    "type": "adoption"
+  },
+  {
+    "date": "2024-03-14",
+    "title": "New All-Time High",
+    "description": "BTC breaks $73,000 - ETFs drive massive inflows",
+    "impact": "positive",
+    "type": "peak"
+  },
+  {
+    "date": "2024-08-05",
+    "title": "Yen Carry Trade Unwind",
+    "description": "Global liquidity crunch - Crypto flash crash",
+    "impact": "negative",
+    "type": "crash"
+  },
+  {
+    "date": "2025-01-01",
+    "title": "Crypto Maturity",
+    "description": "Institutional adoption complete - Market stabilizes",
+    "impact": "positive",
+    "type": "adoption"
+  }
+]

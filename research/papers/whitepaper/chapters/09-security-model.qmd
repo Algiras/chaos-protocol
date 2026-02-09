@@ -1,0 +1,343 @@
+# Security Model
+
+This chapter presents the comprehensive security model for the CHAOS protocol, including threat analysis, defense mechanisms, and incident response procedures.
+
+---
+
+## Security Principles
+
+CHAOS adopts a **defense-in-depth** approach based on four principles:
+
+1. **Least Privilege**: Each component has minimum required permissions
+2. **Fail-Safe Defaults**: System defaults to safe state on errors
+3. **Defense in Depth**: Multiple independent security layers
+4. **Transparency**: All code and operations are publicly auditable
+
+---
+
+## Threat Model
+
+### Threat Actors
+
+| Actor | Motivation | Capability | Likelihood |
+|-------|-----------|------------|-----------|
+| **External Hacker** | Financial gain | High technical skill, moderate resources | Medium |
+| **Malicious Operator** | Front-running profit | Authorized access to rebalancing | Low |
+| **Whale Manipulator** | Market manipulation | Large capital ($1M+) | Low |
+| **State Actor** | Regulatory enforcement | Unlimited resources | Low |
+| **Insider Threat** | Financial gain or sabotage | Source code access | Very Low |
+| **Competitor** | Competitive advantage | Moderate resources | Very Low |
+
+### Attack Surface
+
+```
+┌────────────────────────────────────────────────────────┐
+│                    ATTACK SURFACE                       │
+├──────────────┬─────────────────┬───────────────────────┤
+│  Layer 1:    │  Layer 2:       │  Layer 3:             │
+│  Smart       │  Off-Chain      │  Infrastructure       │
+│  Contracts   │  Services       │                       │
+├──────────────┼─────────────────┼───────────────────────┤
+│ • Logic bugs │ • API exploits  │ • DNS hijacking       │
+│ • Datum      │ • Oracle manip  │ • Server compromise   │
+│   injection  │ • Key theft     │ • DDoS                │
+│ • Auth       │ • Front-running │ • Supply chain attack │
+│   bypass     │ • Replay attack │ • Social engineering  │
+└──────────────┴─────────────────┴───────────────────────┘
+```
+
+---
+
+## Layer 1: Smart Contract Security
+
+### Threat: Logic Bugs
+
+**Description**: Errors in contract validation logic could allow unauthorized operations.
+
+**Defenses**:
+
+| Defense | Description | Status |
+|---------|-------------|--------|
+| External audit | 2+ independent security audits | Planned ($60-100K) |
+| Formal verification | Prove critical properties in Lean 4 | **Done** (12 proofs) |
+| Property-based testing | Randomized input testing | Implemented |
+| TVL caps | Limit exposure during early phases | Designed |
+| Bug bounty | Up to $50K for critical vulnerabilities | Planned |
+
+### Threat: Authorization Bypass
+
+**Description**: Unauthorized party executes privileged operations (rebalancing, governance).
+
+**Defenses**:
+
+1. **Operator whitelist**: Only authorized `PubKeyHash` values can rebalance
+2. **Governance signature**: Parameter changes require governance multi-sig
+3. **On-chain verification**: `extra_signatories` checked in every transaction
+4. **Maximum operators**: Hard limit of 5 authorized operators
+
+```rust
+fn operator_authorized(ctx: ScriptContext,
+                       operators: List<PubKeyHash>) -> Bool {
+  any(operators, fn(op) {
+    list.has(ctx.transaction.extra_signatories, op)
+  })
+}
+```
+
+### Threat: Integer Overflow
+
+**Description**: Large numbers cause arithmetic overflow leading to incorrect calculations.
+
+**Defenses**:
+
+1. All amounts stored in lovelace (Int) — max value well within Int range
+2. Basis point arithmetic (0-10000) prevents fractional issues
+3. Input validation rejects negative values
+4. Aiken's type system catches most arithmetic errors at compile time
+
+### EUTXO Inherent Protections
+
+Cardano's EUTXO model eliminates several attack classes that plague Ethereum — and provides capabilities that Bitcoin's bare UTXO cannot match. A quantitative comparison (Appendix D) shows that the same CHAOS strategy achieves +9.3% outperformance on Cardano vs +0.2% on Bitcoin L1, because EUTXO enables on-chain enforcement of all strategy rules without trusted intermediaries.
+
+| Attack | Ethereum Status | Cardano Status |
+|--------|----------------|----------------|
+| **Reentrancy** | Critical risk | Impossible (no state mutation during execution) |
+| **Flash Loans** | Common attack vector | Not available in EUTXO |
+| **Front-Running (MEV)** | Widespread | Limited (deterministic validation) |
+| **Unchecked Returns** | Common | Not applicable (no external calls) |
+| **Delegatecall Exploits** | Critical | Not applicable |
+
+---
+
+## Layer 2: Off-Chain Service Security
+
+### Threat: Oracle Manipulation
+
+Covered in detail in Chapter 8. Summary of defenses:
+
+- Multi-source aggregation (4+ sources)
+- Consensus requirement (2+ within 5%)
+- Anomaly detection (reject >20% moves)
+- Time delay (1 hour between signal and execution)
+
+### Threat: Operator Key Theft
+
+**Description**: Attacker steals an operator's private key and submits malicious rebalancing transactions.
+
+**Defenses**:
+
+| Defense | Description |
+|---------|-------------|
+| Hardware security modules (HSM) | Keys stored in tamper-resistant hardware |
+| Multi-sig requirement | Large rebalances require 2+ operator signatures |
+| Transaction limits | Maximum 20% of TVL per rebalance |
+| Rate limiting | Maximum 1 rebalance per hour |
+| Monitoring | All operator transactions logged and alerted |
+| Key rotation | Regular key rotation schedule (quarterly) |
+
+### Threat: Front-Running
+
+**Description**: Attacker observes pending rebalancing transaction and trades ahead of it.
+
+**Defenses**:
+
+1. **Time-locked transactions**: Execute at specific Cardano slot (can't be front-run)
+2. **Slippage protection**: Maximum 2% slippage enforced on-chain
+3. **Batch auctions**: Use DEX batch settlement where available (Minswap)
+4. **Private mempool**: Submit transactions via private relay (Cardano doesn't have public mempool like Ethereum)
+
+### Threat: Replay Attacks
+
+**Description**: Attacker replays a previous valid transaction.
+
+**Defense**: Cardano's UTXO model inherently prevents replay attacks — each UTXO can only be spent once. The treasury UTXO changes with every operation, making previous transactions invalid.
+
+---
+
+## Layer 3: Infrastructure Security
+
+### Threat: Server Compromise
+
+**Description**: Attacker gains access to the server running the off-chain oracle aggregator or rebalancing engine.
+
+**Defenses**:
+
+| Defense | Implementation |
+|---------|---------------|
+| Containerization | Docker containers with minimal attack surface |
+| Network isolation | Backend services not directly internet-accessible |
+| Access control | SSH key-only access, no password auth |
+| Monitoring | Sentry for error tracking, Grafana for metrics |
+| Secrets management | Environment variables via cloud secrets manager |
+| Automatic updates | OS and dependency patches applied automatically |
+
+### Threat: DDoS Attack
+
+**Description**: Attacker floods API or oracle service to prevent rebalancing.
+
+**Defenses**:
+
+1. Rate limiting on all API endpoints
+2. Cloudflare DDoS protection for frontend
+3. Redundant oracle aggregator instances
+4. LP fees continue accruing even during outage (no urgency to rebalance)
+
+### Threat: Supply Chain Attack
+
+**Description**: Malicious code injected into a dependency (npm package, Aiken library).
+
+**Defenses**:
+
+1. Lock file pinning (exact dependency versions)
+2. Dependency auditing (`npm audit`, `cargo audit`)
+3. Minimal dependency tree for smart contracts
+4. Code review for all dependency updates
+
+---
+
+## Circuit Breaker System
+
+The circuit breaker is a last-resort safety mechanism that halts all protocol operations:
+
+### Trigger Conditions
+
+| Condition | Threshold | Auto-Trigger |
+|-----------|-----------|--------------|
+| Portfolio drawdown | >50% from peak | Yes |
+| DJED depeg | >10% from $1.00 | Yes |
+| Oracle failure | >4 hours no valid price | Yes |
+| Smart contract anomaly | Unexpected state change | Yes |
+| Governance vote | Emergency proposal passed | Manual |
+
+### Circuit Breaker States
+
+```
+                    ┌──────────┐
+         ┌─────────│  NORMAL  │◀────────┐
+         │         └──────────┘         │
+     Trigger                        Reset
+     Detected                     (Governance)
+         │                              │
+         │         ┌──────────┐         │
+         └────────▶│  PAUSED  │─────────┘
+                   └──────────┘
+                       │
+                  >7 days paused
+                       │
+                   ┌───▼──────┐
+                   │ EMERGENCY│
+                   │ WITHDRAW │
+                   └──────────┘
+```
+
+### When Paused
+
+- **Blocked**: Deposits, rebalancing, parameter changes
+- **Allowed**: Withdrawals (users can always exit)
+- **Continues**: LP fee accrual (passive income)
+
+### Emergency Withdrawal Mode
+
+If the circuit breaker remains active for >7 days, the contract enters emergency withdrawal mode:
+
+- Any CHAOS holder can withdraw proportional assets
+- No governance approval needed
+- Ensures users are never locked in
+
+---
+
+## Access Control Matrix
+
+| Operation | Token Holder | Operator | Governance | Emergency |
+|-----------|-------------|----------|------------|-----------|
+| Deposit ADA | Yes | — | — | No |
+| Withdraw ADA | Yes | — | — | Yes (after 7d) |
+| Rebalance | — | Yes | — | No |
+| Update Parameters | — | — | Yes (vote) | No |
+| Add/Remove Operator | — | — | Yes (vote) | No |
+| Trigger Circuit Breaker | — | — | Yes | Auto |
+| Reset Circuit Breaker | — | — | Yes (vote) | — |
+
+---
+
+## Incident Response Plan
+
+### Severity Levels
+
+| Level | Description | Response Time | Examples |
+|-------|-------------|---------------|---------|
+| **P0 - Critical** | Active exploitation, funds at risk | <15 minutes | Contract exploit, key theft |
+| **P1 - High** | Potential vulnerability, no active exploit | <1 hour | Audit finding, oracle failure |
+| **P2 - Medium** | Degraded service, no fund risk | <4 hours | API outage, slow oracle |
+| **P3 - Low** | Minor issue, no impact | <24 hours | UI bug, documentation error |
+
+### P0 Response Procedure
+
+```
+1. DETECT: Monitoring alert triggers PagerDuty
+2. ASSESS: On-call engineer verifies threat (5 min)
+3. CONTAIN: Trigger circuit breaker if funds at risk (5 min)
+4. COMMUNICATE: Alert community via Discord + Twitter (15 min)
+5. INVESTIGATE: Root cause analysis (1-4 hours)
+6. REMEDIATE: Deploy fix or workaround (variable)
+7. RECOVER: Reset circuit breaker via governance vote
+8. REVIEW: Post-mortem published within 48 hours
+```
+
+---
+
+## Security Audit Plan
+
+### Audit Schedule
+
+| Audit | Firm | Scope | Timeline | Budget |
+|-------|------|-------|----------|--------|
+| Audit 1 | TBD (Tweag, MLabs, or Certik) | Treasury vault + minting policy | Month 2-3 | $40-60K |
+| Audit 2 | TBD (different firm) | Full system including off-chain | Month 3-4 | $30-50K |
+| Continuous | Bug bounty program | Community-driven | Ongoing | $50K reserve |
+
+### Bug Bounty Rewards
+
+| Severity | Reward | Examples |
+|----------|--------|---------|
+| **Critical** | $25,000 - $50,000 | Fund drain, unauthorized minting |
+| **High** | $10,000 - $25,000 | Oracle bypass, auth bypass |
+| **Medium** | $2,000 - $10,000 | Incorrect calculation, DoS |
+| **Low** | $500 - $2,000 | Information leak, UI exploit |
+
+---
+
+## Formal Verification Goals
+
+Beyond standard auditing, we aim to formally verify critical properties:
+
+| Property | Specification | Tool |
+|----------|--------------|------|
+| **Fund Safety** | Total withdrawals never exceed total deposits + gains | Lean 4 |
+| **Proportional Redemption** | Users always receive fair share on withdrawal | Lean 4 |
+| **Allocation Bounds** | ADA allocation always between 35-65% | Aiken tests |
+| **Supply Invariant** | CHAOS supply never exceeds 100M | Aiken tests |
+| **Oracle Consensus** | Prices only accepted with 2+ agreeing sources | Aiken tests |
+
+---
+
+## Summary
+
+The CHAOS security model provides multiple layers of protection:
+
+| Layer | Protection | Against |
+|-------|-----------|---------|
+| **EUTXO Model** | Structural | Reentrancy, flash loans, MEV |
+| **Smart Contract Logic** | Validation | Unauthorized operations, bad parameters |
+| **Oracle Design** | Multi-source consensus | Price manipulation |
+| **Circuit Breaker** | Emergency halt | Unknown threats, black swans |
+| **Access Control** | Role-based permissions | Unauthorized access |
+| **Infrastructure** | Server hardening, monitoring | External attacks |
+| **Audit + Bug Bounty** | Expert review | Logic bugs, edge cases |
+| **Incident Response** | Rapid containment | Active exploits |
+
+No system is perfectly secure. CHAOS's security philosophy is: **assume breaches will happen, and design systems that limit damage and recover gracefully.**
+
+---
+
+**In the next chapter**, we detail the tokenomics model including distribution, utility, and value accrual mechanisms.

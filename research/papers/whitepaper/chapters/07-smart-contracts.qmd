@@ -1,0 +1,438 @@
+# Smart Contracts
+
+This chapter details the Aiken smart contract architecture that enforces the CHAOS strategy rules on the Cardano blockchain with cryptographic certainty.
+
+---
+
+## Architecture Overview
+
+CHAOS uses two primary smart contracts:
+
+1. **Treasury Vault** (`chaos_vault.ak`) — Manages all protocol assets and validates operations
+2. **CHAOS Token** (`chaos_token.ak`) — Minting policy for the governance token
+
+Both contracts leverage Cardano's **EUTXO (Extended Unspent Transaction Output)** model, which provides deterministic execution and inherent reentrancy protection.
+
+### Why Aiken?
+
+| Feature | Aiken | Plutus (Haskell) | Solidity |
+|---------|-------|-----------------|----------|
+| **Language** | Rust-like, purpose-built | Haskell | JavaScript-like |
+| **Compilation** | Fast (<1s) | Slow (10s+) | Fast |
+| **Error Messages** | Clear, helpful | Cryptic | Good |
+| **Community** | Growing (Minswap uses it) | Mature | Largest |
+| **Formal Verification** | Supported | Supported | Limited |
+| **Reentrancy Risk** | None (EUTXO) | None (EUTXO) | High |
+| **Gas Efficiency** | Excellent | Good | Variable |
+
+---
+
+## Contract 1: Treasury Vault
+
+### Datum Structure
+
+The datum represents the treasury's on-chain state:
+
+```rust
+/// Treasury state stored in the UTXO
+type TreasuryDatum {
+  // Strategy parameters (governance-adjustable)
+  target_ada_allocation: Int,     // Basis points (5000 = 50%)
+  target_djed_allocation: Int,    // Basis points (3000 = 30%)
+  target_lp_allocation: Int,      // Basis points (2000 = 20%)
+  rebalance_threshold: Int,       // Basis points (1000 = 10%)
+
+  // Safety bounds (hard-coded minimums)
+  min_ada_allocation: Int,        // 3500 = 35% minimum
+  max_ada_allocation: Int,        // 6500 = 65% maximum
+
+  // Moving average data
+  ada_price_history: List<PricePoint>,
+  moving_average_window: Int,     // Default: 30
+
+  // Authorization
+  authorized_operators: List<PubKeyHash>,
+  governance_address: Address,
+
+  // Circuit breaker
+  circuit_breaker_triggered: Bool,
+  last_rebalance_time: POSIXTime,
+
+  // Accounting
+  total_deposits: Int,
+  total_withdrawals: Int,
+  rebalance_count: Int
+}
+```
+
+### Redeemer Actions
+
+```rust
+type TreasuryRedeemer {
+  Deposit { user: Address, ada_amount: Int, chaos_to_mint: Int }
+  Withdraw { user: Address, chaos_to_burn: Int }
+  Rebalance { reason: RebalanceReason, trades: List<Trade>,
+              oracle_prices: OraclePrices }
+  UpdateParameters { changes: ParameterUpdate,
+                     governance_sig: Signature }
+  TriggerCircuitBreaker { reason: ByteArray }
+  ResetCircuitBreaker
+}
+```
+
+### Validation Logic
+
+#### Deposit Validation
+
+When a user deposits ADA, the contract verifies:
+
+1. ADA is actually sent to the treasury UTXO
+2. Correct CHAOS tokens are minted proportionally: $\text{shares} = \text{deposit} \times \frac{\text{total\_supply}}{\text{TVL}}$
+3. Minimum deposit requirement met (100 ADA)
+4. Circuit breaker is not active
+
+```rust
+fn validate_deposit(datum: TreasuryDatum, deposit: Deposit,
+                    ctx: ScriptContext) -> Bool {
+  and {
+    // ADA received at treasury address
+    value_sent_to_script(ctx) >= deposit.ada_amount,
+
+    // Correct CHAOS minting amount
+    deposit.chaos_to_mint ==
+      (deposit.ada_amount * total_chaos_supply(ctx)) /
+        total_treasury_value(datum, ctx),
+
+    // Minimum deposit
+    deposit.ada_amount >= 100_000_000,  // 100 ADA in lovelace
+
+    // Circuit breaker check
+    !datum.circuit_breaker_triggered
+  }
+}
+```
+
+#### Withdrawal Validation
+
+When a user burns CHAOS to withdraw, the contract verifies:
+
+1. CHAOS tokens are actually burned
+2. Proportional assets are returned: $\text{share} = \frac{\text{CHAOS burned}}{\text{total supply}}$
+3. User receives correct amounts of ADA + DJED
+4. Treasury remains solvent after withdrawal
+
+```rust
+fn validate_withdrawal(datum: TreasuryDatum, withdrawal: Withdraw,
+                       ctx: ScriptContext) -> Bool {
+  let share = withdrawal.chaos_to_burn * 10000 /
+              total_chaos_supply(ctx)
+
+  and {
+    // Tokens burned
+    tokens_burned_in_tx(ctx, withdrawal.chaos_to_burn),
+
+    // Proportional ADA returned
+    ada_sent_to(ctx, withdrawal.user) >=
+      datum_ada_value(datum) * share / 10000,
+
+    // Proportional DJED returned
+    djed_sent_to(ctx, withdrawal.user) >=
+      datum_djed_value(datum) * share / 10000,
+
+    // Circuit breaker check
+    !datum.circuit_breaker_triggered
+  }
+}
+```
+
+#### Rebalancing Validation (Critical)
+
+The most complex validation — ensures rebalancing follows strategy rules:
+
+```rust
+fn validate_rebalance(datum: TreasuryDatum, rebalance: Rebalance,
+                      ctx: ScriptContext) -> Bool {
+  and {
+    // 1. Operator is authorized
+    any(datum.authorized_operators, fn(op) {
+      list.has(ctx.transaction.extra_signatories, op)
+    }),
+
+    // 2. Rebalancing trigger is valid
+    rebalance_trigger_valid(datum, rebalance.reason,
+                            rebalance.oracle_prices),
+
+    // 3. Oracle prices have consensus
+    oracle_consensus(rebalance.oracle_prices),
+
+    // 4. New allocations within safety bounds
+    new_allocations_valid(datum, rebalance.trades),
+
+    // 5. Slippage within limits
+    all_trades_acceptable(rebalance.trades),
+
+    // 6. Minimum time since last rebalance (1 hour)
+    time_elapsed(datum.last_rebalance_time, ctx) >= 3600,
+
+    // 7. Circuit breaker not active
+    !datum.circuit_breaker_triggered
+  }
+}
+```
+
+**Rebalance Trigger Validation**:
+
+```rust
+fn rebalance_trigger_valid(datum: TreasuryDatum,
+                           reason: RebalanceReason,
+                           prices: OraclePrices) -> Bool {
+  when reason is {
+    AllocationDrift ->
+      let current = calculate_ada_allocation(datum, prices)
+      let drift = abs(current - datum.target_ada_allocation)
+      drift > datum.rebalance_threshold
+
+    AdaBelowMA ->
+      let ma = calculate_moving_average(datum.ada_price_history)
+      prices.ada_price < (ma * 9000) / 10000   // < 90% of MA
+
+    AdaAboveMA ->
+      let ma = calculate_moving_average(datum.ada_price_history)
+      prices.ada_price > (ma * 11000) / 10000  // > 110% of MA
+  }
+}
+```
+
+**Oracle Consensus Validation**:
+
+```rust
+fn oracle_consensus(prices: OraclePrices) -> Bool {
+  and {
+    // At least 2 sources
+    length(prices.sources) >= 2,
+
+    // All sources within 5% of each other
+    let min_p = minimum(map(prices.sources, fn(s) { s.price }))
+    let max_p = maximum(map(prices.sources, fn(s) { s.price }))
+    ((max_p - min_p) * 10000) / min_p <= 500,
+
+    // All sources updated within 1 hour
+    all(prices.sources, fn(s) {
+      prices.timestamp - s.timestamp <= 3600
+    })
+  }
+}
+```
+
+---
+
+## Contract 2: CHAOS Token Minting Policy
+
+### Minting Rules
+
+The minting policy controls three operations:
+
+```rust
+type CHAOSMintRedeemer {
+  // One-time initial distribution
+  InitialMint {
+    ispo: Int,        // 60,000,000
+    lbp: Int,         // 30,000,000
+    team: Int,        //  5,000,000
+    treasury: Int,    //  3,000,000
+    liquidity: Int    //  2,000,000
+  }
+
+  // Proportional minting on deposit
+  DepositMint { user: Address, amount: Int }
+
+  // Burning on withdrawal
+  WithdrawBurn { user: Address, amount: Int }
+}
+```
+
+### Supply Enforcement
+
+```rust
+fn validate_mint(redeemer: CHAOSMintRedeemer,
+                 ctx: ScriptContext) -> Bool {
+  when redeemer is {
+    InitialMint { ispo, lbp, team, treasury, liquidity } ->
+      and {
+        // Total exactly 100M
+        ispo + lbp + team + treasury + liquidity == 100_000_000,
+        // Correct breakdown
+        ispo == 60_000_000,
+        lbp == 30_000_000,
+        team == 5_000_000,
+        treasury == 3_000_000,
+        liquidity == 2_000_000,
+        // First-ever mint
+        current_supply(ctx) == 0,
+        // Governance approved
+        governance_signed(ctx)
+      }
+
+    DepositMint { user, amount } ->
+      and {
+        // Amount matches treasury calculation
+        amount == calculate_deposit_shares(ctx),
+        // Max supply not exceeded
+        current_supply(ctx) + amount <= 100_000_000,
+        // Minimum mint
+        amount >= 100,
+        // Treasury received corresponding ADA
+        treasury_received_deposit(ctx)
+      }
+
+    WithdrawBurn { user, amount } ->
+      and {
+        // Tokens actually burned
+        tokens_burned_in_tx(ctx, amount),
+        // User owned the tokens
+        user_had_balance(ctx, user, amount),
+        // Treasury sends proportional assets
+        treasury_sends_withdrawal(ctx, amount)
+      }
+  }
+}
+```
+
+---
+
+## Gas Optimization
+
+Smart contract execution on Cardano has strict resource limits. We optimize for minimal execution units:
+
+| Operation | Target EU | Target Memory | Estimated Fee |
+|-----------|----------|---------------|---------------|
+| Deposit | 3,000 | 8,000 | ~0.3 ADA |
+| Withdrawal | 3,500 | 9,000 | ~0.35 ADA |
+| Rebalancing | 8,000 | 15,000 | ~0.8 ADA |
+| Governance Update | 2,500 | 7,000 | ~0.25 ADA |
+
+**Optimization Techniques**:
+
+1. **Bounded price history**: Store only last 30 data points (not full history)
+2. **Integer arithmetic**: All calculations in basis points (Int), no floating point
+3. **Minimal list operations**: Avoid fold where length/has suffices
+4. **Batch oracle validation**: Single pass over source list
+5. **Lazy evaluation**: Short-circuit on first failed condition
+
+---
+
+## Security Properties
+
+### Properties Guaranteed by EUTXO
+
+| Property | Ethereum Risk | Cardano Status |
+|----------|--------------|----------------|
+| **Reentrancy** | Critical (The DAO hack) | Impossible by design |
+| **Flash Loans** | Used in attacks | Not available in EUTXO |
+| **Tx Ordering Attacks** | MEV extraction | Mitigated by eUTXO determinism |
+| **State Mutation** | During execution | Impossible (immutable UTXOs) |
+
+### Properties Enforced by Contract Logic
+
+1. **Allocation bounds**: ADA allocation always between 35-65%
+2. **Oracle consensus**: Minimum 2 sources within 5% agreement
+3. **Slippage limits**: Maximum 2% per trade
+4. **Cooldown period**: Minimum 1 hour between rebalances
+5. **Circuit breaker**: Governance can pause all operations
+6. **Proportional withdrawal**: Users always get fair share
+
+---
+
+## Testing Strategy
+
+### Unit Tests
+
+```rust
+test deposit_valid() {
+  let datum = mock_treasury_datum()
+  let redeemer = Deposit {
+    user: mock_address(),
+    ada_amount: 1_000_000_000,  // 1000 ADA
+    chaos_to_mint: 1_000_000_000
+  }
+  validate_deposit(datum, redeemer, mock_ctx()) == True
+}
+
+test deposit_below_minimum() {
+  let redeemer = Deposit {
+    user: mock_address(),
+    ada_amount: 50_000_000,  // 50 ADA (below 100 minimum)
+    chaos_to_mint: 50_000_000
+  }
+  validate_deposit(mock_datum(), redeemer, mock_ctx()) == False
+}
+
+test rebalance_unauthorized_operator() {
+  let datum = mock_treasury_datum()
+  let ctx = mock_ctx_signed_by(#"unauthorized_key")
+  validate_rebalance(datum, mock_rebalance(), ctx) == False
+}
+```
+
+### Property-Based Tests
+
+```rust
+property allocations_always_sum_to_100() {
+  forall datum in arbitrary_treasury_datum() {
+    datum.target_ada_allocation +
+    datum.target_djed_allocation +
+    datum.target_lp_allocation == 10000
+  }
+}
+
+property withdrawal_always_proportional() {
+  forall (datum, burn_amount) in arbitrary_withdrawal() {
+    let share = burn_amount * 10000 / total_supply
+    let ada_received = datum.ada * share / 10000
+    // Within rounding error
+    abs(actual_ada - ada_received) < 1000
+  }
+}
+```
+
+### Integration Tests (Testnet)
+
+1. **Full deposit flow**: Connect wallet -> Deposit ADA -> Receive CHAOS -> Verify on-chain
+2. **Full withdrawal flow**: Burn CHAOS -> Receive proportional ADA + DJED
+3. **Rebalancing flow**: Trigger condition -> Operator submits tx -> Verify new allocations
+4. **Governance flow**: Submit proposal -> Vote -> Wait time-lock -> Execute
+5. **Circuit breaker**: Trigger -> Verify operations blocked -> Reset -> Verify resumed
+
+---
+
+## Deployment Process
+
+### Phase 1: Testnet
+
+1. Deploy treasury vault to Cardano Preview testnet
+2. Deploy CHAOS minting policy
+3. Initialize with test funds (10,000 tADA)
+4. Execute 10+ deposit/withdraw cycles
+5. Execute 3+ rebalancing events
+6. Community testing with 100+ users
+
+### Phase 2: Mainnet
+
+1. Final audit sign-off (zero critical/high issues)
+2. Deploy treasury vault to Cardano mainnet
+3. Deploy CHAOS minting policy
+4. Execute initial mint (100M CHAOS)
+5. Set TVL cap ($10K)
+6. Monitor 72 hours before scaling
+
+### Upgrade Path
+
+Aiken contracts are **immutable by default**. Upgrades are handled via:
+
+1. **Parameter governance**: Most changes are datum parameters (no code change needed)
+2. **New contract deployment**: Deploy v2, migrate funds via governance vote
+3. **Reference scripts**: Proxy pattern pointing to latest version
+
+---
+
+**In the next chapter**, we detail the multi-source oracle architecture that provides tamper-resistant price data to the smart contracts.

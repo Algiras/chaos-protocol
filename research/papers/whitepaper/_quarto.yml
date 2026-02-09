@@ -1,0 +1,70 @@
+project:
+  type: book
+
+book:
+  title: "CHAOS Token: Antifragile Volatility Harvesting on Cardano"
+  subtitle: "A Formally Verified Approach to Cryptocurrency Treasury Management"
+  author: "CHAOS Foundation"
+  date: "February 2026"
+  chapters:
+    - index.qmd
+    - intro.qmd
+    - part: "Mathematical Framework"
+      chapters:
+        - chapters/01-introduction.qmd
+        - chapters/02-mathematical-framework.qmd
+        - chapters/03-game-theory.qmd
+    - part: "Strategy Implementation"
+      chapters:
+        - chapters/04-strategy-specification.qmd
+        - chapters/05-backtest-results.qmd
+        - chapters/06-risk-analysis.qmd
+    - part: "Technical Architecture"
+      chapters:
+        - chapters/07-smart-contracts.qmd
+        - chapters/08-oracle-design.qmd
+        - chapters/09-security-model.qmd
+    - part: "Tokenomics & Governance"
+      chapters:
+        - chapters/10-tokenomics.qmd
+        - chapters/11-governance.qmd
+        - chapters/12-revenue-model.qmd
+    - part: "Implementation & Roadmap"
+      chapters:
+        - chapters/13-development-roadmap.qmd
+        - chapters/14-risk-disclosure.qmd
+    - part: "Appendices"
+      chapters:
+        - chapters/A1-formal-verification.qmd
+        - chapters/A2-simulation-analysis.qmd
+        - chapters/A3-stress-testing.qmd
+        - chapters/A4-bitcoin-feasibility.qmd
+    - summary.qmd
+    - references.qmd
+
+bibliography: references.bib
+
+jupyter: python3
+
+format:
+  html:
+    theme:
+      - cosmo
+      - brand
+    toc: true
+    toc-depth: 3
+    number-sections: true
+    code-fold: true
+    code-tools: true
+  pdf:
+    documentclass: scrreprt
+    toc: true
+    toc-depth: 3
+    number-sections: true
+    fontsize: 11pt
+    geometry:
+      - margin=1in
+    keep-tex: true
+
+
+

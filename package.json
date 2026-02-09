@@ -1,0 +1,36 @@
+{
+  "name": "chaos-protocol",
+  "version": "1.0.0",
+  "description": "CHAOS Protocol - Antifragile Volatility Harvesting Research & Implementation",
+  "private": false,
+  "workspaces": [
+    "site",
+    "shared"
+  ],
+  "scripts": {
+    "dev": "npm run dev -w @chaos/site",
+    "build": "npm run build -w @chaos/site && npm run export -w @chaos/site",
+    "export": "npm run export -w @chaos/site",
+    "test:contracts": "cd contracts && aiken check",
+    "test:notebooks": "cd analysis/simulations && jupyter nbconvert --to notebook --execute *.ipynb",
+    "clean": "rm -rf site/.next site/out node_modules"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/username/chaos-protocol.git"
+  },
+  "keywords": [
+    "cardano",
+    "defi",
+    "volatility-harvesting",
+    "formal-verification",
+    "lean4",
+    "aiken",
+    "smart-contracts"
+  ],
+  "author": "CHAOS Protocol Team",
+  "license": "MIT",
+  "devDependencies": {
+    "tsx": "^4.21.0"
+  }
+}

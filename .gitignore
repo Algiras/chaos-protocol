@@ -1,0 +1,45 @@
+# Environment and secrets
+.env
+.env.local
+.env.production
+.env.app
+.env.marketing
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+
+# Node
+node_modules/
+dist/
+.next/
+out/
+
+# Quarto build output
+whitepaper/_book/
+whitepaper/.quarto/
+whitepaper/**/*_files/
+whitepaper/*.tex
+whitepaper/*.log
+whitepaper/*.aux
+
+# Lean 4
+cardano-nash-verification/.lake/
+cardano-nash-verification/build/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Aiken build output
+chaos-production/aiken/build/
+chaos-production/aiken/artifacts/

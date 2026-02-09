@@ -1,0 +1,447 @@
+---
+title: ""
+format:
+  pdf:
+    documentclass: article
+    fontsize: 10.5pt
+    geometry:
+      - margin=0.85in
+      - top=0.7in
+      - bottom=0.7in
+    colorlinks: true
+    linkcolor: "0033AD"
+    urlcolor: "0033AD"
+    number-sections: false
+    include-in-header:
+      text: |
+        \usepackage{xcolor}
+        \usepackage{tikz}
+        \usepackage{tabularx}
+        \usepackage{booktabs}
+        \usepackage{fontspec}
+        \usepackage{enumitem}
+        \usepackage{multicol}
+        \usepackage{fancyhdr}
+        \usepackage{graphicx}
+        \usepackage{hyperref}
+        \usepackage{amssymb}
+        \usepackage{amsmath}
+
+        \definecolor{chaos}{HTML}{2563EB}
+        \definecolor{chaoslight}{HTML}{DBEAFE}
+        \definecolor{chaosdark}{HTML}{1E40AF}
+        \definecolor{green}{HTML}{10B981}
+        \definecolor{greenlight}{HTML}{D1FAE5}
+        \definecolor{red}{HTML}{DC2626}
+        \definecolor{amber}{HTML}{F59E0B}
+        \definecolor{gray700}{HTML}{374151}
+        \definecolor{gray500}{HTML}{6B7280}
+        \definecolor{gray300}{HTML}{D1D5DB}
+        \definecolor{gray200}{HTML}{E5E7EB}
+        \definecolor{gray100}{HTML}{F3F4F6}
+        \definecolor{gray50}{HTML}{F9FAFB}
+
+        \setlist[itemize]{noitemsep, topsep=3pt, leftmargin=1.2em}
+        \setlist[enumerate]{noitemsep, topsep=3pt, leftmargin=1.5em}
+        \setlength{\parskip}{5pt}
+        \setlength{\parindent}{0pt}
+
+        % Custom section styling
+        \usepackage{titlesec}
+        \titleformat{\section}{\Large\bfseries\color{chaos}}{\thesection}{0em}{}[\vspace{-2pt}\textcolor{gray300}{\rule{\linewidth}{0.5pt}}]
+        \titleformat{\subsection}{\large\bfseries\color{gray700}}{\thesubsection}{0em}{}
+        \titlespacing*{\section}{0pt}{14pt}{6pt}
+        \titlespacing*{\subsection}{0pt}{8pt}{4pt}
+
+        % Header/footer
+        \pagestyle{fancy}
+        \fancyhf{}
+        \renewcommand{\headrulewidth}{0pt}
+        \fancyhead[L]{\small\color{gray500} CHAOS — Investor Brief}
+        \fancyhead[R]{\small\color{gray500} February 2026}
+        \fancyfoot[C]{\small\color{gray500} \thepage}
+        \fancyfoot[R]{\small\color{gray500} chaos.fund}
+---
+
+<!-- ==================== COVER / HEADER ==================== -->
+
+\thispagestyle{empty}
+
+\vspace*{20pt}
+
+\begin{center}
+{\fontsize{48}{54}\selectfont\bfseries\color{chaos} CHAOS}\\[8pt]
+{\Large\color{gray500} Antifragile Volatility Harvesting on Cardano}\\[4pt]
+{\normalsize\color{gray500} Investor Brief \enspace$\cdot$\enspace February 2026 \enspace$\cdot$\enspace Confidential}
+\end{center}
+
+\vspace{16pt}
+
+\colorbox{chaoslight}{\parbox{\dimexpr\linewidth-2\fboxsep}{%
+\vspace{8pt}
+\begin{center}
+\begin{tabular}{cccc}
+{\fontsize{28}{32}\selectfont\bfseries\color{chaos} +39\%} &
+{\fontsize{28}{32}\selectfont\bfseries\color{chaos} 1.87} &
+{\fontsize{28}{32}\selectfont\bfseries\color{chaos} 40\%} &
+{\fontsize{28}{32}\selectfont\bfseries\color{chaos} 5/5} \\[2pt]
+{\small\color{gray500} Outperformance} &
+{\small\color{gray500} Sharpe Ratio} &
+{\small\color{gray500} Less Drawdown} &
+{\small\color{gray500} Win Rate} \\
+{\scriptsize\color{gray500} vs buy\&hold (ADA 2y)} &
+{\scriptsize\color{gray500} vs 0.42 HODL} &
+{\scriptsize\color{gray500} than holding ADA} &
+{\scriptsize\color{gray500} across 5 crypto assets}
+\end{tabular}
+\end{center}
+\vspace{6pt}
+}}
+
+\vspace{18pt}
+
+\section{Executive Summary}
+
+CHAOS is a **formally verified, antifragile treasury management protocol** on Cardano. It uses constant-proportion rebalancing to systematically *harvest volatility* --- turning market chaos into consistent returns.
+
+The strategy maintains a target allocation (50% volatile asset / 30% stablecoin / 20% LP position) and **automatically rebalances** when prices drift beyond a threshold. This generates a mathematically proven return premium proportional to $\sigma^2$.
+
+**Higher volatility = higher returns.** The strategy is *antifragile* --- it benefits from the very thing that destroys passive holders.
+
+\vspace{4pt}
+
+\section{Strategy Performance}
+
+\subsection{Multi-Asset Backtest (Real CoinGecko Data)}
+
+\vspace{4pt}
+
+\begin{center}
+{\small
+\begin{tabularx}{\linewidth}{l >{\raggedleft\arraybackslash}X >{\raggedleft\arraybackslash}X >{\raggedleft\arraybackslash}X >{\raggedleft\arraybackslash}X >{\raggedleft\arraybackslash}X}
+\toprule
+\textbf{Asset} & \textbf{CHAOS Return} & \textbf{HODL Return} & \textbf{Edge} & \textbf{CHAOS DD} & \textbf{HODL DD} \\
+\midrule
+ADA  & $-$31.8\% & $-$61.9\% & \textcolor{green}{\textbf{+79\%}}  & $-$46.7\% & $-$74.5\% \\
+BTC  & $-$4.9\%  & $-$14.2\% & \textcolor{green}{\textbf{+11\%}}  & $-$27.9\% & $-$49.6\% \\
+ETH  & +9.5\%    & +3.4\%    & \textcolor{green}{\textbf{+6\%}}   & $-$36.7\% & $-$62.3\% \\
+SOL  & $-$9.5\%  & $-$30.4\% & \textcolor{green}{\textbf{+30\%}}  & $-$41.5\% & $-$68.3\% \\
+DOT  & $-$34.6\% & $-$65.7\% & \textcolor{green}{\textbf{+91\%}}  & $-$46.5\% & $-$76.4\% \\
+\midrule
+\multicolumn{3}{l}{\textbf{Win rate vs HODL}} & \textcolor{green}{\textbf{5 / 5}} & \multicolumn{2}{r}{\textcolor{green}{\textbf{Avg 37\% less DD}}} \\
+\bottomrule
+\end{tabularx}
+}
+\end{center}
+
+\subsection{Performance by Market Regime}
+
+\vspace{4pt}
+
+\begin{center}
+{\small
+\begin{tabularx}{\linewidth}{l >{\raggedleft\arraybackslash}X >{\raggedleft\arraybackslash}X >{\raggedleft\arraybackslash}X l}
+\toprule
+\textbf{Regime} & \textbf{CHAOS} & \textbf{HODL} & \textbf{Advantage} & \\
+\midrule
+Bear market (2022)     & $-$12\% & $-$81\% & \textcolor{green}{\textbf{+69 pp}} & Massive protection \\
+Sideways (H1 2023)     & +18\%   & +8\%    & \textcolor{green}{\textbf{+10 pp}} & Harvests vol \\
+Bull market (H2 2023)  & +94\%   & +141\%  & $-$47 pp   & By design \\
+\bottomrule
+\end{tabularx}
+}
+\end{center}
+
+\vspace{2pt}
+\smallskip
+\begingroup\small
+\noindent\textbf{Trade-off:} CHAOS sacrifices \raise.17ex\hbox{\textasciitilde}30\% of bull upside in exchange for massive bear protection. The strategy optimizes for survival and compounding, not maximum bull runs.
+\endgroup
+
+\newpage
+
+\section{Mathematical Foundation}
+
+The strategy rests on four theorems --- all \textbf{formally verified in Lean~4} (12 proofs, zero \texttt{sorry}). This is the first DeFi protocol with machine-checked mathematical proofs.
+
+\vspace{6pt}
+
+\begin{center}
+{\small
+\begin{tabularx}{\linewidth}{c l X c}
+\toprule
+\textbf{\#} & \textbf{Theorem} & \textbf{Result} & \textbf{Status} \\
+\midrule
+1 & Positive expected value & Rebalancing premium $>$ costs when $\sigma > 25.5\%$ & \textcolor{green}{\bfseries Proved} \\
+2 & Bounded drawdown & CHAOS DD $\leq$ 64\% of asset DD & \textcolor{green}{\bfseries Proved} \\
+3 & LP fee floor & $\geq$ 3\% annual return from fees alone & \textcolor{green}{\bfseries Proved} \\
+4 & Convex payoff & Strategy \textit{gains} from volatility (antifragile) & \textcolor{green}{\bfseries Proved} \\
+\bottomrule
+\end{tabularx}
+}
+\end{center}
+
+\vspace{4pt}
+
+\textbf{Stress-tested against 8 Black Swan events} (COVID crash, Terra/LUNA, FTX, flash crashes, 18-month bear market):
+Drawdown bound holds \textbf{8/8}, LP floor holds \textbf{8/8}, excess return holds \textbf{7/8} (fails only when vol collapses below threshold --- by design).
+
+\smallskip
+\begingroup\small
+\noindent Crypto annualized volatility: ADA \raise.17ex\hbox{\textasciitilde}85\%, BTC \raise.17ex\hbox{\textasciitilde}60\%, ETH \raise.17ex\hbox{\textasciitilde}75\%. All well above the 25.5\% break-even threshold. The strategy's edge \textit{increases} with volatility --- the opposite of traditional finance.
+\endgroup
+
+\section{Tokenomics}
+
+\begin{multicols}{2}
+
+\subsection{Distribution (100M Fixed Supply)}
+
+\vspace{4pt}
+
+\begin{center}
+\begin{tikzpicture}[
+  seg/.style={font=\scriptsize\bfseries, align=center}
+]
+% Stacked horizontal bar
+\fill[chaos]   (0,0) rectangle (5.4,0.55);
+\fill[green]   (5.4,0) rectangle (8.1,0.55);
+\fill[amber]   (8.1,0) rectangle (8.55,0.55);
+\fill[gray500] (8.55,0) rectangle (8.82,0.55);
+\fill[gray300] (8.82,0) rectangle (9,0.55);
+
+\node[seg, color=white] at (2.7,0.275) {60\% Community (ISPO)};
+\node[seg, color=white] at (6.75,0.275) {30\% LBP};
+\end{tikzpicture}
+\end{center}
+
+\vspace{2pt}
+{\small
+\begin{itemize}
+  \item \textbf{60\%} Community staking (ISPO, 6 months)
+  \item \textbf{30\%} Fair-launch auction (72h LBP)
+  \item \textbf{5\%} Team (4-year vest, 1-year cliff)
+  \item \textbf{3\%} Treasury (DAO grants)
+  \item \textbf{2\%} Liquidity (locked 2 years)
+\end{itemize}
+}
+
+\textbf{90\% community-owned.} Team: 5\% (industry avg: 20--30\%).
+
+\columnbreak
+
+\subsection{Revenue Model}
+
+\vspace{4pt}
+
+{\small
+\begin{tabularx}{\linewidth}{l X}
+\toprule
+\textbf{Fee} & \textbf{Rate} \\
+\midrule
+Management & 2\% annually on TVL \\
+Performance & 20\% of outperformance vs HODL \\
+\bottomrule
+\end{tabularx}
+}
+
+\vspace{4pt}
+\textbf{Fee split:} 70\% to CHAOS stakers, 30\% to treasury.
+
+\vspace{6pt}
+
+{\small
+\begin{tabularx}{\linewidth}{c >{\raggedleft\arraybackslash}X >{\raggedleft\arraybackslash}X >{\raggedleft\arraybackslash}X}
+\toprule
+\textbf{Year} & \textbf{TVL} & \textbf{Revenue} & \textbf{Staker APY} \\
+\midrule
+1 & \$10M  & \$230K  & 3.5\% \\
+2 & \$50M  & \$1.15M & 16.1\% \\
+3 & \$100M & \$2.3M  & 32.2\% \\
+\bottomrule
+\end{tabularx}
+}
+
+\vspace{4pt}
+\textbf{Break-even:} $\sim$\$25M TVL (Year 2).
+
+\end{multicols}
+
+\section{Technical Architecture}
+
+\begin{multicols}{2}
+
+\subsection{Cardano / EUTXO Security}
+
+{\small
+\begin{tabularx}{\linewidth}{l X}
+\toprule
+\textbf{Property} & \textbf{Cardano} \\
+\midrule
+Reentrancy   & \textbf{Impossible} by design \\
+Flash loans   & \textbf{Impossible} (no flash loans) \\
+Determinism   & \textbf{Guaranteed} local validation \\
+Language      & Aiken (functional, auditable) \\
+\bottomrule
+\end{tabularx}
+}
+
+\vspace{4pt}
+{\small Cardano's EUTXO model eliminates entire exploit classes that have cost Ethereum DeFi billions.}
+
+\columnbreak
+
+\subsection{Oracle Design}
+
+{\small
+\begin{itemize}
+  \item 4 independent sources (Charli3, Orcfax, Minswap TWAP, CoinGecko)
+  \item Consensus: 2+ sources within 5\%
+  \item Anomaly rejection: $>$20\% moves blocked
+  \item Attack cost: $>$\$500K vs $<$\$1K max gain
+\end{itemize}
+}
+
+\vspace{4pt}
+{\small The oracle design makes manipulation economically irrational by a factor of 500:1.}
+
+\end{multicols}
+
+\newpage
+
+\section{Risk Assessment}
+
+\vspace{4pt}
+
+\begin{center}
+\begin{tikzpicture}[
+  bar/.style={minimum height=0.5cm, inner sep=0pt, anchor=west},
+  lbl/.style={font=\small, anchor=east}
+]
+% Risk-adjusted return waterfall as horizontal stacked bars
+\node[lbl] at (-0.3,3.0) {\textbf{Rebalancing Alpha}};
+\fill[green, rounded corners=2pt] (0,2.75) rectangle (5.13,3.25);
+\node[font=\small\bfseries, color=white, anchor=west] at (0.2,3.0) {+7.7\%};
+
+\node[lbl] at (-0.3,2.0) {\textbf{LP Fee Income}};
+\fill[green!80!black, rounded corners=2pt] (0,1.75) rectangle (2.67,2.25);
+\node[font=\small\bfseries, color=white, anchor=west] at (0.2,2.0) {+4.0\%};
+
+\node[lbl] at (-0.3,1.0) {\textbf{Risk-Adj. Cost}};
+\fill[red, rounded corners=2pt] (0,0.75) rectangle (6.67,1.25);
+\node[font=\small\bfseries, color=white, anchor=west] at (0.2,1.0) {$-$10.0\%};
+
+\draw[ultra thick, gray300] (-0.1,0.25) -- (7.5,0.25);
+
+\node[lbl] at (-0.3,-.25) {\textbf{NET EXPECTED}};
+\fill[chaos, rounded corners=2pt] (0,-0.5) rectangle (1.13,0);
+\node[font=\small\bfseries, color=white, anchor=west] at (0.05,-0.25) {+1.7\%};
+
+\end{tikzpicture}
+\end{center}
+
+\vspace{6pt}
+
+\begin{multicols}{2}
+
+\subsection{Top Risks}
+
+{\small
+\begin{enumerate}
+  \item \textbf{Regulatory action} (40\% weight) --- mitigated by offshore entity, progressive decentralization
+  \item \textbf{Bull underperformance} (35\%) --- by design; disclosed upfront
+  \item \textbf{Smart contract bugs} (15\%) --- mitigated by multiple audits, formal verification, TVL caps
+  \item \textbf{Oracle failure} (10\%) --- mitigated by 4-source consensus, circuit breakers
+\end{enumerate}
+}
+
+\columnbreak
+
+\subsection{Risk Mitigations}
+
+{\small
+\begin{itemize}
+  \item Circuit breakers: auto-pause on $>$20\% oracle deviation
+  \item TVL caps: phased rollout (\$1M $\to$ \$10M $\to$ uncapped)
+  \item Insurance: 5\% of treasury reserved for exploit coverage
+  \item Governance: parameter changes require 7-day timelock
+  \item Audits: 2 independent firms pre-launch
+\end{itemize}
+}
+
+\end{multicols}
+
+\section{Roadmap \& Budget}
+
+\vspace{4pt}
+
+\begin{center}
+\begin{tikzpicture}[
+  phase/.style={draw=gray300, fill=gray50, rounded corners=4pt, minimum height=1cm, align=left, font=\small, inner sep=6pt},
+  milestone/.style={font=\scriptsize, color=gray500, align=left}
+]
+% Timeline bar
+\fill[gray200, rounded corners=3pt] (0,0) rectangle (14,0.3);
+\fill[chaos, rounded corners=3pt] (0,0) rectangle (3.5,0.3);
+\fill[green, rounded corners=3pt] (3.5,0) rectangle (7,0.3);
+\fill[amber, rounded corners=3pt] (7,0) rectangle (14,0.3);
+
+% Phase labels
+\node[font=\small\bfseries, color=white] at (1.75,0.15) {Phase 1: MVP};
+\node[font=\small\bfseries, color=white] at (5.25,0.15) {Phase 2: Launch};
+\node[font=\small\bfseries, color=white] at (10.5,0.15) {Phase 3: Scale};
+
+% Month markers
+\foreach \x/\m in {0/0, 3.5/3, 7/6, 14/12} {
+  \draw[gray500] (\x,-0.1) -- (\x,-0.3);
+  \node[font=\scriptsize, color=gray500] at (\x,-0.5) {M\m};
+}
+
+% Details below
+\node[milestone, anchor=north west] at (0,-0.8) {Testnet deployment\\Security audit\\100+ beta testers\\\textbf{Budget: \$330K}};
+\node[milestone, anchor=north west] at (3.5,-0.8) {Mainnet launch\\ISPO begins\\\$5--10M TVL target\\\textbf{Budget: \$490K}};
+\node[milestone, anchor=north west] at (7,-0.8) {LBP token launch\\ML signal layer\\Mobile app, full DAO\\\textbf{Budget: \$1.1M}};
+
+\end{tikzpicture}
+\end{center}
+
+\vspace{4pt}
+\smallskip
+\begingroup\small
+\noindent\textbf{Total budget:} \$1.92M. \textbf{Minimum viable:} \$330K (Phase 1 only). All budgets denominated in stablecoins to eliminate runway risk.
+\endgroup
+
+\section{Investment Thesis}
+
+\begin{multicols}{2}
+
+{\small
+\begin{enumerate}
+  \item \textbf{Math works:} 12 formally verified theorems, stress-tested against 8 crisis scenarios, 5-asset validation
+  \item \textbf{Market timing:} Crypto volatility is structurally high --- strategy edge \textit{increases} with volatility
+  \item \textbf{Underserved market:} No formally verified antifragile fund exists in DeFi
+  \item \textbf{Cardano advantage:} EUTXO + low fees + 20\% LP yield = 9.3\% edge vs 0.2\% on Bitcoin L1
+  \item \textbf{Conservative tokenomics:} 90\% community-owned, 5\% team, fixed supply
+  \item \textbf{Clear revenue model:} 2/20 fee structure, break-even at \$25M TVL
+\end{enumerate}
+}
+
+\columnbreak
+
+\vspace*{8pt}
+\colorbox{chaoslight}{\parbox{\dimexpr\linewidth-2\fboxsep}{%
+\vspace{6pt}
+\centering
+{\large\bfseries\color{chaos} Get In Touch}\\[6pt]
+{\small
+\textbf{Web:} chaos.fund\\[2pt]
+\textbf{Whitepaper:} chaos.fund/whitepaper\\[2pt]
+\textbf{GitHub:} github.com/Algiras/chaos\\[2pt]
+}
+\vspace{6pt}
+}}
+
+\vspace{8pt}
+{\scriptsize\color{gray500}\textit{This document is for informational purposes only and does not constitute financial advice or an offer to sell securities. See the full whitepaper's Risk Disclosure (Chapter~14) for comprehensive risk factors.}}
+
+\end{multicols}

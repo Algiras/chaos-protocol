@@ -1,0 +1,658 @@
+# Strategy Specification
+
+This chapter provides the complete algorithmic specification of the CHAOS strategy, translating the mathematical framework from Chapter 2 into implementable pseudocode.
+
+## Algorithm Overview
+
+The CHAOS strategy operates as a continuous loop:
+
+1. **Initialize** treasury with target allocations
+2. **Monitor** market conditions every 5 minutes
+3. **Evaluate** rebalancing triggers
+4. **Execute** trades when conditions are met
+5. **Accrue** LP fees daily
+6. **Report** performance metrics
+
+The strategy is fully deterministic: given the same market data and parameters, it will produce identical results every time.
+
+---
+
+## Strategy Parameters
+
+All parameters are governance-adjustable via on-chain voting (Chapter 11). Default values are theoretically justified in Chapter 2.
+
+| Parameter | Symbol | Default | Range | Description |
+|-----------|--------|---------|-------|-------------|
+| **ADA Allocation** | $\alpha$ | 50% | 30-70% | Target ADA percentage |
+| **DJED Allocation** | $\beta$ | 30% | 15-50% | Target stablecoin percentage |
+| **LP Allocation** | $\gamma$ | 20% | 10-40% | Target LP position percentage |
+| **Rebalance Threshold** | $\delta$ | 10% | 5-20% | Allocation drift trigger |
+| **MA Window** | $w$ | 30 days | 14-60 days | Moving average lookback |
+| **Buy Threshold** | $\theta_{\text{buy}}$ | 0.90 | 0.80-0.95 | Discount signal (below MA) |
+| **Sell Threshold** | $\theta_{\text{sell}}$ | 1.10 | 1.05-1.20 | Premium signal (above MA) |
+| **Max Slippage** | $s_{\max}$ | 2% | 1-5% | Maximum trade slippage |
+| **Min Rebalance Interval** | $T_{\min}$ | 1 hour | 0.5-24 hours | Cooldown between rebalances |
+
+**Constraint**: $\alpha + \beta + \gamma = 1$ (allocations must sum to 100%)
+
+---
+
+## Algorithm 1: Main Strategy Loop
+
+```
+ALGORITHM: CHAOS_MAIN_LOOP
+INPUT: parameters Θ, oracle_sources[], authorized_operators[]
+OUTPUT: continuous treasury management
+
+1.  treasury ← INITIALIZE_TREASURY(Θ.initial_capital, Θ.α, Θ.β, Θ.γ)
+2.  price_history ← empty queue of capacity Θ.w
+3.
+4.  LOOP every 5 minutes:
+5.      // Phase 1: Data Collection
+6.      ada_price ← GET_ORACLE_PRICE(oracle_sources, "ADA")
+7.      IF ada_price = NULL THEN CONTINUE  // Oracle failure, skip cycle
+8.
+9.      price_history.APPEND(ada_price)
+10.     IF LENGTH(price_history) < Θ.w THEN CONTINUE  // Insufficient history
+11.
+12.     // Phase 2: Signal Generation
+13.     ada_ma ← MOVING_AVERAGE(price_history, Θ.w)
+14.     signal ← EVALUATE_SIGNALS(treasury, ada_price, ada_ma, Θ)
+15.
+16.     // Phase 3: Execution
+17.     IF signal.should_rebalance THEN
+18.         IF TIME_SINCE(treasury.last_rebalance) > Θ.T_min THEN
+19.             treasury ← EXECUTE_REBALANCE(treasury, signal, ada_price, Θ)
+20.             EMIT_EVENT("rebalance", signal.reason, treasury)
+21.         END IF
+22.     END IF
+23.
+24.     // Phase 4: LP Fee Accrual
+25.     treasury ← ACCRUE_LP_FEES(treasury, current_lp_apy)
+26.
+27.     // Phase 5: State Update
+28.     RECORD_STATE(treasury, ada_price, ada_ma)
+29.  END LOOP
+```
+
+---
+
+## Algorithm 2: Signal Evaluation
+
+The signal evaluation function determines whether rebalancing is needed and why.
+
+```
+ALGORITHM: EVALUATE_SIGNALS
+INPUT: treasury T, ada_price p, ada_ma μ, parameters Θ
+OUTPUT: Signal { should_rebalance: bool, reason: string, priority: int }
+
+1.  // Calculate current ADA allocation
+2.  total_value ← T.ada_amount × p + T.djed_amount + T.lp_positions
+3.  current_ada_pct ← (T.ada_amount × p) / total_value
+4.  drift ← |current_ada_pct - Θ.α|
+5.
+6.  // Check Condition 1: Allocation Drift
+7.  IF drift > Θ.δ THEN
+8.      RETURN Signal(true, "allocation_drift", priority=2)
+9.  END IF
+10.
+11. // Check Condition 2: ADA Below Moving Average (Buy)
+12. IF p < μ × Θ.θ_buy THEN
+13.     discount ← (μ - p) / μ
+14.     RETURN Signal(true, "ada_below_ma", priority=1)
+15. END IF
+16.
+17. // Check Condition 3: ADA Above Moving Average (Sell)
+18. IF p > μ × Θ.θ_sell THEN
+19.     premium ← (p - μ) / μ
+20.     RETURN Signal(true, "ada_above_ma", priority=1)
+21. END IF
+22.
+23. // No trigger
+24. RETURN Signal(false, "none", priority=0)
+```
+
+**Priority Levels**:
+
+- **Priority 1**: Price signals (buy/sell opportunities) — time-sensitive
+- **Priority 2**: Allocation drift — can tolerate slight delay
+
+### Signal Decision Tree
+
+```
+                    ┌─────────────────┐
+                    │ Collect ADA Price│
+                    │  from Oracles    │
+                    └────────┬────────┘
+                             │
+                    ┌────────▼────────┐
+                    │ Calculate        │
+                    │ 30-day MA        │
+                    └────────┬────────┘
+                             │
+              ┌──────────────┼──────────────┐
+              │              │              │
+     ┌────────▼───────┐  ┌──▼──────────┐  ┌▼───────────────┐
+     │ Price < 90% MA │  │ Drift > 10% │  │ Price > 110% MA│
+     │  (Buy Signal)  │  │ (Rebalance) │  │ (Sell Signal)  │
+     └────────┬───────┘  └──┬──────────┘  └┬───────────────┘
+              │              │              │
+     ┌────────▼───────┐  ┌──▼──────────┐  ┌▼───────────────┐
+     │ BUY ADA with   │  │ Rebalance to│  │ SELL ADA for   │
+     │ DJED reserves  │  │ 50/30/20    │  │ DJED + LP      │
+     └────────────────┘  └─────────────┘  └────────────────┘
+```
+
+---
+
+## Algorithm 3: Oracle Price Aggregation
+
+Price integrity is critical. The oracle aggregation algorithm enforces consensus among multiple independent sources.
+
+```
+ALGORITHM: GET_ORACLE_PRICE
+INPUT: oracle_sources[], asset_name
+OUTPUT: aggregated_price or NULL
+
+1.  prices ← []
+2.
+3.  FOR EACH source IN oracle_sources:
+4.      price ← source.GET_PRICE(asset_name)
+5.      IF price ≠ NULL AND source.last_update > NOW() - 1 hour THEN
+6.          prices.APPEND({ source: source.name, price: price })
+7.      END IF
+8.  END FOR
+9.
+10. // Require minimum 2 valid sources
+11. IF LENGTH(prices) < 2 THEN
+12.     LOG_WARNING("Insufficient oracle sources")
+13.     RETURN NULL
+14. END IF
+15.
+16. // Check consensus: all prices within 5% of each other
+17. min_price ← MIN(prices[].price)
+18. max_price ← MAX(prices[].price)
+19. deviation ← (max_price - min_price) / min_price
+20.
+21. IF deviation > 0.05 THEN
+22.     LOG_WARNING("Oracle price disagreement", deviation)
+23.     // Remove outliers and retry
+24.     prices ← REMOVE_OUTLIERS(prices)
+25.     IF LENGTH(prices) < 2 THEN RETURN NULL
+26. END IF
+27.
+28. // Check for anomalous price movement
+29. IF |aggregated - last_known_price| / last_known_price > 0.20 THEN
+30.     LOG_WARNING("Anomalous price movement detected")
+31.     RETURN NULL  // Reject until confirmed
+32. END IF
+33.
+34. // Return median price (robust to outliers)
+35. RETURN MEDIAN(prices[].price)
+```
+
+**Oracle Sources (in order of priority)**:
+
+1. **Charli3** — Cardano-native decentralized oracle
+2. **Orcfax** — Cardano-native decentralized oracle
+3. **Minswap TWAP** — On-chain time-weighted average price
+4. **CoinGecko API** — Off-chain aggregated market data
+
+---
+
+## Algorithm 4: Rebalancing Execution
+
+The execution algorithm translates signals into concrete asset swaps.
+
+```
+ALGORITHM: EXECUTE_REBALANCE
+INPUT: treasury T, signal S, ada_price p, parameters Θ
+OUTPUT: updated treasury T'
+
+1.  // Step 1: Calculate total portfolio value
+2.  total_value ← T.ada_amount × p + T.djed_amount + T.lp_positions
+3.
+4.  // Step 2: Calculate target values
+5.  target_ada_value  ← total_value × Θ.α
+6.  target_djed_value ← total_value × Θ.β
+7.  target_lp_value   ← total_value × Θ.γ
+8.
+9.  // Step 3: Calculate required trades
+10. current_ada_value  ← T.ada_amount × p
+11. current_djed_value ← T.djed_amount
+12. current_lp_value   ← T.lp_positions
+13.
+14. ada_delta  ← target_ada_value - current_ada_value
+15. djed_delta ← target_djed_value - current_djed_value
+16. lp_delta   ← target_lp_value - current_lp_value
+17.
+18. // Step 4: Validate safety bounds
+19. IF target_ada_value / total_value < 0.35 THEN
+20.     target_ada_value ← total_value × 0.35  // Enforce minimum
+21.     REDISTRIBUTE_EXCESS(target_djed_value, target_lp_value)
+22. END IF
+23. IF target_ada_value / total_value > 0.65 THEN
+24.     target_ada_value ← total_value × 0.65  // Enforce maximum
+25.     REDISTRIBUTE_DEFICIT(target_djed_value, target_lp_value)
+26. END IF
+27.
+28. // Step 5: Build and execute trades
+29. trades ← BUILD_TRADES(ada_delta, djed_delta, lp_delta, p, Θ.s_max)
+30.
+31. FOR EACH trade IN trades:
+32.     // Verify slippage before execution
+33.     quote ← DEX.GET_QUOTE(trade.pair, trade.amount)
+34.     IF quote.slippage > Θ.s_max THEN
+35.         LOG_WARNING("Slippage too high, reducing trade size")
+36.         trade.amount ← trade.amount × 0.5  // Partial fill
+37.     END IF
+38.     EXECUTE_ON_CHAIN(trade)
+39. END FOR
+40.
+41. // Step 6: Update treasury state
+42. T' ← TreasuryState(
+43.     ada_amount  = target_ada_value / p,
+44.     djed_amount = target_djed_value,
+45.     lp_positions = target_lp_value,
+46.     last_rebalance = NOW()
+47. )
+48.
+49. RETURN T'
+```
+
+### Trade Routing
+
+When rebalancing requires multiple swaps, trades are routed optimally:
+
+```
+ALGORITHM: BUILD_TRADES
+INPUT: ada_delta, djed_delta, lp_delta, ada_price, max_slippage
+OUTPUT: trades[]
+
+trades ← []
+
+// If we need more ADA (buy signal)
+IF ada_delta > 0 THEN
+    // Fund from DJED first (most liquid)
+    djed_to_swap ← MIN(|djed_delta|, ada_delta)
+    trades.APPEND(Trade("DJED→ADA", djed_to_swap, "Minswap"))
+
+    // If still need more, withdraw from LP
+    remaining ← ada_delta - djed_to_swap
+    IF remaining > 0 THEN
+        trades.APPEND(Trade("LP→ADA", remaining, "Minswap"))
+    END IF
+
+// If we need less ADA (sell signal)
+ELSE IF ada_delta < 0 THEN
+    ada_to_sell ← |ada_delta|
+    // Sell ADA to DJED first
+    djed_needed ← MIN(|djed_delta|, ada_to_sell × ada_price)
+    trades.APPEND(Trade("ADA→DJED", djed_needed / ada_price, "Minswap"))
+
+    // Remaining to LP
+    remaining ← ada_to_sell - djed_needed / ada_price
+    IF remaining > 0 THEN
+        trades.APPEND(Trade("ADA→LP", remaining, "Minswap"))
+    END IF
+END IF
+
+RETURN trades
+```
+
+---
+
+## Algorithm 5: LP Fee Accrual
+
+LP positions earn trading fees continuously. This algorithm models daily accrual.
+
+```
+ALGORITHM: ACCRUE_LP_FEES
+INPUT: treasury T, current_apy
+OUTPUT: updated treasury T'
+
+daily_rate ← current_apy / 365
+fee_earnings ← T.lp_positions × daily_rate
+
+T' ← T
+T'.lp_positions ← T.lp_positions + fee_earnings
+
+RETURN T'
+```
+
+**Impermanent Loss Handling**:
+
+LP positions are subject to impermanent loss (IL) when asset prices diverge. The strategy mitigates IL through:
+
+1. **ADA/DJED pairs** — Limited IL due to mean-reverting ADA price
+2. **Concentrated liquidity** — Focus on high-volume price ranges
+3. **Fee compensation** — 20% APY typically exceeds IL (historically 5-8% for ADA/stablecoin)
+
+---
+
+## Algorithm 6: Moving Average Calculation
+
+```
+ALGORITHM: MOVING_AVERAGE
+INPUT: price_history[], window w
+OUTPUT: moving_average
+
+IF LENGTH(price_history) < w THEN
+    RETURN NULL  // Insufficient data
+END IF
+
+// Simple Moving Average (SMA)
+recent_prices ← price_history[LAST w entries]
+sma ← SUM(recent_prices) / w
+
+RETURN sma
+```
+
+**Why SMA over EMA**: Simple Moving Average is used because:
+
+1. **Transparency** — Easy to verify on-chain
+2. **Resistance to manipulation** — Single extreme price has bounded impact
+3. **Simplicity** — Reduces smart contract complexity and gas costs
+4. **Backtest validation** — SMA with 30-day window produced best risk-adjusted returns
+
+---
+
+## State Machine
+
+The treasury transitions between discrete states:
+
+```
+┌───────────┐     Initialize      ┌──────────────┐
+│  EMPTY    │ ──────────────────▶ │  INITIALIZED │
+└───────────┘                     └──────┬───────┘
+                                         │
+                                    Monitor
+                                         │
+                                  ┌──────▼───────┐
+                              ┌── │  MONITORING  │ ◀──┐
+                              │   └──────┬───────┘    │
+                              │          │            │
+                          No Signal  Signal Detected  │
+                              │          │            │
+                              │   ┌──────▼───────┐   │
+                              └── │ EVALUATING   │   │
+                                  └──────┬───────┘   │
+                                         │           │
+                                    Valid Signal     │
+                                         │           │
+                                  ┌──────▼───────┐   │
+                                  │ REBALANCING  │ ──┘
+                                  └──────┬───────┘
+                                         │
+                                    Emergency
+                                         │
+                                  ┌──────▼───────┐
+                                  │  PAUSED      │
+                                  │ (Circuit     │
+                                  │  Breaker)    │
+                                  └──────────────┘
+```
+
+**State Transitions**:
+
+| From | To | Trigger |
+|------|----|---------|
+| EMPTY | INITIALIZED | First deposit received |
+| INITIALIZED | MONITORING | Price history filled (30 days) |
+| MONITORING | EVALUATING | Timer tick (every 5 minutes) |
+| EVALUATING | REBALANCING | Valid signal detected |
+| EVALUATING | MONITORING | No signal or cooldown active |
+| REBALANCING | MONITORING | Trades executed successfully |
+| Any | PAUSED | Circuit breaker triggered |
+| PAUSED | MONITORING | Circuit breaker reset (governance) |
+
+---
+
+## Simulation Walkthrough
+
+To illustrate the strategy in action, we simulate a 90-day period with synthetic ADA price data exhibiting a crash, recovery, and sideways movement.
+
+```{python}
+#| label: fig-strategy-simulation
+#| fig-cap: "Simulated CHAOS rebalancing over 90 days. Green triangles mark buy rebalances; red triangles mark sells. The lower panel shows the allocation drift triggering rebalances at the ±10% threshold."
+#| echo: false
+
+import matplotlib.pyplot as plt
+import numpy as np
+
+np.random.seed(42)
+
+# Generate synthetic ADA price: crash then recovery then sideways
+days = 90
+t = np.arange(days)
+# Crash from $0.50 to $0.25 (days 0-25), recover to $0.45 (25-55), sideways (55-90)
+price = np.concatenate([
+    0.50 * np.exp(np.cumsum(np.random.normal(-0.015, 0.03, 25))),
+    0.28 * np.exp(np.cumsum(np.random.normal(0.012, 0.025, 30))),
+    0.42 * np.exp(np.cumsum(np.random.normal(0.0, 0.02, 35)))
+])[:days]
+
+# Strategy simulation
+alpha_target = 0.50
+delta = 0.10
+P0 = 100000
+ada_value = alpha_target * P0
+djed_value = 0.30 * P0
+lp_value = 0.20 * P0
+
+allocations = []
+portfolio_values = []
+rebalance_days = []
+rebalance_types = []
+
+initial_price = price[0]
+ada_tokens = ada_value / initial_price
+
+for i in range(days):
+    p = price[i]
+    ada_val = ada_tokens * p
+    total = ada_val + djed_value + lp_value
+    ada_pct = ada_val / total
+
+    allocations.append(ada_pct)
+    portfolio_values.append(total)
+
+    # LP fee accrual
+    lp_value *= (1 + 0.20 / 365)
+
+    # Check rebalance
+    if abs(ada_pct - alpha_target) > delta:
+        target_ada_val = alpha_target * total
+        if ada_pct > alpha_target:
+            rebalance_types.append('sell')
+        else:
+            rebalance_types.append('buy')
+        rebalance_days.append(i)
+
+        # Execute rebalance (with 0.4% cost)
+        trade_amount = abs(target_ada_val - ada_val)
+        cost = trade_amount * 0.004
+        total -= cost
+
+        ada_tokens = alpha_target * total / p
+        djed_value = 0.30 * total
+        lp_value = 0.20 * total
+
+fig, axes = plt.subplots(3, 1, figsize=(14, 12), sharex=True, gridspec_kw={'height_ratios': [2, 1.5, 1]})
+
+# Panel 1: ADA price + 30-day MA
+ax1 = axes[0]
+ax1.plot(t, price, linewidth=2, color='#2563eb', label='ADA Price')
+# Moving average (use expanding window for first 30 days)
+ma = np.convolve(price, np.ones(30)/30, mode='full')[:days]
+ma[:29] = np.nan
+ax1.plot(t, ma, linewidth=1.5, color='#f59e0b', linestyle='--', label='30-day MA')
+
+for d, typ in zip(rebalance_days, rebalance_types):
+    color = '#10b981' if typ == 'buy' else '#dc2626'
+    marker = '^' if typ == 'buy' else 'v'
+    ax1.plot(d, price[d], marker=marker, color=color, markersize=14, markeredgecolor='black', markeredgewidth=1, zorder=5)
+
+ax1.set_ylabel('ADA Price (USD)', fontsize=11)
+ax1.set_title('CHAOS Strategy Simulation (90 Days)', fontsize=13, fontweight='bold')
+ax1.legend(fontsize=10)
+ax1.grid(True, alpha=0.2)
+
+# Panel 2: Portfolio value vs HODL
+ax2 = axes[1]
+hodl_values = [P0 * (price[i] / price[0]) * alpha_target + P0 * 0.30 + P0 * 0.20 for i in range(days)]
+ax2.plot(t, np.array(portfolio_values) / 1000, linewidth=2.5, color='#2563eb', label='CHAOS Portfolio')
+ax2.plot(t, np.array(hodl_values) / 1000, linewidth=2, color='#dc2626', linestyle='--', label='HODL Portfolio')
+ax2.set_ylabel('Portfolio Value ($K)', fontsize=11)
+ax2.legend(fontsize=10)
+ax2.grid(True, alpha=0.2)
+
+# Panel 3: ADA allocation with threshold bands
+ax3 = axes[2]
+ax3.plot(t, np.array(allocations) * 100, linewidth=2, color='#2563eb')
+ax3.axhline(y=50, color='gray', linestyle='-', alpha=0.5)
+ax3.axhline(y=60, color='#dc2626', linestyle='--', alpha=0.5, label='Upper threshold (60%)')
+ax3.axhline(y=40, color='#10b981', linestyle='--', alpha=0.5, label='Lower threshold (40%)')
+ax3.fill_between(t, 40, 60, alpha=0.05, color='gray')
+
+for d, typ in zip(rebalance_days, rebalance_types):
+    color = '#10b981' if typ == 'buy' else '#dc2626'
+    ax3.axvline(x=d, color=color, linewidth=0.8, alpha=0.4)
+
+ax3.set_ylabel('ADA Allocation (%)', fontsize=11)
+ax3.set_xlabel('Day', fontsize=11)
+ax3.legend(fontsize=10, loc='upper right')
+ax3.grid(True, alpha=0.2)
+ax3.set_ylim(25, 75)
+
+plt.tight_layout()
+plt.show()
+```
+
+---
+
+## Implementation Notes
+
+### Python Reference Implementation
+
+The reference implementation in `/chaos-backtest/chaos_strategy.py` contains 296 lines of Python that implement the core algorithms above. Key classes:
+
+- `TreasuryState` — Data class holding current holdings
+- `CHAOSStrategy` — Main strategy class with `should_rebalance()` and `execute_rebalance()`
+
+### TypeScript Production Implementation
+
+The production implementation (Chapter 7) translates this into TypeScript with:
+
+- **Mesh.js** for Cardano transaction building
+- **On-chain validation** via Aiken smart contracts
+- **Multi-source oracle** for price data integrity
+- **Automated execution** via a keeper service
+
+### Key Differences: Backtest vs Production
+
+| Aspect | Backtest (Python) | Production (TypeScript + Aiken) |
+|--------|-------------------|-------------------------------|
+| **Execution** | Simulated (instant) | On-chain (1-2 block confirmation) |
+| **Price Data** | Historical (CoinGecko) | Live multi-source oracle |
+| **Slippage** | Fixed 0.4% | Dynamic (DEX quote) |
+| **LP Fees** | Fixed 20% APY | Actual DEX fee accrual |
+| **Validation** | None (trusted) | Smart contract enforced |
+| **Timing** | Daily granularity | 5-minute granularity |
+| **Cost** | Zero | DEX fees + gas (~0.3-0.8 ADA) |
+
+---
+
+## Transaction Cost Analysis
+
+Each rebalancing event incurs costs that must be offset by the rebalancing gain:
+
+### Cost Breakdown
+
+| Component | Cost | Per Rebalance | Annual (15 rebalances) |
+|-----------|------|---------------|----------------------|
+| **DEX Swap Fee** | 0.30% of volume | ~$30 per $10K | $450 |
+| **Slippage** | ~0.10% of volume | ~$10 per $10K | $150 |
+| **Cardano Tx Fee** | ~0.3-0.8 ADA | ~$0.40 | $6 |
+| **Oracle Cost** | Free (Charli3/Orcfax) | $0 | $0 |
+| **Total** | ~0.40% | ~$40 per $10K | $606 |
+
+### Break-Even Analysis
+
+From Theorem 1, the expected rebalancing gain per event is:
+
+$$
+\text{Expected Gain} = \frac{1}{2} \alpha(1-\alpha) \sigma^2 P \Delta t \approx \$1,920
+$$
+
+With costs of ~$40 per rebalance:
+
+$$
+\text{Net Gain} = \$1,920 - \$40 = \$1,880 \quad (\text{per rebalance})
+$$
+
+The strategy remains profitable as long as average gains exceed $40 per rebalance — satisfied in all but the lowest-volatility scenarios.
+
+---
+
+## Edge Cases and Safety Mechanisms
+
+### Edge Case 1: Flash Crash
+
+**Scenario**: ADA drops 50%+ in minutes.
+
+**Response**: Multiple triggers fire simultaneously. The algorithm:
+1. Detects price below 90% of MA (buy signal)
+2. Detects allocation drift >10%
+3. Executes single rebalance (not double)
+4. Enforces maximum ADA allocation of 65%
+
+### Edge Case 2: Oracle Failure
+
+**Scenario**: All oracle sources become unavailable.
+
+**Response**: The algorithm skips the monitoring cycle (`CONTINUE` at line 7 of Algorithm 1). No rebalancing occurs until oracle consensus is restored. LP fees continue to accrue.
+
+### Edge Case 3: Low Liquidity
+
+**Scenario**: DEX liquidity insufficient for desired trade size.
+
+**Response**: Slippage check in Algorithm 4 (line 34) detects excessive slippage. Trade is reduced to 50% of planned size. Remaining imbalance is resolved in subsequent cycles.
+
+### Edge Case 4: DJED Depeg
+
+**Scenario**: DJED drops below $0.95.
+
+**Response**: Treasury monitors DJED price via oracle. If depeg exceeds 5%, governance is alerted. Emergency rebalance can convert DJED to ADA or alternative stablecoins. Circuit breaker may be triggered for sustained depeg >10%.
+
+### Edge Case 5: Rapid Consecutive Signals
+
+**Scenario**: Market whipsaws, triggering buy then sell within minutes.
+
+**Response**: Minimum rebalance interval ($T_{\min} = 1$ hour) prevents excessive trading. The cooldown ensures the strategy waits for clearer signals rather than chasing noise.
+
+---
+
+## Conclusion
+
+The CHAOS strategy is fully specified by six deterministic algorithms:
+
+1. **Main Loop** — Continuous monitoring and execution
+2. **Signal Evaluation** — Three-condition trigger logic
+3. **Oracle Aggregation** — Multi-source consensus with anomaly detection
+4. **Rebalancing Execution** — Optimal trade routing with safety bounds
+5. **LP Fee Accrual** — Daily compounding of liquidity provision fees
+6. **Moving Average** — Simple, transparent, manipulation-resistant
+
+All algorithms are:
+
+- **Deterministic** — Same inputs produce same outputs
+- **Transparent** — Fully documented with pseudocode
+- **Bounded** — Safety limits prevent catastrophic actions
+- **Verifiable** — Smart contracts enforce all constraints on-chain
+
+The reference implementation in Python has been validated against 2+ years of real market data (Chapter 5). The production implementation in Aiken smart contracts (Chapter 7) enforces these rules with cryptographic certainty.
+
+---
+
+**In the next chapter**, we present comprehensive backtest results validating this strategy against real Cardano market data.

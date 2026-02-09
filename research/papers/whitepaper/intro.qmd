@@ -1,0 +1,17 @@
+# Preface {.unnumbered}
+
+This whitepaper presents the CHAOS (Controlled Hedging and Antifragile Optimization Strategy) protocol — a formally verified, mathematically proven volatility harvesting fund built on Cardano.
+
+CHAOS addresses a fundamental challenge in cryptocurrency investing: how to participate in the upside of volatile assets while protecting against catastrophic drawdowns. Our approach combines:
+
+- **Mathematical rigor**: 12 theorems formally proved in Lean 4 with zero `sorry` (Appendix A)
+- **Empirical validation**: 2+ years of backtesting across 5 cryptocurrencies
+- **Game-theoretic analysis**: Nash equilibrium stability verified; open staking questions explored via agent-based simulation (Appendix B)
+- **Stress testing**: 8 historical Black Swan scenarios — drawdown bound holds 8/8, LP floor holds 8/8 (Appendix C)
+- **Production-ready architecture**: Aiken smart contracts on Cardano's EUTXO model
+
+All code, proofs, simulations, and data are open source. We encourage the community to reproduce our results, verify our proofs, and contribute to the protocol's development.
+
+**Document Version**: 2.0.0 (February 2026)
+
+**License**: Creative Commons Attribution 4.0 International (CC BY 4.0)

@@ -1,0 +1,300 @@
+# Governance
+
+This chapter details the decentralized governance mechanism that gives CHAOS token holders control over the protocol's strategy parameters, treasury management, and future development.
+
+---
+
+## Governance Philosophy
+
+CHAOS follows a **progressive decentralization** model:
+
+| Phase | Timeline | Control | Rationale |
+|-------|----------|---------|-----------|
+| **Phase 1** | Months 1-6 | Team-controlled with community input | Ship fast, iterate quickly |
+| **Phase 2** | Months 7-12 | Multi-sig (team + community) | Build governance capacity |
+| **Phase 3** | Year 2+ | Full DAO (token-weighted voting) | True decentralization |
+
+This ensures the protocol can move quickly during early development while transitioning to community control as it matures.
+
+---
+
+## Governance Scope
+
+CHAOS governance controls the following:
+
+### Strategy Parameters
+
+| Parameter | Current Value | Governance Range | Impact |
+|-----------|--------------|-----------------|--------|
+| ADA allocation target | 50% | 30-70% | Risk/return profile |
+| DJED allocation target | 30% | 15-50% | Stability buffer size |
+| LP allocation target | 20% | 10-40% | Fee generation capacity |
+| Rebalance threshold | 10% | 5-20% | Trading frequency |
+| MA window | 30 days | 14-60 days | Signal responsiveness |
+| Buy threshold | 0.90 | 0.80-0.95 | Buy aggressiveness |
+| Sell threshold | 1.10 | 1.05-1.20 | Sell aggressiveness |
+
+### Protocol Operations
+
+- **Add/remove authorized operators** — Who can execute rebalancing
+- **Circuit breaker** — Emergency pause/resume of operations
+- **Fee structure** — Management fee (0-5%) and performance fee (0-30%)
+- **Treasury assets** — Add new assets (e.g., BTC, SOL) or stablecoins
+- **Smart contract upgrades** — Migrate to new contract versions
+
+### Treasury Spending
+
+- **Development grants** — Fund community developers
+- **Marketing** — Community growth initiatives
+- **Audits** — Ongoing security reviews
+- **Partnerships** — DEX integrations, wallet support
+- **Bug bounties** — Security reward pool
+
+---
+
+## Voting Mechanism
+
+### Voting Power
+
+$$
+\text{Voting Power}_i = \text{CHAOS staked}_i
+$$
+
+1 CHAOS staked = 1 vote. Unstaked tokens have no voting power (incentivizes active participation).
+
+### Proposal Lifecycle
+
+```
+┌──────────┐    7 days    ┌──────────┐    7 days    ┌──────────┐
+│ DRAFT    │ ───────────▶ │ ACTIVE   │ ───────────▶ │ QUEUED   │
+│          │  Discussion  │          │   Voting     │          │
+└──────────┘              └──────────┘              └────┬─────┘
+     │                         │                         │
+     │                    Quorum not met            2 days time-lock
+     │                         │                         │
+     │                    ┌────▼─────┐              ┌────▼─────┐
+     │                    │ DEFEATED │              │ EXECUTED │
+     │                    └──────────┘              └──────────┘
+     │
+     │                    ┌──────────┐
+     └───────────────────▶│ CANCELLED│
+       Author withdraws   └──────────┘
+```
+
+### Proposal Requirements
+
+| Requirement | Value | Rationale |
+|-------------|-------|-----------|
+| **Minimum proposer stake** | 10,000 CHAOS | Prevent spam proposals |
+| **Discussion period** | 7 days | Allow community deliberation |
+| **Voting period** | 7 days | Sufficient time for participation |
+| **Quorum** | 20% of staked CHAOS | Ensure meaningful participation |
+| **Approval threshold** | >50% of votes cast | Simple majority |
+| **Time-lock** | 2 days | Allow exit before changes take effect |
+
+### Proposal Types
+
+#### Type 1: Parameter Update
+
+**Scope**: Change strategy parameters within allowed ranges.
+
+**Example**:
+
+> **Proposal #12**: Increase ADA allocation to 60%
+>
+> **Rationale**: Bull market conditions favor higher ADA exposure. The 30-day MA shows sustained uptrend. Historical analysis suggests 60% ADA allocation would have yielded +5% additional return in similar conditions.
+>
+> **Parameter Change**: `target_ada_allocation` = 6000 (from 5000)
+>
+> **Risk Assessment**: Maximum drawdown increases from 40% to 48% (Theorem 2).
+
+**Execution**: After time-lock, smart contract datum is updated automatically.
+
+#### Type 2: Operator Management
+
+**Scope**: Add or remove authorized rebalancing operators.
+
+**Requirements**:
+- Adding: New operator must have staked collateral ($10K minimum)
+- Removing: Requires evidence of misconduct or inactivity
+- Maximum 5 operators at any time
+- Minimum 1 operator always required
+
+#### Type 3: Treasury Spending
+
+**Scope**: Allocate DAO treasury funds for specific purposes.
+
+**Requirements**:
+- Maximum 500,000 CHAOS per proposal
+- Clear milestones and deliverables
+- Recipient address specified
+- Quarterly reporting required
+
+#### Type 4: Emergency Action
+
+**Scope**: Circuit breaker activation/deactivation, emergency parameter changes.
+
+**Requirements**:
+- 67% supermajority (higher threshold)
+- 24-hour fast-track voting (shorter than standard)
+- Must cite specific emergency condition
+- Automatic expiry after 7 days (must be renewed)
+
+---
+
+## Delegation
+
+Token holders who lack time or expertise to evaluate proposals can delegate their voting power:
+
+$$
+\text{Delegated Power}_j = \sum_{i \in \text{delegators of } j} \text{CHAOS staked}_i
+$$
+
+### Delegation Rules
+
+1. **Full delegation**: Delegate all votes to a trusted address
+2. **Revocable**: Delegation can be revoked at any time
+3. **Non-transitive**: Delegates cannot re-delegate received power
+4. **Self-voting**: Delegators can override delegate's vote on specific proposals
+
+### Delegate Incentives
+
+- **Reputation**: On-chain voting history visible to all
+- **Social capital**: Active delegates attract more delegation
+- **No monetary reward**: Prevents vote-buying dynamics
+
+---
+
+## Governance Security
+
+### Threat: Governance Attack (51% Vote)
+
+**Attack**: Whale accumulates >50% of staked CHAOS and passes malicious proposal.
+
+**Defenses**:
+
+| Defense | Mechanism |
+|---------|-----------|
+| **Time-lock** | 2-day delay allows users to exit before change |
+| **Parameter bounds** | Hard-coded limits prevent extreme changes |
+| **Circuit breaker** | Emergency override for malicious proposals |
+| **Rage quit** | Users can withdraw before proposal takes effect |
+| **Distribution** | 60% ISPO ensures broad ownership |
+
+### Threat: Voter Apathy
+
+**Attack**: Low participation allows small minority to control outcomes.
+
+**Defenses**:
+
+1. **Quorum requirement**: 20% of staked CHAOS must vote
+2. **Delegation**: Non-voters can delegate to active participants
+3. **Fee incentives**: Only stakers earn fee shares (incentivizes engagement)
+4. **Clear communication**: Proposals announced via Discord, Twitter, email
+
+### Threat: Proposal Spam
+
+**Defense**: 10,000 CHAOS minimum stake to create proposals ($1,000+ cost).
+
+---
+
+## On-Chain Implementation
+
+### Governance Contract
+
+```rust
+type GovernanceProposal {
+  id: Int,
+  proposer: Address,
+  proposal_type: ProposalType,
+  description_hash: ByteArray,     // IPFS hash of full description
+  parameter_changes: List<(ByteArray, Int)>,
+  created_at: POSIXTime,
+  voting_starts: POSIXTime,
+  voting_ends: POSIXTime,
+  execution_time: POSIXTime,       // After time-lock
+  votes_for: Int,
+  votes_against: Int,
+  status: ProposalStatus
+}
+
+type ProposalStatus {
+  Draft
+  Active
+  Passed
+  Defeated
+  Executed
+  Cancelled
+}
+```
+
+### Vote Casting
+
+```rust
+fn cast_vote(proposal: GovernanceProposal, voter: Address,
+             support: Bool, weight: Int, ctx: ScriptContext) -> Bool {
+  and {
+    // Voting period active
+    ctx.tx_info.valid_range.lower >= proposal.voting_starts,
+    ctx.tx_info.valid_range.upper <= proposal.voting_ends,
+
+    // Voter has staked CHAOS
+    weight == staked_balance(voter),
+    weight > 0,
+
+    // Haven't already voted
+    !has_voted(proposal.id, voter),
+
+    // Proposal is active
+    proposal.status == Active
+  }
+}
+```
+
+---
+
+## Governance Roadmap
+
+### Phase 1 (Months 1-6): Foundation Governance
+
+- Team holds admin keys (3-of-5 multi-sig)
+- Community proposals accepted via Discord
+- Team implements approved changes
+- Monthly governance report published
+
+### Phase 2 (Months 7-12): Hybrid Governance
+
+- On-chain voting deployed
+- Community can submit and vote on proposals
+- Team retains emergency veto (sunset after 6 months)
+- Quarterly governance town halls
+
+### Phase 3 (Year 2+): Full DAO
+
+- Team veto removed
+- All operations governed by token vote
+- Governance contract is sole admin of treasury
+- Team operates as hired contributor (can be replaced by vote)
+
+---
+
+## Comparison to Other Governance Models
+
+| Protocol | Voting Model | Quorum | Time-Lock | Delegation |
+|----------|-------------|--------|-----------|------------|
+| **CHAOS** | Token-weighted | 20% | 2 days | Yes |
+| MakerDAO | Executive vote | 50K MKR | Instant | No |
+| Compound | Token-weighted | 4% | 2 days | Yes |
+| Uniswap | Token-weighted | 4% | 7 days | Yes |
+| Aave | Token-weighted | 2% | 1 day | Yes |
+
+**CHAOS Differentiators**:
+
+1. **Higher quorum** (20% vs 2-4%): More meaningful participation
+2. **Progressive decentralization**: Not day-1 DAO (avoids governance theater)
+3. **Parameter bounds**: Even governance can't set dangerous parameters
+4. **Emergency fast-track**: 24-hour voting for genuine emergencies
+
+---
+
+**In the next chapter**, we detail the revenue model that sustains the protocol and rewards participants.

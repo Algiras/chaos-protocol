@@ -1,0 +1,568 @@
+# Tokenomics
+
+This chapter details the CHAOS token distribution, utility, value accrual, and economic model designed to maximize community ownership while ensuring long-term sustainability.
+
+---
+
+## Token Overview
+
+**Name**: CHAOS Token
+**Ticker**: CHAOS
+**Standard**: Cardano Native Asset (CIP-25 metadata)
+**Total Supply**: 100,000,000 CHAOS (fixed, no inflation)
+**Decimals**: 6
+**Policy ID**: [To be determined on mainnet deployment]
+
+---
+
+## Distribution Strategy
+
+### Total Allocation (100M CHAOS)
+
+```
+┌─────────────────────────────────────────────────┐
+│  CHAOS Token Distribution (100M Total)          │
+├─────────────────────────────────────────────────┤
+│                                                 │
+│  60%  ISPO (Initial Stake Pool Offering)       │
+│       60M tokens over 6 months                 │
+│       ██████████████████████████████████████   │
+│                                                 │
+│  30%  LBP (Liquidity Bootstrapping Pool)       │
+│       30M tokens, 72-hour fair launch          │
+│       ████████████████████                     │
+│                                                 │
+│   5%  Team (4-year vest, 1-year cliff)         │
+│       5M tokens, locked and vesting            │
+│       ███                                      │
+│                                                 │
+│   3%  Treasury (DAO-controlled)                │
+│       3M tokens for partnerships               │
+│       ██                                       │
+│                                                 │
+│   2%  Initial Liquidity (locked 2 years)       │
+│       2M tokens for DEX liquidity              │
+│       █                                        │
+└─────────────────────────────────────────────────┘
+```
+
+```{python}
+#| label: fig-token-distribution
+#| fig-cap: "CHAOS token distribution: 90% community-owned (ISPO + LBP + Liquidity), only 5% to team."
+#| echo: false
+
+import matplotlib.pyplot as plt
+
+labels = ['ISPO (60%)', 'LBP (30%)', 'Team (5%)', 'Treasury (3%)', 'Liquidity (2%)']
+sizes = [60, 30, 5, 3, 2]
+colors = ['#2563eb', '#10b981', '#f59e0b', '#8b5cf6', '#6b7280']
+explode = (0.03, 0.03, 0.06, 0.03, 0.03)
+
+fig, axes = plt.subplots(1, 2, figsize=(14, 6))
+
+# Pie chart
+ax1 = axes[0]
+wedges, texts, autotexts = ax1.pie(sizes, labels=labels, autopct='%1.0f%%',
+        startangle=90, colors=colors, explode=explode,
+        textprops={'fontsize': 11}, pctdistance=0.75)
+for t in autotexts:
+    t.set_fontweight('bold')
+ax1.set_title('Token Allocation', fontsize=13, fontweight='bold')
+
+# Vesting timeline
+ax2 = axes[1]
+months = list(range(0, 61))
+ispo = [min(60, max(0, m/6 * 60)) for m in months]
+lbp = [30 if m >= 0 else 0 for m in months]  # immediate at LBP
+team = [0 if m < 12 else min(5, (m - 12) / 48 * 5) for m in months]
+treasury = [min(3, m/36 * 3) for m in months]
+liquidity = [2 if m >= 0 else 0 for m in months]
+
+total_circ = [i + l + t + tr + liq for i, l, t, tr, liq in zip(ispo, lbp, team, treasury, liquidity)]
+
+ax2.fill_between(months, 0, ispo, alpha=0.7, color='#2563eb', label='ISPO')
+ax2.fill_between(months, ispo, [i+l for i,l in zip(ispo, lbp)], alpha=0.7, color='#10b981', label='LBP')
+ax2.fill_between(months, [i+l for i,l in zip(ispo, lbp)],
+                 [i+l+t for i,l,t in zip(ispo, lbp, team)], alpha=0.7, color='#f59e0b', label='Team')
+ax2.fill_between(months, [i+l+t for i,l,t in zip(ispo, lbp, team)],
+                 [i+l+t+tr for i,l,t,tr in zip(ispo, lbp, team, treasury)], alpha=0.7, color='#8b5cf6', label='Treasury')
+
+ax2.axhline(y=100, color='gray', linestyle='--', alpha=0.5)
+ax2.axvline(x=12, color='#f59e0b', linestyle=':', alpha=0.5)
+ax2.annotate('Team cliff\n(Month 12)', xy=(12, 70), fontsize=9, color='#f59e0b', ha='center')
+ax2.set_xlabel('Month', fontsize=11)
+ax2.set_ylabel('Circulating Supply (M)', fontsize=11)
+ax2.set_title('Token Vesting Schedule', fontsize=13, fontweight='bold')
+ax2.legend(fontsize=9, loc='center right')
+ax2.grid(True, alpha=0.2)
+ax2.set_ylim(0, 110)
+ax2.set_xlim(0, 60)
+
+plt.tight_layout()
+plt.show()
+```
+
+### 1. ISPO Allocation (60M tokens, 60%)
+
+**Purpose**: Build an engaged, long-term community through staking rewards.
+
+**Mechanism**:
+- **Duration**: 6 months (Epochs 1-25)
+- **Stake Pools**: 3-5 CHAOS-operated stake pools
+- **Margin**: 100% (all rewards go to CHAOS treasury, not pool operators)
+- **Distribution**: Proportional to ADA staked per epoch
+
+**Calculation**:
+$$
+\text{CHAOS}_{\text{user}} = \frac{\text{ADA}_{\text{user staked}} \times 10M}{\\text{Total ADA delegated per month}}
+$$
+
+**Example**:
+- Month 1: 100M ADA delegated total
+- User stakes: 1M ADA (1% of pool)
+- User receives: 100K CHAOS (1% of 10M monthly allocation)
+
+**Why ISPO**:
+- ✅ No capital required (just delegate existing ADA stake)
+- ✅ Zero risk (keep your ADA, earn CHAOS)
+- ✅ Builds long-term holders (6-month commitment)
+- ✅ Aligns incentives (stakers become protocol users)
+- ✅ Proven model (Minswap, SundaeSwap successfully used ISPOs)
+
+**Expected Participation**:
+- Target: 100-500M ADA delegated
+- If 500M ADA delegates: Each 1 ADA staked earns 0.12 CHAOS over 6 months
+- At $0.50 ADA and $1.25 CHAOS: 30% APY for stakers!
+
+### 2. LBP Allocation (30M tokens, 30%)
+
+**Purpose**: Fair price discovery and immediate liquidity for trading.
+
+**Mechanism**:
+- **Platform**: Minswap or SundaeSwap LBP
+- **Duration**: 72 hours (3 days)
+- **Starting Price**: $5.00 per CHAOS (high)
+- **Ending Price**: $0.50 per CHAOS (decreasing)
+- **Price Curve**: Exponential decay
+
+**Price Function**:
+$$
+P(t) = P_0 \cdot e^{-kt}
+$$
+
+where:
+- $P_0 = \$5.00$ (starting price)
+- $k = 0.032$ (decay constant)
+- $t$ = hours elapsed (0-72)
+
+**Why Descending Price**:
+- Discourages speculation (wait and you get better price)
+- Prevents whale domination (large buys push price up temporarily)
+- Fair for small buyers (can buy at any point in 72 hours)
+- Proven model (Balancer LBP used by Polkadot, Kusama, many successful launches)
+
+**Expected Outcome**:
+- Estimated final price: $1.00-1.50 per CHAOS
+- 30M tokens × $1.25 avg price = $37.5M raised
+- Funds go to: Treasury (50%), Liquidity (30%), Development (20%)
+
+### 3. Team Allocation (5M tokens, 5%)
+
+**Purpose**: Align team incentives with long-term protocol success.
+
+**Vesting Schedule**:
+```
+Year 1: LOCKED (0 tokens released)
+Year 2: 25% released (1.25M tokens)
+Year 3: 25% released (1.25M tokens)
+Year 4: 25% released (1.25M tokens)
+Year 5: 25% released (1.25M tokens)
+```
+
+**Conditions**:
+- **1-year cliff**: No tokens for first 12 months
+- **Linear vest**: Equal monthly releases after cliff
+- **Performance triggers**: Additional 1M bonus if TVL reaches $100M
+- **Clawback**: DAO can slash if team abandons project
+
+**Recipients**:
+- Core team: 3M tokens (60%)
+- Advisors: 1M tokens (20%)
+- Early contributors: 0.5M tokens (10%)
+- Future hires: 0.5M tokens (10%)
+
+**Why This Structure**:
+- ✅ 1-year cliff ensures commitment
+- ✅ 4-year vest prevents dump-and-leave
+- ✅ Performance bonus aligns with growth
+- ✅ 5% is modest (compared to 20-30% in typical projects)
+
+### 4. Treasury Allocation (3M tokens, 3%)
+
+**Purpose**: DAO-controlled reserve for strategic partnerships and growth.
+
+**Use Cases**:
+- Grants to community developers
+- Liquidity mining incentives
+- Partnership deals (e.g., integrate with Lace wallet)
+- Marketing campaigns
+- Bug bounties and audits
+
+**Governance**:
+- All spending requires DAO vote (>50% approval)
+- Proposals must include milestones and deliverables
+- Maximum 500K CHAOS per proposal
+- Quarterly transparency reports
+
+**Example Allocation**:
+- Year 1: 1M tokens for development grants
+- Year 2: 1M tokens for liquidity mining
+- Year 3: 1M tokens for partnerships
+
+### 5. Initial Liquidity (2M tokens, 2%)
+
+**Purpose**: Seed liquidity for CHAOS/ADA trading pair on DEXs.
+
+**Mechanism**:
+- 2M CHAOS + equivalent ADA locked in Minswap LP
+- LP tokens sent to DAO treasury (not burned)
+- Locked for 2 years (until Month 24)
+- After 2 years, DAO decides: extend lock or use for incentives
+
+**Expected Liquidity**:
+- 2M CHAOS × $1.25 = $2.5M
+- Paired with $2.5M ADA
+- Total liquidity: $5M
+
+**Why Locked**:
+- Prevents team from rug-pulling liquidity
+- Ensures stable trading for first 2 years
+- Shows long-term commitment
+
+---
+
+## Token Utility
+
+CHAOS is **not** a security or investment contract. It provides three primary utilities:
+
+### 1. Governance Rights (Primary Utility)
+
+**Voting Power**: 1 CHAOS = 1 vote
+
+**Governance Scope**:
+- Strategy parameters (MA window, rebalancing thresholds, allocations)
+- Fee structure (management fee, performance fee)
+- Treasury asset additions (add BTC, SOL, etc.)
+- Protocol upgrades (smart contract changes)
+- Operator authorization (add/remove rebalancing operators)
+- Emergency actions (circuit breaker, pause protocol)
+
+**Voting Process**:
+1. **Proposal**: Anyone with 10K CHAOS can submit proposal
+2. **Discussion**: 7-day discussion period
+3. **Voting**: 7-day voting period (quorum: 20% of staked CHAOS)
+4. **Execution**: 2-day time-lock, then automatic execution
+
+**Example Governance Proposal**:
+
+> **Proposal #5**: Increase ADA allocation from 50% to 60%
+>
+> **Rationale**: Bull market conditions favor higher ADA exposure
+>
+> **Parameters**: `target_ada_allocation` = 6000 (was 5000)
+>
+> **Votes**: 12.5M CHAOS voted FOR, 3.2M AGAINST → **PASSED**
+>
+> **Execution**: After 2-day time-lock, parameter updated on-chain
+
+### 2. Fee Sharing (Requires Staking)
+
+**Mechanism**: Stake CHAOS to earn proportional share of protocol fees.
+
+**Fee Sources**:
+- 2% annual management fee on TVL
+- 20% performance fee on profits above benchmark
+
+**Distribution**:
+- 70% of fees → Distributed to CHAOS stakers
+- 30% of fees → Protocol treasury (DAO-controlled)
+
+**Calculation**:
+$$
+\text{User Fee Share} = \frac{\text{CHAOS}_{\text{user staked}}}{\text{CHAOS}_{\text{total staked}}} \times \text{Total Fees} \times 0.70
+$$
+
+**Example**:
+- TVL: $50M
+- Annual management fee: $50M × 2% = $1M
+- Performance fee: $5M profit × 20% = $1M
+- Total fees: $2M
+- Distributed to stakers: $2M × 70% = $1.4M
+
+If you stake 100K CHAOS (0.1% of total supply):
+- Your share: $1.4M × 0.001 = $1,400 per year
+- Staking APY: 14% (on $10K worth of CHAOS at $0.10/token)
+
+**Note**: Framed as "fee rebates" for governance participation, not "investment returns" (avoids securities classification).
+
+### 3. Deposit Priority
+
+**Mechanism**: Higher CHAOS stake = Higher personal deposit cap during TVL scaling.
+
+**Deposit Caps by Stake Tier**:
+
+| CHAOS Staked | Max Personal Deposit | Rationale |
+|--------------|---------------------|-----------|
+| 0 | 1,000 ADA | Open to all |
+| 1,000 | 10,000 ADA | Small holders |
+| 10,000 | 100,000 ADA | Medium holders |
+| 100,000+ | Unlimited | Whales (but must govern responsibly) |
+
+**Why This Design**:
+- Incentivizes holding CHAOS without promising returns
+- Prevents deposit farming (deposit → withdraw → repeat)
+- Rewards long-term community members
+- Fair alternative to "first-come, first-served"
+
+---
+
+## Value Accrual Mechanisms
+
+**Question**: What makes CHAOS tokens valuable?
+
+**Answer**: Four value drivers:
+
+### 1. Treasury Growth
+
+**Logic**: As TVL grows, each CHAOS token represents larger share of productive assets.
+
+**Intrinsic Value**:
+$$
+\text{CHAOS Intrinsic Value} = \frac{\text{Treasury Value}}{\text{CHAOS Supply}} = \frac{\text{TVL}}{100M}
+$$
+
+**Example**:
+- At $10M TVL: CHAOS intrinsic = $0.10
+- At $50M TVL: CHAOS intrinsic = $0.50
+- At $100M TVL: CHAOS intrinsic = $1.00
+
+**Growth Driver**: More deposits → Higher TVL → Higher intrinsic value per token
+
+### 2. Fee Cash Flows
+
+**Logic**: Staking CHAOS earns real cash flows from protocol fees.
+
+**Discounted Cash Flow Valuation**:
+$$
+\text{CHAOS Value} = \sum_{t=1}^{\infty} \frac{\text{Fee}_t}{(1+r)^t}
+$$
+
+**Example** (at $50M TVL):
+- Annual fees: $1.15M (2% management + 20% performance)
+- Distributed to stakers: $805K (70%)
+- Per token: $0.00805
+- At 8% discount rate: NPV = $0.10 per token
+
+**Growth Driver**: Higher TVL → Higher fees → Higher NPV → Higher token value
+
+### 3. Governance Power
+
+**Logic**: Control over $50M treasury has value (voting rights sold in traditional finance).
+
+**Comparable Valuation**:
+- MakerDAO MKR: Market cap = ~10% of TVL
+- Compound COMP: Market cap = ~5% of TVL
+- Uniswap UNI: Market cap = ~3% of TVL
+
+**CHAOS Target**: 5% of TVL
+
+**Example**:
+- At $50M TVL: CHAOS market cap = $2.5M → Price = $0.025/token
+- At $100M TVL: CHAOS market cap = $5M → Price = $0.05/token
+
+**Growth Driver**: Larger treasury → More governance power → Higher token value
+
+### 4. Deposit Priority
+
+**Logic**: Higher deposit caps have value (option value to participate).
+
+**Option Value**:
+- If CHAOS outperforms, early access is valuable
+- If CHAOS underperforms, users simply don't deposit
+- Asymmetric upside → Positive option value
+
+**Comparable**: Private equity funds charge 2%+ for "access" to investment opportunities
+
+**CHAOS Equivalent**: Holding 100K CHAOS ($2.5K at $0.025) grants unlimited deposit access
+
+---
+
+## Revenue Model
+
+### Fee Structure
+
+**Management Fee**: 2% annually on TVL
+- Charged continuously (accrues daily)
+- Deducted from treasury value
+- Industry standard (hedge funds charge 2%)
+
+**Performance Fee**: 20% of profits above benchmark
+- Benchmark: ADA HODL return
+- Only charged on outperformance
+- Example: If CHAOS returns +10% and HODL returns +5%, fee is 20% × 5% = 1%
+- Industry standard (hedge funds charge 20%)
+
+### Revenue Projections
+
+| Year | TVL Target | Management Fee (2%) | Performance Fee (est.) | Total Revenue | Distributed (70%) | Treasury (30%) |
+|------|-----------|---------------------|------------------------|---------------|------------------|----------------|
+| 1 | $10M | $200K | $50K | $250K | $175K | $75K |
+| 2 | $50M | $1M | $150K | $1.15M | $805K | $345K |
+| 3 | $100M | $2M | $300K | $2.3M | $1.61M | $690K |
+| 5 | $200M | $4M | $600K | $4.6M | $3.22M | $1.38M |
+
+**Path to Sustainability**:
+- Year 1: Unprofitable (development costs > revenue)
+- Year 2: Break-even at $100M TVL
+- Year 3+: Profitable, revenue funds ongoing operations
+
+### Fee Distribution
+
+**70% to Stakers** (Incentive for long-term holding):
+- Distributed monthly in ADA
+- Proportional to staked CHAOS
+- Can be auto-compounded into more CHAOS
+
+**30% to Treasury** (Protocol development):
+- DAO-controlled spending
+- Development, marketing, audits
+- Liquidity incentives
+- Team compensation (after Year 1)
+
+---
+
+## Market Dynamics
+
+### Supply Dynamics
+
+**Fixed Supply**: 100M tokens, no inflation
+
+**Circulating Supply Over Time**:
+```
+Year 1:  65M  (60M ISPO + 5M LBP immediate)
+Year 2:  66.25M  (+ 1.25M team vesting)
+Year 3:  67.5M  (+ 1.25M team vesting)
+Year 4:  68.75M  (+ 1.25M team vesting)
+Year 5:  70M  (+ 1.25M team vesting)
+Treasury: 30M  (released slowly for grants, incentives)
+```
+
+**Deflationary Mechanism**: None (no burn)
+
+**Why Fixed Supply**:
+- Predictable token economics
+- No dilution of existing holders
+- Aligns with "treasury management" model (not inflationary token)
+
+### Demand Drivers
+
+**1. TVL Growth**:
+- More deposits → Higher intrinsic value → Higher price
+
+**2. Fee Generation**:
+- Higher fees → Higher staking yields → More demand to stake
+
+**3. Governance Participation**:
+- Important votes → More users want voting power → Buy CHAOS
+
+**4. Deposit Priority**:
+- TVL caps reached → Users need CHAOS to deposit → Buy pressure
+
+**5. Speculation**:
+- Early adopters buy in anticipation of future value
+
+### Price Discovery
+
+**LBP Launch** (Day 1-3):
+- Initial price discovery
+- Expected: $1.00-1.50 per CHAOS
+
+**Post-Launch** (Month 1-6):
+- Gradual ISPO distributions (10M/month)
+- Market finds equilibrium
+- Expected: $0.50-2.00 (depends on TVL growth)
+
+**Long-Term** (Year 2+):
+- Price driven by fundamentals (TVL, fees)
+- Target: 5-10% of TVL = $0.05-0.10 per CHAOS at $100M TVL
+
+---
+
+## Comparison to Competitors
+
+| Protocol | Token Utility | Distribution | Value Accrual | Supply |
+|----------|--------------|--------------|---------------|--------|
+| **CHAOS** | Governance + Fees + Priority | 60% ISPO, 30% LBP | Treasury growth + Fee sharing | 100M fixed |
+| Yearn (YFI) | Governance | Fair launch | Fee sharing | 36K fixed |
+| Curve (CRV) | Governance + Boost | Liquidity mining | Indirect (protocol success) | 3B (inflationary) |
+| Convex (CVX) | Governance (delegated) | Airdrop + Liquidity | Fee sharing | 100M (inflationary) |
+| Index Coop (INDEX) | Governance | Liquidity mining | Indirect | Uncapped (inflationary) |
+
+**Unique Aspects of CHAOS**:
+1. **ISPO distribution** (60%) → Largest community ownership in DeFi
+2. **Direct fee sharing** → Clear value accrual (not indirect)
+3. **Fixed supply** → No dilution (unlike inflationary competitors)
+4. **Deposit priority** → Novel utility driving demand
+
+---
+
+## Regulatory Considerations
+
+**Question**: Is CHAOS a security under Howey Test?
+
+**Howey Test Criteria**:
+1. Investment of money ✓ (Users deposit ADA)
+2. In a common enterprise ✓ (Shared treasury)
+3. Expectation of profits ✓ (Users expect returns)
+4. **From efforts of others** ❓ (Key question)
+
+**CHAOS Defense**:
+- **Utility focus**: Primary utility is governance (not investment)
+- **No explicit promises**: No guaranteed returns (fees are "rebates" for participation)
+- **Decentralized control**: DAO controls strategy (not team)
+- **Active participation**: Users must stake and govern (not passive)
+
+**Regulatory Strategy**:
+1. **Offshore entity**: Cayman Islands foundation (no US nexus)
+2. **Geo-blocking**: Block US IP addresses during LBP (if necessary)
+3. **Utility emphasis**: Market as "governance token" not "investment"
+4. **Legal opinion**: Engage crypto-specialized law firm for classification
+5. **Progressive decentralization**: Transfer control to DAO by Month 12
+
+**Conclusion**: CHAOS has regulatory risk but mitigated through careful design and proactive compliance.
+
+---
+
+## Summary
+
+**CHAOS Tokenomics** balances community ownership, team alignment, and sustainable economics:
+
+✅ **60% ISPO** → Largest community distribution in DeFi history
+
+✅ **30% LBP** → Fair price discovery and immediate liquidity
+
+✅ **5% Team** → Modest allocation with 4-year vest
+
+✅ **Triple Utility** → Governance + Fee sharing + Deposit priority
+
+✅ **Fixed Supply** → No inflation, no dilution
+
+✅ **Clear Value Accrual** → TVL growth + Fee cash flows + Governance power
+
+✅ **Regulatory Compliance** → Proactive legal structure
+
+**Bottom Line**: CHAOS is designed to create long-term value for token holders through sustainable fee generation and transparent governance, not speculative hype.
+
+---
+
+**In the next chapter**, we detail the governance mechanism and DAO structure that gives CHAOS holders control over the protocol.

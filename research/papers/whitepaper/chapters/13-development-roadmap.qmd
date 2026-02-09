@@ -1,0 +1,429 @@
+# Development Roadmap
+
+This chapter presents the 12-month development roadmap for the CHAOS protocol, from MVP to production-grade DeFi infrastructure.
+
+---
+
+## Timeline Overview
+
+```
+Month:  1   2   3   4   5   6   7   8   9   10  11  12
+        │   │   │   │   │   │   │   │   │   │   │   │
+Phase 1 ████████████████                                MVP ($330K)
+Phase 2                 ████████████████                Mainnet ($490K)
+Phase 3                                 ████████████████Scale ($1.1M)
+        │           │               │               │
+        ▼           ▼               ▼               ▼
+     Project     Testnet         Mainnet          LBP
+     Start       Launch         Launch          Launch
+```
+
+**Total Budget**: $1.92M over 12 months
+**Team Size**: 6-8 full-time equivalents
+
+```{python}
+#| label: fig-roadmap-gantt
+#| fig-cap: "CHAOS development roadmap: 12-month Gantt chart showing three phases from MVP to full DAO. Key milestones are marked with diamonds."
+#| echo: false
+
+import matplotlib.pyplot as plt
+import matplotlib.patches as mpatches
+import numpy as np
+
+fig, ax = plt.subplots(figsize=(14, 8))
+
+# Phase bars
+phases = [
+    ('Phase 1: MVP', 0, 3, '#2563eb'),
+    ('Phase 2: Mainnet', 3, 3, '#10b981'),
+    ('Phase 3: Scale + LBP', 6, 6, '#f59e0b'),
+]
+
+# Detailed tasks
+tasks = [
+    # Phase 1
+    ('Smart Contract Design', 0, 1, '#93c5fd'),
+    ('Core Development', 1, 1.5, '#93c5fd'),
+    ('Testing & Audit', 2, 1.5, '#93c5fd'),
+    ('Frontend MVP', 0.5, 2, '#93c5fd'),
+    # Phase 2
+    ('Mainnet Deploy', 3, 0.5, '#6ee7b7'),
+    ('ISPO Launch', 4, 2, '#6ee7b7'),
+    ('Automated Rebalancing', 3.5, 1.5, '#6ee7b7'),
+    ('Governance v1', 5, 1, '#6ee7b7'),
+    # Phase 3
+    ('LBP Preparation', 6, 1, '#fcd34d'),
+    ('LBP Launch', 7, 0.5, '#fcd34d'),
+    ('ML Enhancement', 8, 2, '#fcd34d'),
+    ('Mobile Apps', 10, 2, '#fcd34d'),
+    ('Full DAO', 11, 1, '#fcd34d'),
+]
+
+# Milestones
+milestones = [
+    (3, 'Testnet\nLaunch'),
+    (4, 'Mainnet\nLaunch'),
+    (5, 'ISPO\nStart'),
+    (8, 'LBP\nLaunch'),
+    (12, 'Full DAO\nHandover'),
+]
+
+# Draw phase bars
+y_phase = len(tasks) + 1
+for name, start, duration, color in phases:
+    ax.barh(y_phase, duration, left=start, height=0.6, color=color, alpha=0.85, edgecolor='black', linewidth=1.5)
+    ax.text(start + duration/2, y_phase, name, ha='center', va='center', fontsize=10, fontweight='bold', color='white')
+    y_phase -= 1
+
+# Draw task bars
+for i, (name, start, duration, color) in enumerate(tasks):
+    y = len(tasks) - i - 1 + 0.5
+    ax.barh(y, duration, left=start, height=0.5, color=color, edgecolor='black', linewidth=0.8, alpha=0.8)
+    ax.text(start + duration/2, y, name, ha='center', va='center', fontsize=8, fontweight='bold')
+
+# Draw milestones
+for month, label in milestones:
+    ax.plot(month, len(tasks) + 2.5, marker='D', color='#dc2626', markersize=12, markeredgecolor='black', markeredgewidth=1.5, zorder=5)
+    ax.text(month, len(tasks) + 3.2, label, ha='center', va='bottom', fontsize=8, fontweight='bold', color='#dc2626')
+
+# Budget annotations
+ax.annotate('$330K', xy=(1.5, -0.5), fontsize=10, fontweight='bold', color='#2563eb', ha='center')
+ax.annotate('$490K', xy=(4.5, -0.5), fontsize=10, fontweight='bold', color='#10b981', ha='center')
+ax.annotate('$1.1M', xy=(9, -0.5), fontsize=10, fontweight='bold', color='#f59e0b', ha='center')
+
+ax.set_xlabel('Month', fontsize=12)
+ax.set_xlim(-0.5, 13)
+ax.set_ylim(-1.5, len(tasks) + 4.5)
+ax.set_xticks(range(13))
+ax.set_xticklabels([f'M{i}' if i > 0 else 'Start' for i in range(13)])
+ax.set_yticks([])
+ax.set_title('CHAOS Protocol: 12-Month Development Roadmap', fontsize=14, fontweight='bold')
+ax.grid(axis='x', alpha=0.3)
+
+# Legend
+p1 = mpatches.Patch(color='#2563eb', label='Phase 1: MVP')
+p2 = mpatches.Patch(color='#10b981', label='Phase 2: Mainnet')
+p3 = mpatches.Patch(color='#f59e0b', label='Phase 3: Scale')
+ax.legend(handles=[p1, p2, p3], fontsize=10, loc='lower right')
+
+plt.tight_layout()
+plt.show()
+```
+
+```{python}
+#| label: fig-budget-allocation
+#| fig-cap: "Budget allocation across the three development phases. Engineering dominates all phases, with security and legal costs increasing in later phases."
+#| echo: false
+
+import matplotlib.pyplot as plt
+import numpy as np
+
+categories = ['Engineering', 'Security\n& Audit', 'Legal &\nCompliance', 'Infrastructure\n& DevOps', 'Marketing\n& Community', 'Other']
+phase1 = [240, 60, 20, 10, 0, 0]
+phase2 = [240, 40, 50, 30, 50, 80]
+phase3 = [600, 60, 100, 80, 150, 110]
+
+x = np.arange(len(categories))
+width = 0.25
+
+fig, ax = plt.subplots(figsize=(12, 6))
+bars1 = ax.bar(x - width, [v/1000 for v in phase1], width, label='Phase 1 ($330K)', color='#2563eb', edgecolor='black')
+bars2 = ax.bar(x, [v/1000 for v in phase2], width, label='Phase 2 ($490K)', color='#10b981', edgecolor='black')
+bars3 = ax.bar(x + width, [v/1000 for v in phase3], width, label='Phase 3 ($1.1M)', color='#f59e0b', edgecolor='black')
+
+ax.set_xticks(x)
+ax.set_xticklabels(categories, fontsize=10)
+ax.set_ylabel('Budget ($M)', fontsize=12)
+ax.set_title('Budget Allocation by Phase and Category', fontsize=13, fontweight='bold')
+ax.legend(fontsize=10)
+ax.grid(axis='y', alpha=0.2)
+
+plt.tight_layout()
+plt.show()
+```
+
+---
+
+## Phase 1: MVP (Months 1-3) — $330K
+
+**Goal**: Functional testnet dApp with manual rebalancing and 100+ testers.
+
+### Milestones
+
+| Month | Milestone | Deliverables | Status |
+|-------|-----------|-------------|--------|
+| **Month 1** | Foundation | Smart contract design, project setup, whitepaper | In Progress |
+| **Month 2** | Core Development | Treasury vault, CHAOS minting, frontend MVP | Planned |
+| **Month 3** | Testnet Launch | Deploy to Preview, security audit, community testing | Planned |
+
+### Month 1: Foundation
+
+**Week 1-2**:
+
+- [x] Project structure and tooling setup
+- [x] Whitepaper framework (Quarto book, 14 chapters)
+- [x] Executive summary and mathematical proofs written
+- [ ] Aiken development environment configured
+- [ ] Smart contract data types and interfaces defined
+
+**Week 3-4**:
+
+- [ ] Treasury vault contract implementation (Aiken)
+- [ ] CHAOS minting policy implementation (Aiken)
+- [ ] Unit test suite (>80% coverage)
+- [ ] Frontend wallet connection (Mesh.js + Nami/Eternl)
+
+### Month 2: Core Development
+
+**Week 5-6**:
+
+- [ ] Complete smart contract test suite (>95% coverage)
+- [ ] Property-based tests for critical paths
+- [ ] Frontend deposit/withdraw flows
+- [ ] Portfolio dashboard with real-time metrics
+
+**Week 7-8**:
+
+- [ ] TypeScript rebalancing engine (port from Python)
+- [ ] Multi-source oracle aggregator service
+- [ ] Backend API (Express.js) — treasury state, performance, prices
+- [ ] Integration tests on local emulator
+
+### Month 3: Testnet Launch
+
+**Week 9-10**:
+
+- [ ] Deploy to Cardano Preview testnet
+- [ ] Initialize treasury with test funds (10,000 tADA)
+- [ ] Security audit engagement (Tweag, MLabs, or Certik)
+- [ ] Execute 3+ rebalancing cycles on testnet
+
+**Week 11-13**:
+
+- [ ] Community testnet program (target: 100+ users)
+- [ ] Bug fixes from audit findings (zero critical/high accepted)
+- [ ] Performance optimization (gas costs < targets)
+- [ ] Go/No-Go decision for mainnet
+
+### Phase 1 Success Criteria
+
+All must be met before proceeding to Phase 2:
+
+- [ ] Smart contracts pass external audit with **zero critical issues**
+- [ ] 100+ testnet users successfully deposit and withdraw
+- [ ] 3+ successful rebalancing executions on testnet
+- [ ] Strategy performance within 10% of backtest expectations
+- [ ] Zero critical bugs in 72-hour stability test
+
+### Phase 1 Budget
+
+| Category | Amount | Notes |
+|----------|--------|-------|
+| Smart contract development | $120K | 2 developers × 3 months |
+| Frontend development | $60K | 1 developer × 3 months |
+| Backend development | $60K | 1 developer × 3 months |
+| Security audit | $60K | External firm |
+| Infrastructure | $10K | Hosting, APIs, tools |
+| Legal | $20K | Entity setup, initial compliance |
+| **Total** | **$330K** | |
+
+---
+
+## Phase 2: Mainnet + Automation (Months 4-6) — $490K
+
+**Goal**: Self-sustaining mainnet protocol with automated rebalancing and $5-10M TVL.
+
+### Milestones
+
+| Month | Milestone | Deliverables |
+|-------|-----------|-------------|
+| **Month 4** | Mainnet Launch | Deploy contracts, initialize treasury, soft launch |
+| **Month 5** | Automation | Automated rebalancing, ISPO launch |
+| **Month 6** | Scale | Multi-DEX support, governance v1, $5-10M TVL target |
+
+### Month 4: Mainnet Launch
+
+- [ ] Final audit review sign-off
+- [ ] Deploy treasury vault and minting policy to mainnet
+- [ ] Execute initial CHAOS mint (100M tokens)
+- [ ] Mainnet launch with $10K TVL cap
+- [ ] Gradual TVL cap increase ($10K → $100K → $500K)
+- [ ] 72-hour monitoring period
+- [ ] First mainnet rebalancing execution
+
+### Month 5: Automation
+
+- [ ] Deploy automated rebalancing keeper service
+- [ ] ISPO launch (6-month staking program begins)
+- [ ] Set up 3-5 CHAOS stake pools on Cardano
+- [ ] Circuit breaker implementation and testing
+- [ ] Monitoring infrastructure (Grafana, PagerDuty)
+- [ ] Weekly performance reports published
+
+### Month 6: Scale
+
+- [ ] Multi-DEX integration (SundaeSwap, WingRiders)
+- [ ] Governance v1 deployed (on-chain voting)
+- [ ] Scale TVL to $5-10M
+- [ ] Community governance town hall
+- [ ] Second security audit (different firm)
+- [ ] Mobile-responsive frontend
+
+### Phase 2 Budget
+
+| Category | Amount | Notes |
+|----------|--------|-------|
+| Engineering (4 developers) | $240K | Smart contracts + frontend + backend |
+| DevOps | $60K | 1 engineer × 3 months |
+| Security audit #2 | $40K | Different firm for fresh perspective |
+| Infrastructure | $30K | Production hosting, monitoring |
+| Legal & compliance | $50K | Ongoing regulatory guidance |
+| Marketing & community | $50K | Discord, Twitter, content |
+| ISPO operations | $20K | Stake pool setup and management |
+| **Total** | **$490K** | |
+
+---
+
+## Phase 3: Scale + LBP (Months 7-12) — $1.1M
+
+**Goal**: Enterprise-grade protocol with $25-50M TVL, LBP token launch, and ML-enhanced strategy.
+
+### Milestones
+
+| Month | Milestone | Deliverables |
+|-------|-----------|-------------|
+| **Month 7** | LBP Preparation | Token launch planning, marketing campaign |
+| **Month 8** | LBP Launch | 72-hour Liquidity Bootstrapping Pool |
+| **Month 9** | ML Enhancement | A/B test ML signals vs baseline strategy |
+| **Month 10** | Enterprise | API keys, white-label, institutional onboarding |
+| **Month 11** | Mobile | iOS and Android apps |
+| **Month 12** | Full DAO | Complete decentralization, team veto removed |
+
+### Key Deliverables
+
+**Month 7-8: LBP Token Launch**
+
+- [ ] LBP smart contract deployment (30M CHAOS, 72 hours)
+- [ ] Marketing campaign launch (30 days pre-LBP)
+- [ ] Community AMA sessions and educational content
+- [ ] Partner announcements (wallet integrations, DEX support)
+- [ ] KYC/geo-blocking setup (if required)
+
+**Month 9-10: ML Enhancement**
+
+- [ ] Machine learning signal model (random forest / LSTM)
+- [ ] A/B test: ML-enhanced vs baseline strategy
+- [ ] Only deploy ML if statistically significant improvement
+- [ ] Enterprise API with rate limiting and key management
+- [ ] Institutional documentation and compliance package
+
+**Month 11-12: Full Decentralization**
+
+- [ ] Mobile apps (React Native, iOS + Android)
+- [ ] Full DAO governance (team veto removed)
+- [ ] Smart contract upgrade path documented
+- [ ] Annual security audit scheduled
+- [ ] Community development grants program launched
+
+### Phase 3 Budget
+
+| Category | Amount | Notes |
+|----------|--------|-------|
+| Engineering (6 developers) | $480K | Full team for 6 months |
+| ML research | $120K | Data scientist × 6 months |
+| DevOps & infrastructure | $80K | Production scaling |
+| Security (ongoing) | $60K | Bug bounty fund + monitoring |
+| Legal & compliance | $100K | Regulatory navigation |
+| Marketing | $150K | LBP launch, community growth |
+| Mobile development | $80K | iOS + Android apps |
+| Reserve | $30K | Contingency buffer |
+| **Total** | **$1.1M** | |
+
+---
+
+## Team Structure
+
+### Phase 1 (6-8 people)
+
+| Role | Count | Responsibility |
+|------|-------|----------------|
+| Project Lead | 1 | Strategy, coordination, investor relations |
+| Smart Contract Developer | 2 | Aiken contracts, testing, formal verification |
+| Frontend Developer | 1 | Next.js, Mesh.js, UI/UX |
+| Backend Developer | 1 | Node.js, Oracle, API |
+| DevOps | 0.5 | Infrastructure, deployment, monitoring |
+| Community Manager | 0.5 | Discord, content, support |
+
+### Phase 3 (10-12 people)
+
+Additional hires:
+- ML Engineer (strategy enhancement)
+- Mobile Developer (iOS/Android)
+- Designer (UI/UX improvement)
+- Business Development (partnerships)
+
+---
+
+## Funding Strategy
+
+### Sources
+
+| Source | Amount | Timeline | Certainty |
+|--------|--------|----------|-----------|
+| Seed round (angel/VC) | $500K-1M | Month 1-2 | Medium |
+| Cardano Catalyst grant | $100K-200K | Month 2-4 | Medium |
+| LBP proceeds (30% of $37.5M) | $11.25M | Month 8 | Depends on LBP |
+| Revenue (fees) | $200K+ | Month 6+ | After TVL |
+
+### Minimum Viable Funding
+
+If full $1.92M is not secured, CHAOS can still launch with reduced scope:
+
+| Budget | Scope | Feasibility |
+|--------|-------|-------------|
+| **$330K** | Phase 1 only (testnet MVP) | Proves concept, attracts further investment |
+| **$820K** | Phase 1 + Phase 2 (mainnet) | Generates revenue to self-fund Phase 3 |
+| **$1.92M** | Full 12-month roadmap | Optimal path with all features |
+
+---
+
+## Key Risk Mitigations
+
+| Risk | Probability | Mitigation |
+|------|-----------|------------|
+| Audit fails | 15% | Budget for fix-and-reaudit cycle |
+| Testnet bugs | 30% | 3-week buffer in Phase 1 timeline |
+| Slow TVL growth | 35% | Reduce scope, extend timeline |
+| Funding shortfall | 35% | Phased approach, bootstrap from fees |
+| Key developer leaves | 20% | Documentation, open source, redundancy |
+| Regulatory change | 40% | Legal counsel, offshore entity, DAO transition |
+
+---
+
+## Success Metrics
+
+### Phase 1 (Month 3)
+
+- [ ] Smart contracts audited (zero critical issues)
+- [ ] 100+ testnet users
+- [ ] 3+ successful rebalancing events
+- [ ] Whitepaper published (PDF + web)
+
+### Phase 2 (Month 6)
+
+- [ ] $5-10M TVL on mainnet
+- [ ] 500+ CHAOS holders
+- [ ] Automated rebalancing running reliably
+- [ ] ISPO launched with 100M+ ADA delegated
+
+### Phase 3 (Month 12)
+
+- [ ] $25-50M TVL
+- [ ] LBP completed successfully
+- [ ] Full DAO governance operational
+- [ ] Mobile apps launched
+- [ ] Protocol is revenue-positive
+
+---
+
+**In the next chapter**, we provide comprehensive risk disclosure for potential investors and participants.

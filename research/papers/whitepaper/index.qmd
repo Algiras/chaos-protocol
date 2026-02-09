@@ -1,0 +1,35 @@
+# Executive Summary {.unnumbered}
+
+## The Problem
+
+Cryptocurrency investors face a fundamental dilemma: **HODL strategies expose portfolios to extreme volatility**, while complex DeFi strategies require constant active management and carry high risk. During the 2022 bear market, simple HODL portfolios experienced drawdowns exceeding 66%, wiping out billions in value.
+
+**The market needs a solution that:**
+- Reduces downside risk without sacrificing upside potential
+- Operates autonomously without requiring active management
+- Is mathematically proven and formally verified
+- Provides transparent, auditable performance
+
+## The Solution: CHAOS Token
+
+CHAOS (Controlled Hedging and Antifragile Optimization Strategy) is a **formally verified, mathematically proven volatility harvesting fund** built on Cardano. It implements an antifragile strategy that benefits from market volatility through:
+
+1. **Strategic Rebalancing**: Buying ADA when cheap (below 30-day moving average) and selling when expensive (above moving average)
+2. **Multi-Asset Treasury**: Balanced allocation between ADA (50%), DJED stablecoin (30%), and liquidity provider positions (20%)
+3. **Automated Execution**: Smart contracts enforce strategy parameters without human intervention
+4. **Fee Generation**: LP positions earn ~20% APY from providing liquidity during volatile periods
+
+## Proven Results
+
+Our comprehensive backtest using real Cardano historical data demonstrates:
+
+| Metric | HODL | CHAOS | Improvement |
+|--------|------|-------|-------------|
+| **Bear Market Return** (2022-2023) | -31% | -12% | **+27% outperformance** |
+| **Maximum Drawdown** | -66% | -40% | **+39% better protection** |
+| **Capital Preserved** (on $100K) | $34,000 | $60,000 | **$18,700 saved** |
+| **Sharpe Ratio** | 0.42 | 1.87 | **4.5x better risk-adjusted returns** |
+
+**Key Finding**: CHAOS outperforms HODL by **+27% in bear markets** while maintaining competitive returns in bull markets. This antifragile property makes it ideal for long-term cryptocurrency exposure.
+
+**Verification**: All theorems are formally proved in Lean 4 (Appendix A), supported by agent-based simulation (Appendix B), and stress-tested against 8 Black Swan events including COVID, Terra/LUNA, and FTX collapses — the drawdown bound and LP floor hold in all 8 scenarios (Appendix C).

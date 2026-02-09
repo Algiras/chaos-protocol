@@ -1,0 +1,353 @@
+# Revenue Model
+
+This chapter details the fee structure, revenue projections, and economic sustainability model for the CHAOS protocol.
+
+---
+
+## Fee Structure
+
+CHAOS charges two fees, aligned with traditional fund management standards:
+
+### Management Fee: 2% Annual
+
+**Description**: A flat annual fee on total value locked (TVL), charged continuously.
+
+**Calculation**:
+
+$$
+\text{Daily Management Fee} = \text{TVL} \times \frac{0.02}{365}
+$$
+
+**Example**: At $50M TVL, daily management fee = $2,740
+
+**Justification**:
+
+- Industry standard (hedge funds charge 2%)
+- Covers operational costs (infrastructure, monitoring, oracle feeds)
+- Scales with TVL (larger fund = more responsibility)
+- Deducted from treasury value (no separate payment required)
+
+### Performance Fee: 20% of Outperformance
+
+**Description**: A fee on profits above the HODL benchmark.
+
+**Calculation**:
+
+$$
+\text{Performance Fee} = 0.20 \times \max(0, R_{\text{CHAOS}} - R_{\text{HODL}}) \times \text{TVL}
+$$
+
+**Example**: If CHAOS returns +10% and HODL returns +5% on $50M TVL:
+
+$$
+\text{Fee} = 0.20 \times (10\% - 5\%) \times \$50M = \$500K
+$$
+
+**Key Features**:
+
+- **High-water mark**: Only charged on new profits (no fee on recovering previous losses)
+- **Benchmark-relative**: No fee if CHAOS underperforms HODL
+- **Aligns incentives**: Protocol only profits when it outperforms for users
+
+**Justification**:
+
+- Industry standard (hedge funds charge 20%)
+- Ensures protocol is only rewarded for delivering alpha
+- High-water mark prevents double-charging after drawdowns
+
+---
+
+## Fee Distribution
+
+```
+┌─────────────────────────────────────┐
+│          Total Protocol Fees         │
+│     (Management + Performance)       │
+└──────────────┬──────────────────────┘
+               │
+       ┌───────┴───────┐
+       │               │
+  ┌────▼────┐    ┌─────▼─────┐
+  │   70%   │    │    30%    │
+  │ STAKERS │    │ TREASURY  │
+  └────┬────┘    └─────┬─────┘
+       │               │
+  Distributed     DAO-controlled
+  monthly in      spending on:
+  ADA to CHAOS    • Development
+  stakers         • Marketing
+                  • Audits
+                  • Operations
+```
+
+### 70% to CHAOS Stakers
+
+**Mechanism**: Monthly distribution in ADA, proportional to staked CHAOS.
+
+$$
+\text{User Share} = \frac{\text{CHAOS staked by user}}{\text{Total CHAOS staked}} \times \text{Total Fees} \times 0.70
+$$
+
+**Example**: User stakes 100,000 CHAOS (0.1% of supply), total fees = $2M/year:
+
+$$
+\text{Annual reward} = 0.001 \times \$2M \times 0.70 = \$1,400
+$$
+
+**Staking APY**: Depends on staking ratio and TVL.
+
+| TVL | Total Fees | Staker Share (70%) | Staking Ratio | Staking APY |
+|-----|-----------|-------------------|---------------|-------------|
+| $10M | $250K | $175K | 50% | 3.5% |
+| $50M | $1.15M | $805K | 50% | 16.1% |
+| $100M | $2.3M | $1.61M | 50% | 32.2% |
+| $200M | $4.6M | $3.22M | 50% | 64.4% |
+
+### 30% to Protocol Treasury
+
+**Controlled by**: DAO governance vote
+
+**Allocation Guidelines**:
+
+| Category | Target % | Purpose |
+|----------|---------|---------|
+| Development | 40% | Engineering, smart contract upgrades |
+| Operations | 25% | Infrastructure, monitoring, oracle costs |
+| Marketing | 15% | Community growth, content, events |
+| Audits & Security | 15% | Ongoing audits, bug bounty fund |
+| Reserve | 5% | Emergency buffer |
+
+---
+
+## Revenue Projections
+
+### Conservative Scenario
+
+| Year | TVL | Mgmt Fee (2%) | Perf Fee | Total Revenue | Net (after costs) |
+|------|-----|--------------|----------|---------------|-------------------|
+| 1 | $10M | $200K | $30K | $230K | -$100K (loss) |
+| 2 | $50M | $1.0M | $150K | $1.15M | $650K |
+| 3 | $100M | $2.0M | $300K | $2.3M | $1.8M |
+| 4 | $150M | $3.0M | $450K | $3.45M | $2.95M |
+| 5 | $200M | $4.0M | $600K | $4.6M | $4.1M |
+
+**Assumptions**:
+
+- TVL growth: 5x Year 1→2, 2x Year 2→3, 1.5x annually thereafter
+- Performance fee assumes 5% average annual outperformance
+- Operating costs: $330K Year 1, $500K Year 2+
+
+### Optimistic Scenario
+
+| Year | TVL | Total Revenue | Note |
+|------|-----|---------------|------|
+| 1 | $25M | $550K | Fast community adoption |
+| 2 | $100M | $2.3M | Bull market catalyst |
+| 3 | $300M | $6.9M | Institutional adoption |
+
+### Pessimistic Scenario
+
+| Year | TVL | Total Revenue | Note |
+|------|-----|---------------|------|
+| 1 | $5M | $115K | Slow adoption |
+| 2 | $15M | $345K | Bear market continues |
+| 3 | $30M | $690K | Gradual recovery |
+
+### Revenue Projections Chart
+
+```{python}
+#| label: fig-revenue-projections
+#| fig-cap: "Five-year revenue projections under conservative, optimistic, and pessimistic scenarios. The dashed line marks the break-even threshold."
+#| echo: false
+
+import matplotlib.pyplot as plt
+import numpy as np
+
+years = [1, 2, 3, 4, 5]
+
+# Conservative
+cons_tvl = [10, 50, 100, 150, 200]
+cons_rev = [230, 1150, 2300, 3450, 4600]
+
+# Optimistic
+opt_tvl = [25, 100, 300, 500, 750]
+opt_rev = [550, 2300, 6900, 11500, 17250]
+
+# Pessimistic
+pess_tvl = [5, 15, 30, 50, 80]
+pess_rev = [115, 345, 690, 1150, 1840]
+
+# Costs
+costs = [380, 540, 540, 540, 540]
+
+fig, axes = plt.subplots(1, 2, figsize=(14, 6))
+
+# Left: Revenue scenarios
+ax1 = axes[0]
+ax1.plot(years, [r/1000 for r in opt_rev], marker='o', linewidth=2.5, color='#10b981', label='Optimistic')
+ax1.plot(years, [r/1000 for r in cons_rev], marker='s', linewidth=2.5, color='#2563eb', label='Conservative')
+ax1.plot(years, [r/1000 for r in pess_rev], marker='^', linewidth=2.5, color='#dc2626', label='Pessimistic')
+ax1.plot(years, [c/1000 for c in costs], linewidth=2, color='gray', linestyle='--', label='Operating Costs')
+ax1.fill_between(years, [r/1000 for r in pess_rev], [r/1000 for r in opt_rev], alpha=0.08, color='#2563eb')
+ax1.set_xlabel('Year', fontsize=11)
+ax1.set_ylabel('Revenue / Costs ($M)', fontsize=11)
+ax1.set_title('Revenue Projections by Scenario', fontsize=12, fontweight='bold')
+ax1.legend(fontsize=10)
+ax1.grid(True, alpha=0.2)
+
+# Right: TVL growth
+ax2 = axes[1]
+ax2.plot(years, opt_tvl, marker='o', linewidth=2.5, color='#10b981', label='Optimistic')
+ax2.plot(years, cons_tvl, marker='s', linewidth=2.5, color='#2563eb', label='Conservative')
+ax2.plot(years, pess_tvl, marker='^', linewidth=2.5, color='#dc2626', label='Pessimistic')
+ax2.axhline(y=25, color='gray', linestyle=':', alpha=0.5)
+ax2.annotate('Break-even\n($25M TVL)', xy=(1.5, 25), fontsize=9, color='gray')
+ax2.fill_between(years, pess_tvl, opt_tvl, alpha=0.08, color='#2563eb')
+ax2.set_xlabel('Year', fontsize=11)
+ax2.set_ylabel('TVL ($M)', fontsize=11)
+ax2.set_title('TVL Growth Projections', fontsize=12, fontweight='bold')
+ax2.legend(fontsize=10)
+ax2.grid(True, alpha=0.2)
+
+plt.tight_layout()
+plt.show()
+```
+
+---
+
+## Break-Even Analysis
+
+### Fixed Costs (Annual)
+
+| Category | Year 1 | Year 2+ |
+|----------|--------|---------|
+| Development team | $200K | $300K |
+| Infrastructure | $30K | $50K |
+| Security audits | $80K | $40K |
+| Legal & compliance | $50K | $100K |
+| Marketing | $20K | $50K |
+| **Total** | **$380K** | **$540K** |
+
+### Break-Even TVL
+
+$$
+\text{Break-even TVL} = \frac{\text{Annual Costs}}{\text{Fee Rate}} = \frac{\$540K}{0.023} \approx \$23.5M
+$$
+
+(Using blended fee rate of 2.3% = 2% management + 0.3% average performance)
+
+**Conclusion**: CHAOS breaks even at approximately **$25M TVL**, achievable in Year 2 under conservative projections.
+
+---
+
+## Comparison to Industry
+
+### Fee Comparison
+
+| Protocol/Fund | Management Fee | Performance Fee | Total (est.) |
+|--------------|---------------|-----------------|-------------|
+| **CHAOS** | 2.0% | 20% of alpha | ~2.3% |
+| Hedge Funds (avg) | 2.0% | 20% | ~3.5% |
+| Yearn Finance | 2.0% | 20% | ~2.5% |
+| Index Coop | 0.95% | 0% | 0.95% |
+| Grayscale GBTC | 1.5% | 0% | 1.5% |
+| Traditional ETF | 0.03-0.5% | 0% | 0.03-0.5% |
+
+**CHAOS Positioning**: Priced competitively with DeFi funds, justified by:
+
+- Active management (not passive index)
+- Formal verification and security model
+- Demonstrated outperformance (backtest evidence)
+- Performance fee only on alpha (not total returns)
+
+### Value Proposition
+
+For every $100K invested in CHAOS:
+
+- **Fee paid**: ~$2,300/year (2% management + average performance fee)
+- **Expected outperformance**: ~$11,000/year (vs HODL benchmark)
+- **Net benefit**: ~$8,700/year after fees
+- **Fee-to-alpha ratio**: 21% (investor keeps 79% of generated alpha)
+
+---
+
+## Sustainability Metrics
+
+### Key Performance Indicators
+
+| KPI | Target (Year 2) | Target (Year 3) |
+|-----|-----------------|-----------------|
+| TVL | $50M | $100M |
+| Revenue | $1.15M | $2.3M |
+| Operating Margin | 50% | 70% |
+| Staker APY | 16% | 32% |
+| Fee-to-Alpha Ratio | <25% | <25% |
+| User Growth | 1,000+ stakers | 5,000+ stakers |
+
+### Long-Term Sustainability
+
+The protocol becomes self-sustaining when:
+
+1. **Revenue > Costs**: Break-even at ~$25M TVL
+2. **Community governs**: DAO controls spending (no team dependency)
+3. **Fee distribution attracts stakers**: Flywheel effect (more stakers → more TVL → more fees)
+4. **Treasury reserve**: 30% of fees builds emergency fund
+
+### Staking APY Sensitivity
+
+```{python}
+#| label: fig-staking-apy
+#| fig-cap: "CHAOS staking APY as a function of TVL and staking ratio. Higher TVL and lower staking ratio produce higher yields, creating a natural equilibrium."
+#| echo: false
+
+import matplotlib.pyplot as plt
+import numpy as np
+
+tvl_vals = np.linspace(5, 200, 100)  # $M
+staking_ratios = [0.30, 0.50, 0.70]
+chaos_mcap = 10  # $M (assume $10M market cap for CHAOS)
+
+plt.figure(figsize=(10, 6))
+colors = ['#10b981', '#2563eb', '#dc2626']
+
+for sr, color in zip(staking_ratios, colors):
+    # Total fees = 2% management + ~0.3% performance
+    total_fees = tvl_vals * 0.023  # $M
+    staker_share = total_fees * 0.70  # $M
+    staking_apy = (staker_share / (chaos_mcap * sr)) * 100
+    plt.plot(tvl_vals, staking_apy, linewidth=2.5, color=color, label=f'Staking ratio = {sr:.0%}')
+
+plt.axhline(y=20, color='gray', linestyle=':', alpha=0.5)
+plt.annotate('Competitive APY (20%)', xy=(150, 20), fontsize=9, color='gray')
+plt.xlabel('Total Value Locked ($M)', fontsize=12)
+plt.ylabel('CHAOS Staking APY (%)', fontsize=12)
+plt.title('Staking Yield vs TVL (at $10M CHAOS Market Cap)', fontsize=13, fontweight='bold')
+plt.legend(fontsize=11)
+plt.grid(True, alpha=0.2)
+plt.ylim(0, 100)
+plt.tight_layout()
+plt.show()
+```
+
+---
+
+## Fee Governance
+
+All fee parameters are governance-adjustable:
+
+| Parameter | Current | Range | Governance |
+|-----------|---------|-------|------------|
+| Management fee | 2.0% | 0-5% | Standard proposal |
+| Performance fee | 20% | 0-30% | Standard proposal |
+| Staker share | 70% | 50-90% | Standard proposal |
+| Fee benchmark | HODL | Configurable | Standard proposal |
+
+**Fee Reduction Path**: As TVL grows and fixed costs are amortized, governance may reduce fees to attract more capital:
+
+- Year 1-2: 2% / 20% (standard)
+- Year 3-4: 1.5% / 15% (competitive)
+- Year 5+: 1% / 10% (institutional grade)
+
+---
+
+**In the next chapter**, we present the 12-month development roadmap with milestones and budget allocation.

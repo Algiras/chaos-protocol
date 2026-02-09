@@ -1,0 +1,289 @@
+# Risk Disclosure
+
+**IMPORTANT: This chapter must be read in full before participating in the CHAOS protocol.**
+
+This document provides comprehensive risk disclosure for the CHAOS Token protocol. Cryptocurrency investments carry significant risk, and past performance does not guarantee future results.
+
+---
+
+## General Disclaimer
+
+**CHAOS Token is experimental software and an experimental investment strategy. By participating, you acknowledge and accept the following risks.**
+
+The information in this whitepaper is provided for informational purposes only and does not constitute:
+
+- Financial advice
+- Investment advice
+- Tax advice
+- Legal advice
+- A guarantee of returns
+- A solicitation to buy securities
+
+**Consult qualified professionals before making any investment decisions.**
+
+---
+
+## Investment Risks
+
+### 1. Loss of Capital
+
+**You may lose some or all of your invested capital.** Cryptocurrency investments are inherently risky. The CHAOS strategy reduces but does not eliminate downside risk.
+
+- **Maximum theoretical loss**: 100% of invested capital
+- **Maximum historical drawdown**: -40% (backtest period)
+- **No guarantee of recovery**: Past drawdown recovery does not guarantee future recovery
+
+### 2. No Guaranteed Returns
+
+**CHAOS does not promise, guarantee, or imply any specific return.** The backtest results presented in Chapter 5 are historical analysis only.
+
+- Past performance is not indicative of future results
+- Market conditions may change in ways not captured by backtests
+- The strategy may underperform HODL in certain market regimes
+- LP fee yields may decrease over time
+
+### 3. Benchmark Underperformance
+
+**CHAOS may underperform a simple HODL strategy**, especially during sustained bull markets.
+
+- **Historical underperformance**: -47% vs HODL during Jul-Dec 2023 bull run
+- **Design trade-off**: CHAOS optimizes for risk-adjusted returns, not maximum absolute returns
+- **No guarantee of outperformance**: Antifragile properties may not manifest in all conditions
+
+---
+
+## Technical Risks
+
+### 4. Smart Contract Risk
+
+**Smart contracts may contain bugs despite auditing and testing.**
+
+- Immutable contracts cannot be patched after deployment
+- Audit does not guarantee absence of bugs
+- Novel attack vectors may be discovered after deployment
+- Potential for complete fund loss if critical bug is exploited
+
+### 5. Oracle Risk
+
+**Price data feeds may be inaccurate, delayed, or manipulated.**
+
+- Oracle manipulation could trigger incorrect rebalancing
+- Oracle failure could prevent timely rebalancing
+- Multi-source aggregation reduces but does not eliminate this risk
+
+### 6. Infrastructure Risk
+
+**Off-chain services (API, oracle aggregator, rebalancing engine) may fail.**
+
+- Server downtime could delay rebalancing
+- Key compromise could allow unauthorized transactions
+- Software bugs in off-chain components
+
+### 7. Cardano Network Risk
+
+**The Cardano blockchain itself may experience issues.**
+
+- Network congestion could delay transactions
+- Protocol upgrades (hard forks) could impact smart contracts
+- Consensus failures (theoretical, extremely unlikely)
+
+---
+
+## Market Risks
+
+### 8. Cryptocurrency Market Risk
+
+**The entire cryptocurrency market may experience severe downturns.**
+
+- Regulatory crackdowns across multiple jurisdictions
+- Macroeconomic events (recession, rate hikes, geopolitical crisis)
+- Market contagion (exchange failures, stablecoin collapses)
+- Technology obsolescence
+
+### 9. ADA-Specific Risk
+
+**ADA may decline significantly in value or become worthless.**
+
+- Cardano ecosystem may fail to achieve adoption
+- Competing blockchains may surpass Cardano
+- ADA may be delisted from major exchanges
+- Cardano development may slow or stop
+
+### 10. DJED Stablecoin Risk
+
+**DJED may lose its peg to USD.**
+
+- Algorithmic stablecoin mechanisms may fail under stress
+- Reserve ratio may become insufficient during extreme ADA crashes
+- Historical precedent: UST/Terra collapsed in May 2022
+- DJED has limited track record and market depth
+
+### 11. Liquidity Risk
+
+**You may not be able to exit your position at a fair price.**
+
+- CHAOS token may have low trading volume
+- Large withdrawals may cause slippage
+- DEX liquidity may be insufficient during market stress
+- No market maker obligation
+
+---
+
+## Governance and Operational Risks
+
+### 12. Governance Risk
+
+**Decentralized governance may lead to suboptimal decisions.**
+
+- Token-weighted voting favors large holders
+- Voter apathy could allow minority to control protocol
+- Malicious governance proposals could harm the protocol
+- Governance may be slow to respond to emergencies
+
+### 13. Key Person Risk
+
+**The protocol depends on its founding team during early phases.**
+
+- Team members may leave the project
+- Key technical knowledge may be concentrated
+- Team may make strategic errors
+
+### 14. Operational Risk
+
+**Day-to-day operations involve human and system errors.**
+
+- Operator mistakes during rebalancing
+- Configuration errors in automated systems
+- Communication breakdowns within team
+
+---
+
+## Regulatory and Legal Risks
+
+### 15. Regulatory Risk
+
+**Cryptocurrency regulations are evolving and uncertain.**
+
+- CHAOS may be classified as a security in certain jurisdictions
+- Token holders may face tax obligations
+- Regulatory action could force protocol shutdown
+- KYC/AML requirements may be imposed retroactively
+
+### 16. Tax Risk
+
+**Tax treatment of CHAOS tokens and protocol participation is unclear.**
+
+- Staking rewards may be taxable income
+- Token trading may trigger capital gains
+- Rebalancing within the treasury may create taxable events
+- Tax laws vary by jurisdiction and may change
+
+### 17. Legal Risk
+
+**Participants may face legal liability.**
+
+- Securities law violations if CHAOS is classified as a security
+- No legal recourse if funds are lost due to smart contract bugs
+- DAO governance may not be recognized as a legal entity
+- Cross-border legal complications
+
+---
+
+## Specific CHAOS Protocol Risks
+
+### 18. Strategy Model Risk
+
+**The mathematical models underlying CHAOS may be flawed.**
+
+- Geometric Brownian Motion may not accurately model ADA prices
+- Parameter estimates may be wrong (volatility, transaction costs)
+- Theorem assumptions may not hold in practice
+- "Antifragile" properties may not manifest as predicted
+
+### 19. Backtest Limitations
+
+**Backtest results have inherent limitations.**
+
+- Survivorship bias (ADA survived; many cryptocurrencies didn't)
+- Look-ahead bias (parameters may be overfitted to historical data)
+- Transaction cost assumptions may be unrealistic at scale
+- LP fee assumptions may not hold in future market conditions
+- 2-year backtest period may not capture all market regimes
+
+### 20. Competitive Risk
+
+**Other protocols may offer superior products.**
+
+- Better-funded competitors may launch similar strategies
+- DeFi innovation may make CHAOS approach obsolete
+- Institutional competitors with more resources may enter the market
+
+---
+
+## Mitigation Summary
+
+While we have implemented significant mitigations (detailed in Chapters 6, 8, and 9), **no mitigation eliminates risk entirely**.
+
+| Risk Category | Primary Mitigation | Residual Risk |
+|--------------|-------------------|---------------|
+| Smart Contract | Audits + bug bounty | Medium |
+| Oracle | Multi-source consensus | Low |
+| Regulatory | Offshore entity + DAO | High |
+| Market | Diversified treasury | Medium |
+| Strategy | Transparent reporting | Medium |
+| Operational | Monitoring + circuit breaker | Low |
+
+---
+
+## Who Should NOT Invest
+
+**Do NOT participate in CHAOS if you:**
+
+- Cannot afford to lose your entire investment
+- Need guaranteed returns or income
+- Do not understand cryptocurrency markets
+- Are subject to regulatory restrictions on crypto (check your jurisdiction)
+- Expect returns matching pure bull market performance
+- Are not comfortable with smart contract risk
+- Need immediate liquidity at all times
+
+---
+
+## Who May Consider Participating
+
+**CHAOS may be appropriate for investors who:**
+
+- Have a long-term investment horizon (2+ years)
+- Understand and accept the risks described above
+- Want exposure to ADA with reduced downside risk
+- Value transparent, mathematically-grounded strategies
+- Are comfortable with DeFi and smart contract technology
+- Can afford to lose their invested capital
+- Have consulted financial and tax advisors
+
+---
+
+## Acknowledgment
+
+By depositing ADA into the CHAOS treasury or acquiring CHAOS tokens, you acknowledge that you have:
+
+1. Read and understood this entire Risk Disclosure
+2. Read and understood the whitepaper, including all technical chapters
+3. Consulted appropriate professional advisors
+4. Made an independent investment decision
+5. Accepted all risks described herein
+6. Verified your participation is legal in your jurisdiction
+
+---
+
+## Contact
+
+**For questions about risks**: [risk@chaostoken.io](mailto:risk@chaostoken.io)
+
+**For legal inquiries**: [legal@chaostoken.io](mailto:legal@chaostoken.io)
+
+**For security vulnerabilities**: [security@chaostoken.io](mailto:security@chaostoken.io)
+
+---
+
+*This Risk Disclosure was last updated on February 7, 2026. It may be updated as new risks are identified or as the regulatory environment evolves. It is the reader's responsibility to review the latest version.*
