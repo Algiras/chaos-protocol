@@ -1,0 +1,108 @@
+name: Build Research PDFs
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'research/papers/**'
+  workflow_dispatch:
+
+jobs:
+  build-pdfs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Quarto
+        uses: quarto-dev/quarto-actions/setup@v2
+        with:
+          version: 1.4.549
+
+      - name: Install R (for Quarto figures)
+        uses: r-lib/actions/setup-r@v2
+        with:
+          r-version: '4.3.2'
+
+      - name: Install R packages
+        run: |
+          R -e 'install.packages(c("ggplot2", "dplyr", "tidyr", "reshape2", "gridExtra"))'
+
+      - name: Build Whitepaper
+        run: |
+          cd research/papers/whitepaper
+          quarto render . --to pdf
+
+      - name: Build Proof Paper
+        run: |
+          cd research/papers/whitepaper
+          quarto render proof-paper.qmd --to pdf
+
+      - name: Build Investor Brief
+        run: |
+          cd research/papers/whitepaper
+          quarto render investor-brief.qmd --to pdf
+
+      - name: Build Litepaper
+        run: |
+          cd research/papers/whitepaper
+          quarto render litepaper.qmd --to pdf
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: papers-${{ github.run_number }}
+          release_name: Research Papers Build ${{ github.run_number }}
+          body: |
+            Automated build of research papers from commit ${{ github.sha }}
+
+            PDFs generated:
+            - Whitepaper
+            - Proof Paper
+            - Investor Brief
+            - Litepaper
+          draft: false
+          prerelease: false
+
+      - name: Upload Whitepaper
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: research/papers/whitepaper/_book/CHAOS-Token--Antifragile-Volatility-Harvesting-on-Cardano.pdf
+          asset_name: whitepaper.pdf
+          asset_content_type: application/pdf
+
+      - name: Upload Proof Paper
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: research/papers/whitepaper/proof-paper.pdf
+          asset_name: proof-paper.pdf
+          asset_content_type: application/pdf
+
+      - name: Upload Investor Brief
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: research/papers/whitepaper/investor-brief.pdf
+          asset_name: investor-brief.pdf
+          asset_content_type: application/pdf
+
+      - name: Upload Litepaper
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: research/papers/whitepaper/litepaper.pdf
+          asset_name: litepaper.pdf
+          asset_content_type: application/pdf
