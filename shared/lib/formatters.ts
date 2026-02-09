@@ -2,7 +2,7 @@
  * Shared formatting utilities for the CHAOS app.
  */
 
-import type { CurrencyCode } from '@/contexts/CurrencyContext';
+type CurrencyCode = 'USD' | 'EUR' | 'GBP' | 'ADA';
 
 /** Format a number as currency (no decimals). Defaults to USD. */
 export function formatCurrency(

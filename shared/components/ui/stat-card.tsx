@@ -1,5 +1,5 @@
-import { Card, CardContent } from '@/components/ui/card';
-import { formatPercent } from '@/lib/formatters';
+import { Card, CardContent } from './card';
+import { formatPercent } from '../../lib/formatters';
 import { type LucideIcon } from 'lucide-react';
 
 const COLOR_MAP = {
