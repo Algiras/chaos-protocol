@@ -26,11 +26,16 @@ jobs:
         with:
           node-version: '18'
 
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 8
+
       - name: Install dependencies
-        run: npm install
+        run: pnpm install
 
       - name: Build site
-        run: npm run build
+        run: pnpm run build
         env:
           NEXT_PUBLIC_BUILD_TARGET: marketing
           NEXT_PUBLIC_SITE_URL: https://algiras.github.io/chaos-protocol
