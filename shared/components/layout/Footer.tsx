@@ -15,17 +15,17 @@ export function Footer() {
             <h4 className="font-semibold text-white mb-4">Learn</h4>
             <ul className="space-y-2 text-sm">
               <li>
-                <Link href="/research" className="text-gray-400 hover:text-white transition-colors">
+                <Link href="/research" className="text-gray-400 hover:text-blue-400 transition-colors">
                   Research &amp; Publications
                 </Link>
               </li>
               <li>
-                <Link href="/how-it-works" className="text-gray-400 hover:text-white transition-colors">
+                <Link href="/how-it-works" className="text-gray-400 hover:text-blue-400 transition-colors">
                   How It Works
                 </Link>
               </li>
               <li>
-                <Link href="/investors" className="text-gray-400 hover:text-white transition-colors">
+                <Link href="/investors" className="text-gray-400 hover:text-blue-400 transition-colors">
                   For Investors
                 </Link>
               </li>
@@ -35,12 +35,12 @@ export function Footer() {
             <h4 className="font-semibold text-white mb-4">Resources</h4>
             <ul className="space-y-2 text-sm">
               <li>
-                <a href="https://github.com/Algiras/chaos-protocol" className="text-gray-400 hover:text-white transition-colors">
+                <a href="https://github.com/Algiras/chaos-protocol" className="text-gray-400 hover:text-blue-400 transition-colors">
                   GitHub
                 </a>
               </li>
               <li>
-                <a href="/whitepaper/chaos-whitepaper.pdf" className="text-gray-400 hover:text-white transition-colors">
+                <a href="/whitepaper/chaos-whitepaper.pdf" className="text-gray-400 hover:text-blue-400 transition-colors">
                   Whitepaper
                 </a>
               </li>

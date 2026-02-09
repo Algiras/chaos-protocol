@@ -650,7 +650,7 @@ export default function Investors() {
                 </div>
 
                 <div className="text-center pt-8 border-t border-gray-200">
-                  <Link href="/dashboard">
+                  <Link href="/coming-soon">
                     <Button size="lg" className="bg-gradient-to-r from-blue-600 to-purple-600 hover:opacity-90 text-lg px-8 shadow-lg shadow-blue-600/25">
                       Launch App
                       <ArrowRight className="ml-2 h-5 w-5" />
