@@ -66,13 +66,13 @@ export default function Home() {
 
           <FadeIn delay={0.3}>
             <div className="flex flex-col sm:flex-row gap-4">
-              <a href={process.env.NEXT_PUBLIC_SITE_URL === 'https://chaosprotocol.io' ? 'https://app.chaosprotocol.io' : '/dashboard'}>
+              <Link href="/coming-soon">
                 <Button size="lg" variant="chaos" className="text-lg px-8 py-6">
                   <Sparkles className="mr-3 h-6 w-6" />
                   Launch App
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Button>
-              </a>
+              </Link>
               <Link href="/research">
                 <Button size="lg" variant="outline" className="text-lg px-8 py-6 border-gray-700 text-white hover:bg-gray-800">
                   <FileText className="mr-3 h-6 w-6" />
@@ -282,13 +282,13 @@ export default function Home() {
           </FadeIn>
           <FadeIn delay={0.2}>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <a href={process.env.NEXT_PUBLIC_SITE_URL === 'https://chaosprotocol.io' ? 'https://app.chaosprotocol.io' : '/dashboard'}>
+              <Link href="/coming-soon">
                 <Button size="lg" variant="chaos" className="text-lg px-10 py-6">
                   <Sparkles className="mr-3 h-6 w-6" />
                   Launch App
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Button>
-              </a>
+              </Link>
               <Link href="/research">
                 <Button size="lg" variant="outline" className="text-lg px-10 py-6 border-gray-700 text-white hover:bg-gray-800">
                   <FileText className="mr-3 h-6 w-6" />
@@ -300,30 +300,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="py-12 border-t border-gray-800">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-8">
-            <div className="text-2xl font-black text-white tracking-tight">
-              CHAOS
-            </div>
-            <div className="flex items-center gap-8">
-              <a href="https://github.com/Algiras/chaos" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white transition-colors">
-                GitHub
-              </a>
-              <a href="https://discord.gg/chaos" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white transition-colors">
-                Discord
-              </a>
-              <a href="https://twitter.com/chaostoken" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white transition-colors">
-                Twitter
-              </a>
-            </div>
-            <div className="text-gray-500 text-sm">
-              © 2026 CHAOS Protocol. All rights reserved.
-            </div>
-          </div>
-        </div>
-      </footer>
     </div>
   );
 }

@@ -618,7 +618,7 @@ export default function Investors() {
               <CardContent className="p-8 md:p-12">
                 <div className="grid md:grid-cols-2 gap-8 mb-8">
                   <div>
-                    <h3 className="text-xl font-bold text-gray-900 mb-4">Contact</h3>
+                    <h3 className="text-xl font-bold text-gray-900 mb-4">Links</h3>
                     <div className="space-y-3">
                       <p className="text-gray-600">
                         <span className="font-semibold">Web:</span>{' '}
@@ -626,11 +626,7 @@ export default function Investors() {
                       </p>
                       <p className="text-gray-600">
                         <span className="font-semibold">GitHub:</span>{' '}
-                        <a href="https://github.com/Algiras/chaos" className="text-blue-600 hover:underline">github.com/Algiras/chaos</a>
-                      </p>
-                      <p className="text-gray-600">
-                        <span className="font-semibold">Email:</span>{' '}
-                        <a href="mailto:investors@chaosprotocol.io" className="text-blue-600 hover:underline">investors@chaosprotocol.io</a>
+                        <a href="https://github.com/Algiras/chaos-protocol" className="text-blue-600 hover:underline">github.com/Algiras/chaos-protocol</a>
                       </p>
                     </div>
                   </div>

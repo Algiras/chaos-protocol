@@ -1,4 +1,5 @@
 import Head from 'next/head';
+import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { FadeIn, StaggerContainer, StaggerItem } from '@/components/animations';
 import { Button } from '@/components/ui/button';
@@ -228,7 +229,7 @@ export default function Research() {
                       </p>
                     </div>
                   </div>
-                  <a href="https://github.com/Algiras/chaos" target="_blank" rel="noopener noreferrer">
+                  <a href="https://github.com/Algiras/chaos-protocol" target="_blank" rel="noopener noreferrer">
                     <Button variant="outline" size="lg" className="border-gray-700 text-white hover:bg-gray-700 hover:text-blue-400">
                       <ExternalLink className="mr-2 h-5 w-5" />
                       View on GitHub
@@ -264,12 +265,12 @@ export default function Research() {
             </p>
           </FadeIn>
           <FadeIn delay={0.2}>
-            <a href={process.env.NEXT_PUBLIC_SITE_URL === 'https://chaosprotocol.io' ? 'https://app.chaosprotocol.io' : '/dashboard'}>
+            <Link href="/coming-soon">
               <Button size="lg" variant="chaos" className="text-lg px-10 py-6">
                 Launch App
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
-            </a>
+            </Link>
           </FadeIn>
         </div>
       </section>

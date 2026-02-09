@@ -259,12 +259,12 @@ export default function HowItWorks() {
           </FadeIn>
           <FadeIn delay={0.2}>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <a href={process.env.NEXT_PUBLIC_SITE_URL === 'https://chaosprotocol.io' ? 'https://app.chaosprotocol.io' : '/dashboard'}>
+              <Link href="/coming-soon">
                 <Button size="lg" variant="chaos" className="text-lg px-10 py-6">
                   Launch App
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Button>
-              </a>
+              </Link>
               <Link href="/research">
                 <Button size="lg" variant="outline" className="text-lg px-10 py-6 border-gray-700 text-white hover:bg-gray-800">
                   Read the Research

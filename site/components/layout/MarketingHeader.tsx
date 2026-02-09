@@ -16,16 +16,14 @@ const MARKETING_LINKS = [
 
 const RESOURCE_LINKS = [
   { href: '/whitepaper/chaos-whitepaper.pdf', label: 'Whitepaper', icon: Download, download: true },
-  { href: 'https://github.com/Algiras/chaos', label: 'GitHub', icon: ExternalLink, external: true },
+  { href: 'https://github.com/Algiras/chaos-protocol', label: 'GitHub', icon: ExternalLink, external: true },
 ];
 
 export function MarketingHeader() {
   const router = useRouter();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  const launchAppUrl = process.env.NEXT_PUBLIC_SITE_URL === 'https://chaosprotocol.io'
-    ? 'https://app.chaosprotocol.io'
-    : '/dashboard';
+  const launchAppUrl = '/coming-soon';
 
   return (
     <>

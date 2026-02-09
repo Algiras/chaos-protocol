@@ -4,7 +4,7 @@ export function Footer() {
   return (
     <footer className="bg-gray-950 py-12">
       <div className="max-w-6xl mx-auto px-6">
-        <div className="grid md:grid-cols-4 gap-8 mb-8">
+        <div className="grid md:grid-cols-3 gap-8 mb-8">
           <div>
             <h3 className="text-xl font-black text-white mb-4">CHAOS</h3>
             <p className="text-gray-400 text-sm">
@@ -12,26 +12,21 @@ export function Footer() {
             </p>
           </div>
           <div>
-            <h4 className="font-semibold text-white mb-4">Product</h4>
+            <h4 className="font-semibold text-white mb-4">Learn</h4>
             <ul className="space-y-2 text-sm">
               <li>
-                <Link href="/time-machine" className="text-gray-400 hover:text-white transition-colors">
-                  Time Machine
+                <Link href="/research" className="text-gray-400 hover:text-white transition-colors">
+                  Research &amp; Publications
                 </Link>
               </li>
               <li>
-                <Link href="/governance" className="text-gray-400 hover:text-white transition-colors">
-                  Governance
+                <Link href="/how-it-works" className="text-gray-400 hover:text-white transition-colors">
+                  How It Works
                 </Link>
               </li>
               <li>
                 <Link href="/investors" className="text-gray-400 hover:text-white transition-colors">
                   For Investors
-                </Link>
-              </li>
-              <li>
-                <Link href="/dashboard" className="text-gray-400 hover:text-white transition-colors">
-                  Dashboard
                 </Link>
               </li>
             </ul>
@@ -40,23 +35,13 @@ export function Footer() {
             <h4 className="font-semibold text-white mb-4">Resources</h4>
             <ul className="space-y-2 text-sm">
               <li>
-                <a href="https://github.com/Algiras/chaos" className="text-gray-400 hover:text-white transition-colors">
+                <a href="https://github.com/Algiras/chaos-protocol" className="text-gray-400 hover:text-white transition-colors">
                   GitHub
                 </a>
               </li>
               <li>
-                <a href="/whitepaper.pdf" className="text-gray-400 hover:text-white transition-colors">
+                <a href="/whitepaper/chaos-whitepaper.pdf" className="text-gray-400 hover:text-white transition-colors">
                   Whitepaper
-                </a>
-              </li>
-            </ul>
-          </div>
-          <div>
-            <h4 className="font-semibold text-white mb-4">Contact</h4>
-            <ul className="space-y-2 text-sm">
-              <li>
-                <a href="mailto:investors@chaosprotocol.io" className="text-gray-400 hover:text-white transition-colors">
-                  investors@chaosprotocol.io
                 </a>
               </li>
             </ul>
@@ -64,7 +49,7 @@ export function Footer() {
         </div>
         <div className="border-t border-gray-800 pt-8 text-center">
           <p className="text-gray-500 text-sm">
-            &copy; 2026 CHAOS Foundation. Not financial advice.
+            &copy; 2026 CHAOS Protocol. All rights reserved.
           </p>
         </div>
       </div>
