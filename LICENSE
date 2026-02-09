@@ -1,29 +1,54 @@
-MIT License
+CHAOS Protocol License
 
-Copyright (c) 2026 CHAOS Protocol
+Copyright (c) 2026 CHAOS Protocol. All rights reserved.
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+1. VIEWING AND EDUCATIONAL USE
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+   Permission is granted to any person to view, study, and reference the
+   source code and research materials in this repository for personal
+   educational and research purposes only.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+2. NO COMMERCIAL USE
 
----
+   You may NOT use, copy, modify, merge, publish, distribute, sublicense,
+   or sell copies of the Software, smart contracts, strategies, or any
+   derivative works for commercial purposes without explicit written
+   permission from the copyright holder.
 
-Research Papers License (CC BY 4.0)
+   "Commercial purposes" includes but is not limited to:
+   - Operating a fund, vault, or protocol using the strategies described herein
+   - Deploying the smart contracts to generate revenue
+   - Incorporating the code or strategies into a commercial product or service
+   - Using the research to develop competing products
 
-Research papers in research/papers/ are licensed under the Creative Commons
-Attribution 4.0 International License. To view a copy of this license, visit
-http://creativecommons.org/licenses/by/4.0/
+3. CONTRIBUTIONS
+
+   By submitting a pull request or contribution, you grant the copyright
+   holder a perpetual, worldwide, non-exclusive, royalty-free license to
+   use, reproduce, modify, and distribute your contribution as part of
+   this project.
+
+4. RESEARCH CITATION
+
+   Academic and research use is permitted provided proper citation is given.
+   Research papers in research/papers/ may be cited freely.
+
+5. SMART CONTRACTS
+
+   The smart contract source code is provided for transparency and audit
+   purposes only. Deploying these contracts for commercial use requires
+   written permission from the copyright holder.
+
+6. NO WARRANTY
+
+   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+   IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+   FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+   AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+   SOFTWARE.
+
+7. CONTACT
+
+   For commercial licensing inquiries, contact the copyright holder.
