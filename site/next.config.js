@@ -3,6 +3,7 @@ module.exports = {
   reactStrictMode: true,
   trailingSlash: true, // GitHub Pages compatibility
   images: { unoptimized: true }, // Required for static export
+  transpilePackages: ['@chaos/shared'],
   // Exclude app-only pages from marketing build
   exportPathMap: async function (
     defaultPathMap,
