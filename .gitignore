@@ -17,6 +17,7 @@ node_modules/
 dist/
 .next/
 out/
+next-env.d.ts
 
 # Quarto build output
 whitepaper/_book/

@@ -2,7 +2,7 @@
 
 **Antifragile Volatility Harvesting on Cardano** — Research & Formal Verification
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![License: Custom](https://img.shields.io/badge/License-Custom-red.svg)](LICENSE)
 [![Lean 4 Verified](https://img.shields.io/badge/lean4-verified-brightgreen)](research/formal-verification/)
 [![Aiken v1.1](https://img.shields.io/badge/aiken-v1.1.21-orange)](contracts/)
 
@@ -10,18 +10,31 @@
 
 CHAOS is a volatility harvesting protocol that generates positive expected returns by rebalancing between volatile and stable assets. This repository contains:
 
-- **Formal verification** (Lean 4 proofs)
-- **Research papers** (whitepaper, proof paper, investor brief)
-- **Smart contracts** (Aiken validators for Cardano)
-- **Backtests & simulations** (historical performance, Monte Carlo stress tests)
-- **Marketing website** (Next.js static site)
+- **Formal verification** (Lean 4 proofs) ✅ Complete
+- **Research papers** (whitepaper with full analysis) ✅ Complete
+- **Smart contracts** (Aiken validators for Cardano) 🚧 In development
+- **Backtests & simulations** (historical performance, Monte Carlo stress tests) ✅ Complete
+- **Marketing website** (Next.js static site) ✅ Live at [chaosprotocol.io](https://chaosprotocol.io)
+
+## Project Status
+
+| Component | Status | Description |
+|-----------|--------|-------------|
+| Research & Math | ✅ Complete | 4 theorems formally verified in Lean 4 |
+| Backtests | ✅ Complete | Multi-asset historical validation (2019-2024) |
+| Simulations | ✅ Complete | Stress tests, equilibrium analysis, feasibility studies |
+| Marketing Site | ✅ Live | Static site deployed to chaosprotocol.io |
+| Smart Contracts | 🚧 Planned | Aiken validators (see [ARCHITECTURE.md](docs/ARCHITECTURE.md)) |
+| Dashboard/App | 🚧 Planned | Blockchain-integrated UI (see [ARCHITECTURE.md](docs/ARCHITECTURE.md)) |
+| Mainnet Launch | 📅 Future | Pending contract development and audit |
+
+**Current Phase:** Research & validation complete. Smart contract development planned for Q2 2026.
 
 ## Research Publications
 
 - [**Whitepaper**](research/papers/whitepaper/_book/CHAOS-Token--Antifragile-Volatility-Harvesting-on-Cardano.pdf) — Full technical specification (47 pages)
-- [**Proof Paper**](research/papers/whitepaper/proof-paper.pdf) — Lean 4 formal proofs of core theorems
-- [**Investor Brief**](research/papers/whitepaper/investor-brief.pdf) — Executive summary for investors
 - [**Formal Verification**](research/formal-verification/) — Lean 4 theorem proofs source
+- Additional papers (proof paper, investor brief) available on [chaosprotocol.io/research](https://chaosprotocol.io/research)
 
 ## Key Theorems (Formally Verified)
 
