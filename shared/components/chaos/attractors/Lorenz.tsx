@@ -159,29 +159,53 @@ export const LorenzAttractor: React.FC<LorenzAttractorProps> = ({
           vertexColors
           linewidth={2}
           transparent
-          opacity={0.95}
+          opacity={0.98}
+          blending={THREE.AdditiveBlending}
         />
       </line>
 
-      {/* Add glow effect with particles at key points */}
-      {Array.from({ length: 50 }).map((_, i) => {
-        const index = Math.floor((i / 50) * (positions.length / 3)) * 3;
+      {/* Enhanced glow effect with larger, more visible particles */}
+      {Array.from({ length: 100 }).map((_, i) => {
+        const index = Math.floor((i / 100) * (positions.length / 3)) * 3;
+        const colorIndex = i < 33 ? 0 : i < 67 ? 1 : 2;
+        const baseSize = 0.03 + (i % 10) * 0.005; // Varied sizes
+
         return (
-          <mesh
-            key={i}
-            position={[
-              positions[index],
-              positions[index + 1],
-              positions[index + 2],
-            ]}
-          >
-            <sphereGeometry args={[0.02, 8, 8]} />
-            <meshBasicMaterial
-              color={i < 17 ? colors[0] : i < 34 ? colors[1] : colors[2]}
-              transparent
-              opacity={0.6}
-            />
-          </mesh>
+          <group key={i}>
+            {/* Main particle */}
+            <mesh
+              position={[
+                positions[index],
+                positions[index + 1],
+                positions[index + 2],
+              ]}
+            >
+              <sphereGeometry args={[baseSize, 16, 16]} />
+              <meshStandardMaterial
+                color={colors[colorIndex]}
+                emissive={colors[colorIndex]}
+                emissiveIntensity={0.8}
+                transparent
+                opacity={0.9}
+              />
+            </mesh>
+
+            {/* Outer glow layer */}
+            <mesh
+              position={[
+                positions[index],
+                positions[index + 1],
+                positions[index + 2],
+              ]}
+            >
+              <sphereGeometry args={[baseSize * 2, 16, 16]} />
+              <meshBasicMaterial
+                color={colors[colorIndex]}
+                transparent
+                opacity={0.2}
+              />
+            </mesh>
+          </group>
         );
       })}
     </group>

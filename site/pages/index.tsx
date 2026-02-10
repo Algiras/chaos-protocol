@@ -23,16 +23,7 @@ export default function Home() {
 
       {/* Hero Section */}
       <section className="relative pt-32 pb-20 overflow-hidden">
-
-        {/* Additional Background Effects for depth */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 0.2 }}
-          transition={{ duration: 2 }}
-          className="absolute inset-0 bg-gradient-to-b from-transparent via-gray-900/50 to-gray-900"
-        />
-        
-        <div className="relative max-w-7xl mx-auto px-6">
+        <div className="relative max-w-7xl mx-auto px-6 text-center">
           <FadeIn>
             <span className="inline-block px-4 py-2 rounded-full bg-blue-600/20 text-blue-400 text-sm font-bold mb-8 border border-blue-600/30">
               Built on Cardano
@@ -49,14 +40,14 @@ export default function Home() {
           </FadeIn>
 
           <FadeIn delay={0.2}>
-            <p className="text-xl text-gray-200 max-w-2xl mb-12 leading-relaxed">
+            <p className="text-xl text-gray-200 max-w-2xl mx-auto mb-12 leading-relaxed">
               A formally verified treasury protocol that turns volatility into profit.
               Mathematically proven with zero unproven assumptions.
             </p>
           </FadeIn>
 
           <FadeIn delay={0.3}>
-            <div className="flex flex-col sm:flex-row gap-4">
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link href="/coming-soon">
                 <Button size="lg" variant="chaos" className="text-lg px-8 py-6">
                   <Sparkles className="mr-3 h-6 w-6" />
@@ -270,7 +261,7 @@ export default function Home() {
               className="inline-block mb-8"
             >
               <div className="w-24 h-24 bg-gradient-to-br from-blue-600 to-purple-600 rounded-3xl flex items-center justify-center mx-auto shadow-2xl shadow-blue-600/30">
-                <Sparkles className="w-12 h-12 text-white" />
+                <TrendingUp className="w-12 h-12 text-white" />
               </div>
             </motion.div>
             <h2 className="text-4xl md:text-5xl font-black text-white mb-6">
@@ -287,7 +278,6 @@ export default function Home() {
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link href="/coming-soon">
                 <Button size="lg" variant="chaos" className="text-lg px-10 py-6">
-                  <Sparkles className="mr-3 h-6 w-6" />
                   Launch App
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Button>

@@ -3,14 +3,6 @@ import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, Rocket, FileText, Github, Clock } from 'lucide-react';
-import dynamic from 'next/dynamic';
-
-// Lazy load AttractorBackground for better performance
-const AttractorBackground = dynamic(
-  () => import("@/components/chaos/core/AttractorBackground"),
-  { ssr: false }
-);
-
 export default function ComingSoon() {
   return (
     <>
@@ -28,25 +20,7 @@ export default function ComingSoon() {
         <meta name="twitter:image" content="https://chaosprotocol.io/og-image.png" />
       </Head>
 
-      <section className="relative min-h-[80vh] flex items-center justify-center bg-gray-900 overflow-hidden">
-        {/* Lorenz Attractor Background */}
-        <AttractorBackground
-          type="lorenz"
-          volatility={0.6}
-          sentiment="neutral"
-          interactive={true}
-          performance="auto"
-          opacity={0.5}
-          className="absolute inset-0"
-        />
-
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 0.2 }}
-          transition={{ duration: 2 }}
-          className="absolute inset-0 bg-gradient-to-b from-transparent via-gray-900/70 to-gray-900"
-        />
-
+      <section className="relative min-h-[80vh] flex items-center justify-center overflow-hidden">
         <div className="relative z-10 max-w-3xl mx-auto px-6 text-center">
           <motion.div
             initial={{ scale: 0.5, opacity: 0 }}

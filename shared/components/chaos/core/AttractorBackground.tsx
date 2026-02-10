@@ -8,6 +8,10 @@ const LorenzAttractor = lazy(() =>
   import('../attractors/Lorenz').then(module => ({ default: module.default }))
 );
 
+const FloatingParticles = lazy(() =>
+  import('../effects/FloatingParticles').then(module => ({ default: module.default }))
+);
+
 interface AttractorBackgroundProps {
   /** Type of attractor to display */
   type?: 'lorenz' | 'rossler' | 'henon' | 'duffing';
@@ -171,7 +175,7 @@ export const AttractorBackground: React.FC<AttractorBackgroundProps> = ({
     switch (capability) {
       case 'high':
         return {
-          points: 10000,
+          points: 3000,
           colors,
           speed: 1,
           interactive: interactive,
@@ -179,7 +183,7 @@ export const AttractorBackground: React.FC<AttractorBackgroundProps> = ({
       case 'medium':
       default:
         return {
-          points: 5000,
+          points: 2000,
           colors,
           speed: 0.8,
           interactive: interactive,
@@ -198,16 +202,26 @@ export const AttractorBackground: React.FC<AttractorBackgroundProps> = ({
       <Canvas
         camera={{ position: [0, 2, 5], fov: 75 }}
         gl={{
-          antialias: capability === 'high',
+          antialias: false,
           alpha: true,
-          powerPreference: capability === 'high' ? 'high-performance' : 'default',
+          powerPreference: 'default',
+          preserveDrawingBuffer: true,
+          failIfMajorPerformanceCaveat: false,
         }}
-        dpr={capability === 'high' ? [1, 2] : 1}
+        dpr={1}
         frameloop="always"
         style={{ width: '100%', height: '100%' }}
         onCreated={(state) => {
-          // Ensure proper initialization
           state.gl.setClearColor(0x000000, 0);
+          // Handle context loss
+          const canvas = state.gl.domElement;
+          canvas.addEventListener('webglcontextlost', (e) => {
+            e.preventDefault();
+            console.log('WebGL context lost, attempting to restore...');
+          });
+          canvas.addEventListener('webglcontextrestored', () => {
+            console.log('WebGL context restored');
+          });
         }}
       >
         <Suspense fallback={null}>
@@ -218,11 +232,21 @@ export const AttractorBackground: React.FC<AttractorBackgroundProps> = ({
             />
           )}
           {/* Future: Add Rössler, Hénon, Duffing attractors here */}
+
+          {/* Add floating particles for ambient effect - reduced for performance */}
+          <FloatingParticles
+            count={50}
+            size={0.05}
+            colors={params.colors}
+            speed={0.3}
+            spread={20}
+          />
         </Suspense>
 
-        {/* Ambient lighting for better visibility */}
-        <ambientLight intensity={0.5} />
-        <pointLight position={[10, 10, 10]} intensity={1} />
+        {/* Enhanced lighting for better visibility and glow */}
+        <ambientLight intensity={0.6} />
+        <pointLight position={[10, 10, 10]} intensity={1.2} color="#5B8AB8" />
+        <pointLight position={[-10, -10, -10]} intensity={0.6} color="#6366F1" />
       </Canvas>
     </div>
   );

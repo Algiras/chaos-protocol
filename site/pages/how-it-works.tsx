@@ -5,14 +5,6 @@ import { FadeIn, StaggerContainer, StaggerItem } from '@/components/animations';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { ArrowRight, Wallet, TrendingUp, Shield, Zap, DollarSign, BarChart3, Lock } from 'lucide-react';
-import dynamic from 'next/dynamic';
-
-// Lazy load AttractorBackground for better performance
-const AttractorBackground = dynamic(
-  () => import("@/components/chaos/core/AttractorBackground"),
-  { ssr: false }
-);
-
 const steps = [
   {
     num: 1,
@@ -97,25 +89,7 @@ export default function HowItWorks() {
       </Head>
 
       {/* Hero Section */}
-      <section className="relative min-h-[60vh] flex items-center justify-center overflow-hidden bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
-        {/* Lorenz Attractor Background */}
-        <AttractorBackground
-          type="lorenz"
-          volatility={0.5}
-          sentiment="bullish"
-          interactive={true}
-          performance="auto"
-          opacity={0.6}
-          className="absolute inset-0"
-        />
-
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 0.3 }}
-          transition={{ duration: 2 }}
-          className="absolute inset-0 bg-gradient-to-b from-transparent via-gray-900/50 to-gray-900"
-        />
-
+      <section className="relative min-h-[60vh] flex items-center justify-center overflow-hidden">
         <div className="relative z-10 max-w-6xl mx-auto px-6 text-center">
           <FadeIn>
             <span className="inline-block px-4 py-2 rounded-full bg-purple-600/20 text-purple-400 text-sm font-bold mb-8 border border-purple-600/30">
@@ -143,11 +117,11 @@ export default function HowItWorks() {
       </section>
 
       {/* How It Works Steps */}
-      <section className="py-32 bg-gray-900">
+      <section className="py-32">
         <div className="max-w-6xl mx-auto px-6">
           <FadeIn className="text-center mb-20">
             <h2 className="text-4xl md:text-5xl font-black text-white mb-6">The Strategy in 3 Steps</h2>
-            <p className="text-gray-400 text-xl max-w-2xl mx-auto">
+            <p className="text-gray-300 text-xl max-w-2xl mx-auto">
               A formally verified approach to profiting from market chaos.
             </p>
           </FadeIn>
@@ -200,11 +174,11 @@ export default function HowItWorks() {
       </section>
 
       {/* Key Benefits */}
-      <section className="py-32 bg-gradient-to-b from-gray-900 to-gray-800">
+      <section className="py-32">
         <div className="max-w-6xl mx-auto px-6">
           <FadeIn className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-black text-white mb-6">Key Benefits</h2>
-            <p className="text-gray-400 text-xl max-w-2xl mx-auto">
+            <p className="text-gray-300 text-xl max-w-2xl mx-auto">
               Mathematically proven advantages over traditional HODL strategies.
             </p>
           </FadeIn>
@@ -251,7 +225,7 @@ export default function HowItWorks() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-32 bg-gray-900">
+      <section className="py-32">
         <div className="max-w-4xl mx-auto px-6 text-center">
           <FadeIn>
             <motion.div
@@ -268,7 +242,7 @@ export default function HowItWorks() {
             </h2>
           </FadeIn>
           <FadeIn delay={0.1}>
-            <p className="text-gray-400 text-xl mb-12 leading-relaxed">
+            <p className="text-gray-300 text-xl mb-12 leading-relaxed">
               Connect your wallet and see the protocol in action.
             </p>
           </FadeIn>

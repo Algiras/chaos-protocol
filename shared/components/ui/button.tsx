@@ -19,7 +19,7 @@ const buttonVariants = cva(
         ghost: "hover:bg-accent hover:text-accent-foreground",
         link: "text-primary underline-offset-4 hover:underline",
         chaos:
-          "relative overflow-hidden bg-gradient-to-r from-chaos-primary-600 via-chaos-accent-purple to-chaos-primary-500 text-white hover:shadow-lg hover:scale-[1.02] transition-all duration-500",
+          "relative overflow-hidden bg-gradient-to-r from-chaos-primary-600 via-chaos-accent-purple to-chaos-primary-500 text-white hover:shadow-2xl hover:shadow-chaos-accent-purple/50 hover:scale-[1.05] transition-all duration-300 animate-gradient-flow bg-[length:200%_200%]",
       },
       size: {
         default: "h-10 px-4 py-2",
