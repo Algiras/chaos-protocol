@@ -62,7 +62,7 @@ export default function Investors() {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.4 }}
-            className="text-5xl md:text-7xl font-black text-white mb-6 leading-tight"
+            className="text-5xl md:text-7xl font-black text-white mb-6 leading-tight text-center"
           >
             Make Money From<br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-emerald-500">
@@ -92,7 +92,7 @@ export default function Investors() {
                     <div className="text-4xl font-black text-blue-600 mb-2">
                       +<CountUp end={39} suffix="%" duration={2} delay={0.8} />
                     </div>
-                    <div className="text-sm text-gray-400 font-medium text-center">Outperformance vs HODL</div>
+                    <div className="text-sm text-gray-400 font-medium text-center">Outperformance</div>
                   </CardContent>
                 </Card>
               </motion.div>
@@ -690,28 +690,28 @@ export default function Investors() {
           <FadeIn delay={0.2}>
             <Card className="bg-gray-800 border-gray-700">
               <CardContent className="p-8 md:p-12">
-                <div className="grid md:grid-cols-2 gap-8 mb-8 items-start">
-                  <div className="flex flex-col">
-                    <h3 className="text-xl font-bold text-white mb-4">Links</h3>
-                    <div className="space-y-3 flex-1">
-                      <p className="text-gray-300">
-                        <span className="font-semibold">Web:</span>{' '}
-                        <a href="https://chaosprotocol.io" className="text-blue-400 hover:underline">chaosprotocol.io</a>
-                      </p>
-                      <p className="text-gray-300">
-                        <span className="font-semibold">GitHub:</span>{' '}
-                        <a href="https://github.com/Algiras/chaos-protocol" className="text-blue-400 hover:underline">github.com/Algiras/chaos-protocol</a>
-                      </p>
+                <div className="space-y-8 mb-12">
+                  <div>
+                    <h3 className="text-xl font-bold text-white mb-6">Links</h3>
+                    <div className="grid md:grid-cols-2 gap-x-12 gap-y-4">
+                      <div>
+                        <div className="text-sm text-gray-500 font-semibold mb-1">Web</div>
+                        <a href="https://chaosprotocol.io" className="text-blue-400 hover:underline text-lg">chaosprotocol.io</a>
+                      </div>
+                      <div>
+                        <div className="text-sm text-gray-500 font-semibold mb-1">GitHub</div>
+                        <a href="https://github.com/Algiras/chaos-protocol" className="text-blue-400 hover:underline text-lg break-all">github.com/Algiras/chaos-protocol</a>
+                      </div>
                     </div>
                   </div>
-                  <div className="flex flex-col">
-                    <h3 className="text-xl font-bold text-white mb-4">Resources</h3>
-                    <div className="space-y-3 flex-1">
+                  <div>
+                    <h3 className="text-xl font-bold text-white mb-6">Resources</h3>
+                    <div className="grid md:grid-cols-2 gap-4">
                       <a href="/whitepaper/investor-brief.pdf" download>
                         <Card className="bg-gray-700/50 hover:bg-gray-700 cursor-pointer transition-colors border-gray-600">
                           <CardContent className="p-4">
                             <div className="font-semibold text-white">Investor Brief</div>
-                            <div className="text-sm text-gray-400">7-page overview</div>
+                            <div className="text-sm text-gray-400">3-page overview</div>
                           </CardContent>
                         </Card>
                       </a>
@@ -719,7 +719,7 @@ export default function Investors() {
                         <Card className="bg-gray-700/50 hover:bg-gray-700 cursor-pointer transition-colors border-gray-600">
                           <CardContent className="p-4">
                             <div className="font-semibold text-white">Full Whitepaper</div>
-                            <div className="text-sm text-gray-400">80+ pages with proofs</div>
+                            <div className="text-sm text-gray-400">193-page comprehensive analysis</div>
                           </CardContent>
                         </Card>
                       </a>

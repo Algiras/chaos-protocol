@@ -48,61 +48,31 @@ jobs:
           cd research/papers/whitepaper
           quarto render litepaper.qmd --to pdf
 
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Copy PDFs to site/public/whitepaper
+        run: |
+          mkdir -p site/public/whitepaper
+          cp research/papers/whitepaper/_book/CHAOS-Token--Antifragile-Volatility-Harvesting-on-Cardano.pdf site/public/whitepaper/chaos-whitepaper.pdf
+          cp research/papers/whitepaper/proof-paper.pdf site/public/whitepaper/
+          cp research/papers/whitepaper/investor-brief.pdf site/public/whitepaper/
+          cp research/papers/whitepaper/litepaper.pdf site/public/whitepaper/
+
+      - name: Create Release and Upload Assets
+        uses: softprops/action-gh-release@v1
         with:
           tag_name: papers-${{ github.run_number }}
-          release_name: Research Papers Build ${{ github.run_number }}
+          name: Research Papers Build ${{ github.run_number }}
           body: |
             Automated build of research papers from commit ${{ github.sha }}
 
             PDFs generated:
-            - Whitepaper
-            - Proof Paper
-            - Investor Brief
-            - Litepaper
-          draft: false
-          prerelease: false
-
-      - name: Upload Whitepaper
-        uses: actions/upload-release-asset@v1
+            - CHAOS Whitepaper (193 pages)
+            - Proof Paper (4 pages)
+            - Investor Brief (3 pages)
+            - Litepaper (1 page)
+          files: |
+            research/papers/whitepaper/_book/CHAOS-Token--Antifragile-Volatility-Harvesting-on-Cardano.pdf
+            research/papers/whitepaper/proof-paper.pdf
+            research/papers/whitepaper/investor-brief.pdf
+            research/papers/whitepaper/litepaper.pdf
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: research/papers/whitepaper/_book/CHAOS-Token--Antifragile-Volatility-Harvesting-on-Cardano.pdf
-          asset_name: whitepaper.pdf
-          asset_content_type: application/pdf
-
-      - name: Upload Proof Paper
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: research/papers/whitepaper/proof-paper.pdf
-          asset_name: proof-paper.pdf
-          asset_content_type: application/pdf
-
-      - name: Upload Investor Brief
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: research/papers/whitepaper/investor-brief.pdf
-          asset_name: investor-brief.pdf
-          asset_content_type: application/pdf
-
-      - name: Upload Litepaper
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: research/papers/whitepaper/litepaper.pdf
-          asset_name: litepaper.pdf
-          asset_content_type: application/pdf

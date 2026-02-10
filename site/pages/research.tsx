@@ -5,15 +5,6 @@ import { FadeIn, StaggerContainer, StaggerItem } from '@/components/animations';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { ArrowRight, FileText, Github, CheckCircle2, Download, ExternalLink, BookOpen, Shield } from 'lucide-react';
-import dynamic from 'next/dynamic';
-import type { GetStaticProps } from 'next';
-
-// Lazy load AttractorBackground for better performance
-const AttractorBackground = dynamic(
-  () => import("@/components/chaos/core/AttractorBackground"),
-  { ssr: false }
-);
-
 const theorems = [
   {
     num: 1,
@@ -45,7 +36,7 @@ const publications = [
   {
     title: 'CHAOS Whitepaper',
     description: 'Comprehensive analysis of the CHAOS protocol including mathematical framework, game theory, formal verification, backtest results, and risk analysis.',
-    pages: 47,
+    pages: 193,
     file: '/whitepaper/chaos-whitepaper.pdf',
     icon: FileText,
     highlight: true
@@ -53,16 +44,24 @@ const publications = [
   {
     title: 'Formal Verification Proof Paper',
     description: 'Complete Lean 4 formal proofs of the four core theorems. Zero unproven assumptions. Mathematical certainty.',
-    pages: 23,
+    pages: 4,
     file: '/whitepaper/proof-paper.pdf',
     icon: Shield,
     highlight: true
   },
   {
-    title: 'Investor Brief & Litepaper',
-    description: 'Executive summary for investors. Key metrics, performance data, and market opportunity.',
-    pages: 8,
+    title: 'Investor Brief',
+    description: 'Concise executive summary for investors. Key metrics, performance data, and market opportunity.',
+    pages: 3,
     file: '/whitepaper/investor-brief.pdf',
+    icon: FileText,
+    highlight: false
+  },
+  {
+    title: 'Litepaper',
+    description: 'Quick one-page overview of the CHAOS protocol and its unique value proposition.',
+    pages: 1,
+    file: '/whitepaper/litepaper.pdf',
     icon: BookOpen,
     highlight: false
   },
@@ -86,25 +85,7 @@ export default function Research() {
       </Head>
 
       {/* Hero Section */}
-      <section className="relative min-h-[60vh] flex items-center justify-center overflow-hidden bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
-        {/* Lorenz Attractor Background */}
-        <AttractorBackground
-          type="lorenz"
-          volatility={0.3}
-          sentiment="neutral"
-          interactive={true}
-          performance="auto"
-          opacity={0.4}
-          className="absolute inset-0"
-        />
-
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 0.3 }}
-          transition={{ duration: 2 }}
-          className="absolute inset-0 bg-gradient-to-b from-transparent via-gray-900/50 to-gray-900"
-        />
-
+      <section className="relative min-h-[60vh] flex items-center justify-center overflow-hidden">
         <div className="relative z-10 max-w-6xl mx-auto px-6 text-center">
           <FadeIn>
             <span className="inline-block px-4 py-2 rounded-full bg-blue-600/20 text-blue-400 text-sm font-bold mb-8 border border-blue-600/30">
@@ -131,11 +112,11 @@ export default function Research() {
       </section>
 
       {/* Formally Verified Theorems */}
-      <section className="py-32 bg-gray-900">
+      <section className="py-32">
         <div className="max-w-6xl mx-auto px-6">
           <FadeIn className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-black text-white mb-6">Formally Verified Theorems</h2>
-            <p className="text-gray-400 text-xl max-w-2xl mx-auto">
+            <p className="text-gray-300 text-xl max-w-2xl mx-auto">
               Proven in Lean 4, the gold standard for mathematical verification.
               Each theorem provides mathematical certainty about the protocol&apos;s behavior.
             </p>
@@ -176,16 +157,16 @@ export default function Research() {
       </section>
 
       {/* Publications */}
-      <section className="py-32 bg-gradient-to-b from-gray-900 to-gray-800">
+      <section className="py-32">
         <div className="max-w-6xl mx-auto px-6">
           <FadeIn className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-black text-white mb-6">Publications</h2>
-            <p className="text-gray-400 text-xl max-w-2xl mx-auto">
+            <p className="text-gray-300 text-xl max-w-2xl mx-auto">
               Deep dive into the mathematics, verification, and implementation of CHAOS.
             </p>
           </FadeIn>
 
-          <StaggerContainer staggerDelay={0.15} className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <StaggerContainer staggerDelay={0.15} className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
             {publications.map((pub, idx) => {
               const Icon = pub.icon;
               return (
@@ -252,7 +233,7 @@ export default function Research() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-32 bg-gray-900">
+      <section className="py-32">
         <div className="max-w-4xl mx-auto px-6 text-center">
           <FadeIn>
             <motion.div
@@ -269,7 +250,7 @@ export default function Research() {
             </h2>
           </FadeIn>
           <FadeIn delay={0.1}>
-            <p className="text-gray-400 text-xl mb-12 leading-relaxed">
+            <p className="text-gray-300 text-xl mb-12 leading-relaxed">
               Explore the protocol with real-time portfolio management and governance features.
             </p>
           </FadeIn>
