@@ -83,7 +83,7 @@ export default function Investors() {
           {/* Metrics */}
           <StaggerContainer staggerDelay={0.15} className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto mb-12">
             <StaggerItem>
-              <Card className="border-blue-100 shadow-lg shadow-blue-100/50">
+              <Card className="bg-white border-blue-100 shadow-lg shadow-blue-100/50">
                 <CardContent className="pt-6">
                   <div className="text-4xl font-black text-blue-600 mb-2">
                     +<CountUp end={39} suffix="%" duration={2} delay={0.8} />
@@ -93,7 +93,7 @@ export default function Investors() {
               </Card>
             </StaggerItem>
             <StaggerItem>
-              <Card className="border-emerald-100 shadow-lg shadow-emerald-100/50">
+              <Card className="bg-white border-emerald-100 shadow-lg shadow-emerald-100/50">
                 <CardContent className="pt-6">
                   <div className="text-4xl font-black text-emerald-600 mb-2">
                     <CountUp end={1.87} decimals={2} duration={2} delay={0.9} />
@@ -103,7 +103,7 @@ export default function Investors() {
               </Card>
             </StaggerItem>
             <StaggerItem>
-              <Card className="border-purple-100 shadow-lg shadow-purple-100/50">
+              <Card className="bg-white border-purple-100 shadow-lg shadow-purple-100/50">
                 <CardContent className="pt-6">
                   <div className="text-4xl font-black text-purple-600 mb-2">
                     <CountUp end={40} suffix="%" duration={2} delay={1.0} />
@@ -113,7 +113,7 @@ export default function Investors() {
               </Card>
             </StaggerItem>
             <StaggerItem>
-              <Card className="border-amber-100 shadow-lg shadow-amber-100/50">
+              <Card className="bg-white border-amber-100 shadow-lg shadow-amber-100/50">
                 <CardContent className="pt-6">
                   <div className="text-4xl font-black text-amber-600 mb-2">
                     <CountUp end={5} suffix="/5" duration={2} delay={1.1} />
@@ -137,7 +137,7 @@ export default function Investors() {
               </Button>
             </Link>
             <Link href="/coming-soon">
-              <Button size="lg" variant="outline" className="text-lg px-8">
+              <Button size="lg" variant="outline" className="text-lg px-8 bg-white text-gray-900 border-gray-300 hover:bg-gray-50">
                 Launch App
               </Button>
             </Link>
@@ -458,9 +458,9 @@ export default function Investors() {
           <div className="grid md:grid-cols-2 gap-12">
             {/* Risk Waterfall */}
             <FadeIn delay={0.2}>
-              <Card>
+              <Card className="bg-white">
                 <CardHeader>
-                  <CardTitle>Expected Return Breakdown</CardTitle>
+                  <CardTitle className="text-gray-900">Expected Return Breakdown</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
@@ -538,7 +538,7 @@ export default function Investors() {
                     viewport={{ once: true }}
                     transition={{ duration: 0.5, delay: 0.5 + index * 0.1 }}
                   >
-                    <Card>
+                    <Card className="bg-white">
                       <CardContent className="p-4">
                         <div className="flex justify-between items-start mb-2">
                           <span className="font-semibold text-gray-900">{item.risk}</span>
@@ -623,42 +623,46 @@ export default function Investors() {
           </FadeIn>
 
           <FadeIn delay={0.2}>
-            <Card>
+            <Card className="bg-gray-800 border-gray-700">
               <CardContent className="p-8 md:p-12">
                 <div className="grid md:grid-cols-2 gap-8 mb-8">
                   <div>
-                    <h3 className="text-xl font-bold text-gray-900 mb-4">Links</h3>
+                    <h3 className="text-xl font-bold text-white mb-4">Links</h3>
                     <div className="space-y-3">
-                      <p className="text-gray-600">
+                      <p className="text-gray-300">
                         <span className="font-semibold">Web:</span>{' '}
-                        <a href="https://chaosprotocol.io" className="text-blue-600 hover:underline">chaosprotocol.io</a>
+                        <a href="https://chaosprotocol.io" className="text-blue-400 hover:underline">chaosprotocol.io</a>
                       </p>
-                      <p className="text-gray-600">
+                      <p className="text-gray-300">
                         <span className="font-semibold">GitHub:</span>{' '}
-                        <a href="https://github.com/Algiras/chaos-protocol" className="text-blue-600 hover:underline">github.com/Algiras/chaos-protocol</a>
+                        <a href="https://github.com/Algiras/chaos-protocol" className="text-blue-400 hover:underline">github.com/Algiras/chaos-protocol</a>
                       </p>
                     </div>
                   </div>
                   <div>
-                    <h3 className="text-xl font-bold text-gray-900 mb-4">Resources</h3>
+                    <h3 className="text-xl font-bold text-white mb-4">Resources</h3>
                     <div className="space-y-3">
-                      <Card className="hover:bg-gray-50 cursor-pointer transition-colors">
-                        <CardContent className="p-4">
-                          <div className="font-semibold text-gray-900">Investor Brief</div>
-                          <div className="text-sm text-gray-500">7-page overview</div>
-                        </CardContent>
-                      </Card>
-                      <Card className="hover:bg-gray-50 cursor-pointer transition-colors">
-                        <CardContent className="p-4">
-                          <div className="font-semibold text-gray-900">Full Whitepaper</div>
-                          <div className="text-sm text-gray-500">80+ pages with proofs</div>
-                        </CardContent>
-                      </Card>
+                      <a href="/whitepaper/investor-brief.pdf" download>
+                        <Card className="bg-gray-700/50 hover:bg-gray-700 cursor-pointer transition-colors border-gray-600">
+                          <CardContent className="p-4">
+                            <div className="font-semibold text-white">Investor Brief</div>
+                            <div className="text-sm text-gray-400">7-page overview</div>
+                          </CardContent>
+                        </Card>
+                      </a>
+                      <a href="/whitepaper/chaos-whitepaper.pdf" download>
+                        <Card className="bg-gray-700/50 hover:bg-gray-700 cursor-pointer transition-colors border-gray-600">
+                          <CardContent className="p-4">
+                            <div className="font-semibold text-white">Full Whitepaper</div>
+                            <div className="text-sm text-gray-400">80+ pages with proofs</div>
+                          </CardContent>
+                        </Card>
+                      </a>
                     </div>
                   </div>
                 </div>
 
-                <div className="text-center pt-8 border-t border-gray-200">
+                <div className="text-center pt-8 border-t border-gray-700">
                   <Link href="/coming-soon">
                     <Button size="lg" className="bg-gradient-to-r from-blue-600 to-purple-600 hover:opacity-90 text-lg px-8 shadow-lg shadow-blue-600/25">
                       Launch App
