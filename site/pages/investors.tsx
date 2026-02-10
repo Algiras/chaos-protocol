@@ -5,6 +5,13 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import Link from 'next/link';
 import { ArrowRight, TrendingUp, Shield, Zap, Wallet, Vote, Users } from 'lucide-react';
+import dynamic from 'next/dynamic';
+
+// Lazy load AttractorBackground for better performance
+const AttractorBackground = dynamic(
+  () => import("@/components/chaos/core/AttractorBackground"),
+  { ssr: false }
+);
 
 const performanceData = [
   { asset: 'ADA (Cardano)', chaos: -31.8, hodl: -61.9, edge: 79.1, chaosDD: -46.7, hodlDD: -74.5 },
@@ -40,6 +47,17 @@ export default function Investors() {
 
       {/* Hero Section */}
       <section className="relative min-h-[85vh] flex items-center justify-center overflow-hidden bg-gradient-to-br from-blue-50 via-white to-emerald-50">
+        {/* Rössler Attractor - subtle on light background */}
+        <AttractorBackground
+          type="rossler"
+          volatility={0.3}
+          sentiment="bullish"
+          interactive={true}
+          performance="auto"
+          opacity={0.15}
+          className="absolute inset-0"
+        />
+
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 0.1 }}
@@ -83,44 +101,64 @@ export default function Investors() {
           {/* Metrics */}
           <StaggerContainer staggerDelay={0.15} className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto mb-12">
             <StaggerItem>
-              <Card className="bg-white border-blue-100 shadow-lg shadow-blue-100/50">
-                <CardContent className="pt-6">
-                  <div className="text-4xl font-black text-blue-600 mb-2">
-                    +<CountUp end={39} suffix="%" duration={2} delay={0.8} />
-                  </div>
-                  <div className="text-sm text-gray-500 font-medium">Outperformance vs HODL</div>
-                </CardContent>
-              </Card>
+              <motion.div
+                whileHover={{ y: -8, scale: 1.05 }}
+                transition={{ type: 'spring', stiffness: 300 }}
+              >
+                <Card className="bg-white border-blue-100 shadow-lg shadow-blue-100/50 hover:shadow-2xl hover:shadow-blue-200/60 transition-all duration-300">
+                  <CardContent className="pt-6">
+                    <div className="text-4xl font-black text-blue-600 mb-2">
+                      +<CountUp end={39} suffix="%" duration={2} delay={0.8} />
+                    </div>
+                    <div className="text-sm text-gray-500 font-medium">Outperformance vs HODL</div>
+                  </CardContent>
+                </Card>
+              </motion.div>
             </StaggerItem>
             <StaggerItem>
-              <Card className="bg-white border-emerald-100 shadow-lg shadow-emerald-100/50">
-                <CardContent className="pt-6">
-                  <div className="text-4xl font-black text-emerald-600 mb-2">
-                    <CountUp end={1.87} decimals={2} duration={2} delay={0.9} />
-                  </div>
-                  <div className="text-sm text-gray-500 font-medium">Sharpe Ratio</div>
-                </CardContent>
-              </Card>
+              <motion.div
+                whileHover={{ y: -8, scale: 1.05 }}
+                transition={{ type: 'spring', stiffness: 300 }}
+              >
+                <Card className="bg-white border-emerald-100 shadow-lg shadow-emerald-100/50 hover:shadow-2xl hover:shadow-emerald-200/60 transition-all duration-300">
+                  <CardContent className="pt-6">
+                    <div className="text-4xl font-black text-emerald-600 mb-2">
+                      <CountUp end={1.87} decimals={2} duration={2} delay={0.9} />
+                    </div>
+                    <div className="text-sm text-gray-500 font-medium">Sharpe Ratio</div>
+                  </CardContent>
+                </Card>
+              </motion.div>
             </StaggerItem>
             <StaggerItem>
-              <Card className="bg-white border-purple-100 shadow-lg shadow-purple-100/50">
-                <CardContent className="pt-6">
-                  <div className="text-4xl font-black text-purple-600 mb-2">
-                    <CountUp end={40} suffix="%" duration={2} delay={1.0} />
-                  </div>
-                  <div className="text-sm text-gray-500 font-medium">Less Drawdown</div>
-                </CardContent>
-              </Card>
+              <motion.div
+                whileHover={{ y: -8, scale: 1.05 }}
+                transition={{ type: 'spring', stiffness: 300 }}
+              >
+                <Card className="bg-white border-purple-100 shadow-lg shadow-purple-100/50 hover:shadow-2xl hover:shadow-purple-200/60 transition-all duration-300">
+                  <CardContent className="pt-6">
+                    <div className="text-4xl font-black text-purple-600 mb-2">
+                      <CountUp end={40} suffix="%" duration={2} delay={1.0} />
+                    </div>
+                    <div className="text-sm text-gray-500 font-medium">Less Drawdown</div>
+                  </CardContent>
+                </Card>
+              </motion.div>
             </StaggerItem>
             <StaggerItem>
-              <Card className="bg-white border-amber-100 shadow-lg shadow-amber-100/50">
-                <CardContent className="pt-6">
-                  <div className="text-4xl font-black text-amber-600 mb-2">
-                    <CountUp end={5} suffix="/5" duration={2} delay={1.1} />
-                  </div>
-                  <div className="text-sm text-gray-500 font-medium">Win Rate</div>
-                </CardContent>
-              </Card>
+              <motion.div
+                whileHover={{ y: -8, scale: 1.05 }}
+                transition={{ type: 'spring', stiffness: 300 }}
+              >
+                <Card className="bg-white border-amber-100 shadow-lg shadow-amber-100/50 hover:shadow-2xl hover:shadow-amber-200/60 transition-all duration-300">
+                  <CardContent className="pt-6">
+                    <div className="text-4xl font-black text-amber-600 mb-2">
+                      <CountUp end={5} suffix="/5" duration={2} delay={1.1} />
+                    </div>
+                    <div className="text-sm text-gray-500 font-medium">Win Rate</div>
+                  </CardContent>
+                </Card>
+              </motion.div>
             </StaggerItem>
           </StaggerContainer>
 
@@ -153,21 +191,35 @@ export default function Investors() {
           <motion.div
             animate={{ y: [0, 10, 0] }}
             transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-            className="w-6 h-10 border-2 border-gray-300 rounded-full flex justify-center pt-2"
+            className="w-6 h-10 border-2 border-gray-400 rounded-full flex justify-center pt-2 backdrop-blur-sm bg-white/30"
           >
             <motion.div
               animate={{ opacity: [1, 0, 1], y: [0, 8, 0] }}
               transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-              className="w-1 h-2 bg-gray-400 rounded-full"
+              className="w-1 h-2 bg-gradient-to-b from-blue-600 to-purple-600 rounded-full"
             />
           </motion.div>
         </motion.div>
       </section>
 
       {/* Performance Section */}
-      <section className="py-24 bg-gray-900">
-        <div className="max-w-6xl mx-auto px-6">
+      <section className="relative py-24 bg-gray-900 overflow-hidden">
+        {/* Subtle Lorenz background */}
+        <AttractorBackground
+          type="lorenz"
+          volatility={0.5}
+          sentiment="bullish"
+          interactive={false}
+          performance="auto"
+          opacity={0.2}
+          className="absolute inset-0"
+        />
+
+        <div className="relative z-10 max-w-6xl mx-auto px-6">
           <FadeIn className="text-center mb-16">
+            <span className="inline-block px-4 py-2 rounded-full bg-emerald-600/20 text-emerald-400 text-sm font-bold mb-4 border border-emerald-600/30">
+              Bear Market Tested (2022-2024)
+            </span>
             <h2 className="text-4xl font-black text-white mb-4">Real Results, Real Data</h2>
             <p className="text-gray-400 text-lg max-w-2xl mx-auto">
               Multi-asset backtest using live CoinGecko price data. CHAOS beats HODL on every single asset.
@@ -175,7 +227,7 @@ export default function Investors() {
           </FadeIn>
 
           <FadeIn delay={0.2}>
-            <Card className="bg-gray-800 border-gray-700 overflow-hidden">
+            <Card className="bg-gray-800 border-gray-700 overflow-hidden shadow-2xl shadow-emerald-600/10 hover:shadow-emerald-600/20 transition-shadow duration-500">
               <CardContent className="p-0">
                 <div className="overflow-x-auto">
                   <table className="w-full">
@@ -236,17 +288,21 @@ export default function Investors() {
             {theorems.map((theorem) => (
               <StaggerItem key={theorem.num}>
                 <motion.div
-                  whileHover={{ y: -4 }}
+                  whileHover={{ y: -4, scale: 1.02 }}
                   transition={{ duration: 0.2 }}
                 >
-                  <Card className="bg-gradient-to-br from-gray-50 to-white border-gray-100 shadow-lg h-full">
+                  <Card className="bg-gradient-to-br from-gray-50 to-white border-gray-100 shadow-lg hover:shadow-2xl hover:shadow-blue-200/50 h-full transition-all duration-300">
                     <CardContent className="p-8">
                       <div className="flex items-center gap-4 mb-4">
-                        <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
-                          <theorem.icon className="w-6 h-6 text-blue-600" />
-                        </div>
-                        <span className="px-3 py-1 bg-emerald-100 text-emerald-700 text-xs font-bold rounded-full">
-                          Proved
+                        <motion.div
+                          whileHover={{ rotate: 360 }}
+                          transition={{ duration: 0.6 }}
+                          className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center"
+                        >
+                          <theorem.icon className="w-6 h-6 text-white" />
+                        </motion.div>
+                        <span className="px-3 py-1 bg-emerald-100 text-emerald-700 text-xs font-bold rounded-full border border-emerald-200">
+                          ✓ Proved
                         </span>
                       </div>
                       <h3 className="text-xl font-bold text-gray-900 mb-2">{theorem.name}</h3>
@@ -261,12 +317,29 @@ export default function Investors() {
       </section>
 
       {/* Tokenomics */}
-      <section className="py-24 bg-gradient-to-br from-blue-600 to-purple-700">
-        <div className="max-w-6xl mx-auto px-6">
+      <section className="relative py-24 bg-gradient-to-br from-blue-600 via-purple-600 to-purple-700 overflow-hidden">
+        {/* Animated gradient overlay */}
+        <motion.div
+          animate={{
+            backgroundPosition: ['0% 50%', '100% 50%', '0% 50%'],
+          }}
+          transition={{
+            duration: 10,
+            repeat: Infinity,
+            ease: 'linear'
+          }}
+          className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-purple-500/20 via-transparent to-transparent"
+          style={{ backgroundSize: '200% 200%' }}
+        />
+
+        <div className="relative z-10 max-w-6xl mx-auto px-6">
           <FadeIn className="text-center mb-16">
+            <span className="inline-block px-4 py-2 rounded-full bg-white/20 text-white text-sm font-bold mb-4 border border-white/30">
+              100M Fixed Supply
+            </span>
             <h2 className="text-4xl font-black text-white mb-4">Tokenomics</h2>
             <p className="text-blue-100 text-lg max-w-2xl mx-auto">
-              100M fixed supply. 90% community-owned. No inflation.
+              90% community-owned. No team allocation. No inflation.
             </p>
           </FadeIn>
 
@@ -379,12 +452,19 @@ export default function Investors() {
 
           <StaggerContainer staggerDelay={0.15} className="grid md:grid-cols-3 gap-8">
             <StaggerItem>
-              <motion.div whileHover={{ y: -4 }}>
-                <Card className="bg-white border-emerald-100 shadow-lg h-full">
+              <motion.div
+                whileHover={{ y: -8, scale: 1.03 }}
+                transition={{ type: 'spring', stiffness: 300 }}
+              >
+                <Card className="bg-white border-emerald-100 shadow-lg hover:shadow-2xl hover:shadow-emerald-200/60 h-full transition-all duration-300">
                   <CardContent className="p-8">
-                    <div className="w-14 h-14 bg-emerald-100 rounded-xl flex items-center justify-center mb-6">
-                      <Vote className="w-7 h-7 text-emerald-600" />
-                    </div>
+                    <motion.div
+                      whileHover={{ rotate: [0, -10, 10, -10, 0] }}
+                      transition={{ duration: 0.5 }}
+                      className="w-14 h-14 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-xl flex items-center justify-center mb-6 shadow-lg"
+                    >
+                      <Vote className="w-7 h-7 text-white" />
+                    </motion.div>
                     <h3 className="text-xl font-bold text-gray-900 mb-3">Voting Power</h3>
                     <p className="text-gray-600 mb-4">
                       1 CHAOS = 1 Vote. Stake your tokens to increase voting power by 50%.
@@ -397,12 +477,19 @@ export default function Investors() {
             </StaggerItem>
 
             <StaggerItem>
-              <motion.div whileHover={{ y: -4 }}>
-                <Card className="bg-white border-blue-100 shadow-lg h-full">
+              <motion.div
+                whileHover={{ y: -8, scale: 1.03 }}
+                transition={{ type: 'spring', stiffness: 300 }}
+              >
+                <Card className="bg-white border-blue-100 shadow-lg hover:shadow-2xl hover:shadow-blue-200/60 h-full transition-all duration-300">
                   <CardContent className="p-8">
-                    <div className="w-14 h-14 bg-blue-100 rounded-xl flex items-center justify-center mb-6">
-                      <Shield className="w-7 h-7 text-blue-600" />
-                    </div>
+                    <motion.div
+                      whileHover={{ rotate: [0, -10, 10, -10, 0] }}
+                      transition={{ duration: 0.5 }}
+                      className="w-14 h-14 bg-gradient-to-br from-blue-400 to-blue-600 rounded-xl flex items-center justify-center mb-6 shadow-lg"
+                    >
+                      <Shield className="w-7 h-7 text-white" />
+                    </motion.div>
                     <h3 className="text-xl font-bold text-gray-900 mb-3">Parameter Control</h3>
                     <p className="text-gray-600 mb-4">
                       Vote on rebalancing thresholds, allocation targets, and fee structures.
@@ -415,12 +502,19 @@ export default function Investors() {
             </StaggerItem>
 
             <StaggerItem>
-              <motion.div whileHover={{ y: -4 }}>
-                <Card className="bg-white border-purple-100 shadow-lg h-full">
+              <motion.div
+                whileHover={{ y: -8, scale: 1.03 }}
+                transition={{ type: 'spring', stiffness: 300 }}
+              >
+                <Card className="bg-white border-purple-100 shadow-lg hover:shadow-2xl hover:shadow-purple-200/60 h-full transition-all duration-300">
                   <CardContent className="p-8">
-                    <div className="w-14 h-14 bg-purple-100 rounded-xl flex items-center justify-center mb-6">
-                      <Users className="w-7 h-7 text-purple-600" />
-                    </div>
+                    <motion.div
+                      whileHover={{ rotate: [0, -10, 10, -10, 0] }}
+                      transition={{ duration: 0.5 }}
+                      className="w-14 h-14 bg-gradient-to-br from-purple-400 to-purple-600 rounded-xl flex items-center justify-center mb-6 shadow-lg"
+                    >
+                      <Users className="w-7 h-7 text-white" />
+                    </motion.div>
                     <h3 className="text-xl font-bold text-gray-900 mb-3">Treasury Governance</h3>
                     <p className="text-gray-600 mb-4">
                       Community controls $2.8M treasury. Vote on investments and allocations.
