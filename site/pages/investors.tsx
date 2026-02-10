@@ -2,16 +2,9 @@ import Head from 'next/head';
 import { motion } from 'framer-motion';
 import { FadeIn, CountUp, StaggerContainer, StaggerItem } from '@/components/animations';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import Link from 'next/link';
-import { ArrowRight, TrendingUp, Shield, Zap, Wallet, Vote, Users } from 'lucide-react';
-import dynamic from 'next/dynamic';
-
-// Lazy load AttractorBackground for better performance
-const AttractorBackground = dynamic(
-  () => import("@/components/chaos/core/AttractorBackground"),
-  { ssr: false }
-);
+import { ArrowRight, TrendingUp, Shield, Zap, Wallet, Vote, Users, Download } from 'lucide-react';
 
 const performanceData = [
   { asset: 'ADA (Cardano)', chaos: -31.8, hodl: -61.9, edge: 79.1, chaosDD: -46.7, hodlDD: -74.5 },
@@ -46,23 +39,12 @@ export default function Investors() {
       </Head>
 
       {/* Hero Section */}
-      <section className="relative min-h-[85vh] flex items-center justify-center overflow-hidden bg-gradient-to-br from-blue-50 via-white to-emerald-50">
-        {/* Rössler Attractor - subtle on light background */}
-        <AttractorBackground
-          type="rossler"
-          volatility={0.3}
-          sentiment="bullish"
-          interactive={true}
-          performance="auto"
-          opacity={0.15}
-          className="absolute inset-0"
-        />
-
+      <section className="relative min-h-[85vh] flex items-center justify-center overflow-hidden">
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 0.1 }}
           transition={{ duration: 1.5 }}
-          className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-blue-200 via-transparent to-transparent"
+          className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-blue-900/30 via-transparent to-transparent"
         />
         
         <div className="relative z-10 max-w-6xl mx-auto px-6 text-center">
@@ -71,7 +53,7 @@ export default function Investors() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
           >
-            <span className="inline-block px-4 py-2 rounded-full bg-blue-100 text-blue-700 text-sm font-semibold mb-6">
+            <span className="inline-block px-4 py-2 rounded-full bg-blue-600/20 text-blue-400 border border-blue-600/30 text-sm font-semibold mb-6">
               Pre-Seed Investment Opportunity
             </span>
           </motion.div>
@@ -80,7 +62,7 @@ export default function Investors() {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.4 }}
-            className="text-5xl md:text-7xl font-black text-gray-900 mb-6 leading-tight"
+            className="text-5xl md:text-7xl font-black text-white mb-6 leading-tight"
           >
             Make Money From<br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-emerald-500">
@@ -92,7 +74,7 @@ export default function Investors() {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.6 }}
-            className="text-xl text-gray-600 max-w-2xl mx-auto mb-12"
+            className="text-xl text-gray-300 max-w-2xl mx-auto mb-12"
           >
             CHAOS is a formally verified treasury protocol that turns volatility into profit. 
             Mathematically proven. Zero unproven assumptions.
@@ -105,12 +87,12 @@ export default function Investors() {
                 whileHover={{ y: -8, scale: 1.05 }}
                 transition={{ type: 'spring', stiffness: 300 }}
               >
-                <Card className="bg-white border-blue-100 shadow-lg shadow-blue-100/50 hover:shadow-2xl hover:shadow-blue-200/60 transition-all duration-300">
-                  <CardContent className="pt-6">
+                <Card className="bg-gray-800 border-gray-700 shadow-lg shadow-blue-600/10 hover:shadow-2xl hover:shadow-blue-600/20 transition-all duration-300 h-full">
+                  <CardContent className="pt-6 pb-6 flex flex-col items-center justify-center h-full min-h-[120px]">
                     <div className="text-4xl font-black text-blue-600 mb-2">
                       +<CountUp end={39} suffix="%" duration={2} delay={0.8} />
                     </div>
-                    <div className="text-sm text-gray-500 font-medium">Outperformance vs HODL</div>
+                    <div className="text-sm text-gray-400 font-medium text-center">Outperformance vs HODL</div>
                   </CardContent>
                 </Card>
               </motion.div>
@@ -120,12 +102,12 @@ export default function Investors() {
                 whileHover={{ y: -8, scale: 1.05 }}
                 transition={{ type: 'spring', stiffness: 300 }}
               >
-                <Card className="bg-white border-emerald-100 shadow-lg shadow-emerald-100/50 hover:shadow-2xl hover:shadow-emerald-200/60 transition-all duration-300">
-                  <CardContent className="pt-6">
+                <Card className="bg-gray-800 border-gray-700 shadow-lg shadow-emerald-600/10 hover:shadow-2xl hover:shadow-emerald-600/20 transition-all duration-300 h-full">
+                  <CardContent className="pt-6 pb-6 flex flex-col items-center justify-center h-full min-h-[120px]">
                     <div className="text-4xl font-black text-emerald-600 mb-2">
                       <CountUp end={1.87} decimals={2} duration={2} delay={0.9} />
                     </div>
-                    <div className="text-sm text-gray-500 font-medium">Sharpe Ratio</div>
+                    <div className="text-sm text-gray-400 font-medium text-center">Sharpe Ratio</div>
                   </CardContent>
                 </Card>
               </motion.div>
@@ -135,12 +117,12 @@ export default function Investors() {
                 whileHover={{ y: -8, scale: 1.05 }}
                 transition={{ type: 'spring', stiffness: 300 }}
               >
-                <Card className="bg-white border-purple-100 shadow-lg shadow-purple-100/50 hover:shadow-2xl hover:shadow-purple-200/60 transition-all duration-300">
-                  <CardContent className="pt-6">
+                <Card className="bg-gray-800 border-gray-700 shadow-lg shadow-purple-600/10 hover:shadow-2xl hover:shadow-purple-600/20 transition-all duration-300 h-full">
+                  <CardContent className="pt-6 pb-6 flex flex-col items-center justify-center h-full min-h-[120px]">
                     <div className="text-4xl font-black text-purple-600 mb-2">
                       <CountUp end={40} suffix="%" duration={2} delay={1.0} />
                     </div>
-                    <div className="text-sm text-gray-500 font-medium">Less Drawdown</div>
+                    <div className="text-sm text-gray-400 font-medium text-center">Less Drawdown</div>
                   </CardContent>
                 </Card>
               </motion.div>
@@ -150,12 +132,12 @@ export default function Investors() {
                 whileHover={{ y: -8, scale: 1.05 }}
                 transition={{ type: 'spring', stiffness: 300 }}
               >
-                <Card className="bg-white border-amber-100 shadow-lg shadow-amber-100/50 hover:shadow-2xl hover:shadow-amber-200/60 transition-all duration-300">
-                  <CardContent className="pt-6">
+                <Card className="bg-gray-800 border-gray-700 shadow-lg shadow-amber-600/10 hover:shadow-2xl hover:shadow-amber-600/20 transition-all duration-300 h-full">
+                  <CardContent className="pt-6 pb-6 flex flex-col items-center justify-center h-full min-h-[120px]">
                     <div className="text-4xl font-black text-amber-600 mb-2">
                       <CountUp end={5} suffix="/5" duration={2} delay={1.1} />
                     </div>
-                    <div className="text-sm text-gray-500 font-medium">Win Rate</div>
+                    <div className="text-sm text-gray-400 font-medium text-center">Win Rate</div>
                   </CardContent>
                 </Card>
               </motion.div>
@@ -168,14 +150,14 @@ export default function Investors() {
             transition={{ duration: 0.8, delay: 1.3 }}
             className="flex flex-col sm:flex-row gap-4 justify-center"
           >
-            <Link href="#contact">
+            <a href="/whitepaper/investor-brief.pdf" download>
               <Button size="lg" className="bg-gradient-to-r from-blue-600 to-purple-600 hover:opacity-90 text-lg px-8 shadow-lg shadow-blue-600/25">
-                Get Investment Deck
-                <ArrowRight className="ml-2 h-5 w-5" />
+                Download Investor Brief
+                <Download className="ml-2 h-5 w-5" />
               </Button>
-            </Link>
+            </a>
             <Link href="/coming-soon">
-              <Button size="lg" variant="outline" className="text-lg px-8 bg-white text-gray-900 border-gray-300 hover:bg-gray-50">
+              <Button size="lg" variant="outline" className="text-lg px-8 border-gray-700 text-white hover:bg-gray-800">
                 Launch App
               </Button>
             </Link>
@@ -191,7 +173,7 @@ export default function Investors() {
           <motion.div
             animate={{ y: [0, 10, 0] }}
             transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-            className="w-6 h-10 border-2 border-gray-400 rounded-full flex justify-center pt-2 backdrop-blur-sm bg-white/30"
+            className="w-6 h-10 border-2 border-gray-600 rounded-full flex justify-center pt-2 backdrop-blur-sm bg-gray-900/30"
           >
             <motion.div
               animate={{ opacity: [1, 0, 1], y: [0, 8, 0] }}
@@ -203,25 +185,14 @@ export default function Investors() {
       </section>
 
       {/* Performance Section */}
-      <section className="relative py-24 bg-gray-900 overflow-hidden">
-        {/* Subtle Lorenz background */}
-        <AttractorBackground
-          type="lorenz"
-          volatility={0.5}
-          sentiment="bullish"
-          interactive={false}
-          performance="auto"
-          opacity={0.2}
-          className="absolute inset-0"
-        />
-
+      <section className="relative py-24 overflow-hidden">
         <div className="relative z-10 max-w-6xl mx-auto px-6">
           <FadeIn className="text-center mb-16">
             <span className="inline-block px-4 py-2 rounded-full bg-emerald-600/20 text-emerald-400 text-sm font-bold mb-4 border border-emerald-600/30">
               Bear Market Tested (2022-2024)
             </span>
             <h2 className="text-4xl font-black text-white mb-4">Real Results, Real Data</h2>
-            <p className="text-gray-400 text-lg max-w-2xl mx-auto">
+            <p className="text-gray-300 text-lg max-w-2xl mx-auto">
               Multi-asset backtest using live CoinGecko price data. CHAOS beats HODL on every single asset.
             </p>
           </FadeIn>
@@ -275,11 +246,11 @@ export default function Investors() {
       </section>
 
       {/* Mathematical Foundation */}
-      <section className="py-24 bg-white">
+      <section className="py-24">
         <div className="max-w-6xl mx-auto px-6">
           <FadeIn className="text-center mb-16">
-            <h2 className="text-4xl font-black text-gray-900 mb-4">Mathematical Foundation</h2>
-            <p className="text-gray-600 text-lg max-w-2xl mx-auto">
+            <h2 className="text-4xl font-black text-white mb-4">Mathematical Foundation</h2>
+            <p className="text-gray-300 text-lg max-w-2xl mx-auto">
               Four theorems formally verified in Lean 4. Zero unproven assumptions.
             </p>
           </FadeIn>
@@ -291,7 +262,7 @@ export default function Investors() {
                   whileHover={{ y: -4, scale: 1.02 }}
                   transition={{ duration: 0.2 }}
                 >
-                  <Card className="bg-gradient-to-br from-gray-50 to-white border-gray-100 shadow-lg hover:shadow-2xl hover:shadow-blue-200/50 h-full transition-all duration-300">
+                  <Card className="bg-gray-800 border-gray-700 shadow-lg hover:shadow-2xl hover:shadow-blue-600/20 h-full transition-all duration-300">
                     <CardContent className="p-8">
                       <div className="flex items-center gap-4 mb-4">
                         <motion.div
@@ -301,12 +272,12 @@ export default function Investors() {
                         >
                           <theorem.icon className="w-6 h-6 text-white" />
                         </motion.div>
-                        <span className="px-3 py-1 bg-emerald-100 text-emerald-700 text-xs font-bold rounded-full border border-emerald-200">
+                        <span className="px-3 py-1 bg-emerald-600/20 text-emerald-400 text-xs font-bold rounded-full border border-emerald-600/30">
                           ✓ Proved
                         </span>
                       </div>
-                      <h3 className="text-xl font-bold text-gray-900 mb-2">{theorem.name}</h3>
-                      <p className="text-gray-600">{theorem.result}</p>
+                      <h3 className="text-xl font-bold text-white mb-2">{theorem.name}</h3>
+                      <p className="text-gray-300">{theorem.result}</p>
                     </CardContent>
                   </Card>
                 </motion.div>
@@ -441,11 +412,11 @@ export default function Investors() {
       </section>
 
       {/* Governance */}
-      <section className="py-24 bg-gradient-to-br from-emerald-50 to-white">
+      <section className="py-24">
         <div className="max-w-6xl mx-auto px-6">
           <FadeIn className="text-center mb-16">
-            <h2 className="text-4xl font-black text-gray-900 mb-4">Decentralized Governance</h2>
-            <p className="text-gray-600 text-lg max-w-2xl mx-auto">
+            <h2 className="text-4xl font-black text-white mb-4">Decentralized Governance</h2>
+            <p className="text-gray-300 text-lg max-w-2xl mx-auto">
               CHAOS token holders govern the protocol. Vote on strategy parameters, treasury allocation, and system upgrades.
             </p>
           </FadeIn>
@@ -456,7 +427,7 @@ export default function Investors() {
                 whileHover={{ y: -8, scale: 1.03 }}
                 transition={{ type: 'spring', stiffness: 300 }}
               >
-                <Card className="bg-white border-emerald-100 shadow-lg hover:shadow-2xl hover:shadow-emerald-200/60 h-full transition-all duration-300">
+                <Card className="bg-gray-800 border-gray-700 shadow-lg hover:shadow-2xl hover:shadow-emerald-600/20 h-full transition-all duration-300">
                   <CardContent className="p-8">
                     <motion.div
                       whileHover={{ rotate: [0, -10, 10, -10, 0] }}
@@ -465,12 +436,12 @@ export default function Investors() {
                     >
                       <Vote className="w-7 h-7 text-white" />
                     </motion.div>
-                    <h3 className="text-xl font-bold text-gray-900 mb-3">Voting Power</h3>
-                    <p className="text-gray-600 mb-4">
+                    <h3 className="text-xl font-bold text-white mb-3">Voting Power</h3>
+                    <p className="text-gray-300 mb-4">
                       1 CHAOS = 1 Vote. Stake your tokens to increase voting power by 50%.
                     </p>
                     <div className="text-3xl font-black text-emerald-600">85K+</div>
-                    <div className="text-sm text-gray-500">Active voters</div>
+                    <div className="text-sm text-gray-400">Active voters</div>
                   </CardContent>
                 </Card>
               </motion.div>
@@ -481,7 +452,7 @@ export default function Investors() {
                 whileHover={{ y: -8, scale: 1.03 }}
                 transition={{ type: 'spring', stiffness: 300 }}
               >
-                <Card className="bg-white border-blue-100 shadow-lg hover:shadow-2xl hover:shadow-blue-200/60 h-full transition-all duration-300">
+                <Card className="bg-gray-800 border-gray-700 shadow-lg hover:shadow-2xl hover:shadow-blue-600/20 h-full transition-all duration-300">
                   <CardContent className="p-8">
                     <motion.div
                       whileHover={{ rotate: [0, -10, 10, -10, 0] }}
@@ -490,12 +461,12 @@ export default function Investors() {
                     >
                       <Shield className="w-7 h-7 text-white" />
                     </motion.div>
-                    <h3 className="text-xl font-bold text-gray-900 mb-3">Parameter Control</h3>
-                    <p className="text-gray-600 mb-4">
+                    <h3 className="text-xl font-bold text-white mb-3">Parameter Control</h3>
+                    <p className="text-gray-300 mb-4">
                       Vote on rebalancing thresholds, allocation targets, and fee structures.
                     </p>
                     <div className="text-3xl font-black text-blue-600">24</div>
-                    <div className="text-sm text-gray-500">Proposals executed</div>
+                    <div className="text-sm text-gray-400">Proposals executed</div>
                   </CardContent>
                 </Card>
               </motion.div>
@@ -506,7 +477,7 @@ export default function Investors() {
                 whileHover={{ y: -8, scale: 1.03 }}
                 transition={{ type: 'spring', stiffness: 300 }}
               >
-                <Card className="bg-white border-purple-100 shadow-lg hover:shadow-2xl hover:shadow-purple-200/60 h-full transition-all duration-300">
+                <Card className="bg-gray-800 border-gray-700 shadow-lg hover:shadow-2xl hover:shadow-purple-600/20 h-full transition-all duration-300">
                   <CardContent className="p-8">
                     <motion.div
                       whileHover={{ rotate: [0, -10, 10, -10, 0] }}
@@ -515,12 +486,12 @@ export default function Investors() {
                     >
                       <Users className="w-7 h-7 text-white" />
                     </motion.div>
-                    <h3 className="text-xl font-bold text-gray-900 mb-3">Treasury Governance</h3>
-                    <p className="text-gray-600 mb-4">
+                    <h3 className="text-xl font-bold text-white mb-3">Treasury Governance</h3>
+                    <p className="text-gray-300 mb-4">
                       Community controls $2.8M treasury. Vote on investments and allocations.
                     </p>
                     <div className="text-3xl font-black text-purple-600">$2.8M</div>
-                    <div className="text-sm text-gray-500">Under governance</div>
+                    <div className="text-sm text-gray-400">Under governance</div>
                   </CardContent>
                 </Card>
               </motion.div>
@@ -540,11 +511,11 @@ export default function Investors() {
       </section>
 
       {/* Risk Assessment */}
-      <section className="py-24 bg-gray-50">
+      <section className="py-24">
         <div className="max-w-6xl mx-auto px-6">
           <FadeIn className="text-center mb-16">
-            <h2 className="text-4xl font-black text-gray-900 mb-4">Risk Assessment</h2>
-            <p className="text-gray-600 text-lg max-w-2xl mx-auto">
+            <h2 className="text-4xl font-black text-white mb-4">Risk Assessment</h2>
+            <p className="text-gray-300 text-lg max-w-2xl mx-auto">
               Full transparency on risks and mitigations.
             </p>
           </FadeIn>
@@ -552,15 +523,15 @@ export default function Investors() {
           <div className="grid md:grid-cols-2 gap-12">
             {/* Risk Waterfall */}
             <FadeIn delay={0.2}>
-              <Card className="bg-white">
+              <Card className="bg-gray-800 border-gray-700">
                 <CardHeader>
-                  <CardTitle className="text-gray-900">Expected Return Breakdown</CardTitle>
+                  <CardTitle className="text-white">Expected Return Breakdown</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
                     <div>
                       <div className="flex justify-between mb-2">
-                        <span className="text-gray-600">Rebalancing Alpha</span>
+                        <span className="text-gray-300">Rebalancing Alpha</span>
                         <span className="font-bold text-emerald-600">+7.7%</span>
                       </div>
                       <motion.div
@@ -573,7 +544,7 @@ export default function Investors() {
                     </div>
                     <div>
                       <div className="flex justify-between mb-2">
-                        <span className="text-gray-600">LP Fee Income</span>
+                        <span className="text-gray-300">LP Fee Income</span>
                         <span className="font-bold text-emerald-600">+4.0%</span>
                       </div>
                       <motion.div
@@ -586,7 +557,7 @@ export default function Investors() {
                     </div>
                     <div>
                       <div className="flex justify-between mb-2">
-                        <span className="text-gray-600">Risk-Adj. Cost</span>
+                        <span className="text-gray-300">Risk-Adj. Cost</span>
                         <span className="font-bold text-rose-500">-10.0%</span>
                       </div>
                       <motion.div
@@ -597,9 +568,9 @@ export default function Investors() {
                         className="h-4 bg-rose-500 rounded-full"
                       />
                     </div>
-                    <div className="pt-4 border-t-2 border-gray-200">
+                    <div className="pt-4 border-t-2 border-gray-700">
                       <div className="flex justify-between mb-2">
-                        <span className="font-bold text-gray-900">NET EXPECTED</span>
+                        <span className="font-bold text-white">NET EXPECTED</span>
                         <span className="font-bold text-blue-600">+1.7%</span>
                       </div>
                       <motion.div
@@ -618,7 +589,7 @@ export default function Investors() {
             {/* Risk List */}
             <FadeIn delay={0.4}>
               <div className="space-y-4">
-                <h3 className="text-xl font-bold text-gray-900 mb-6">Top Risks & Mitigations</h3>
+                <h3 className="text-xl font-bold text-white mb-6">Top Risks & Mitigations</h3>
                 {[
                   { risk: 'Regulatory action', weight: '40%', mitigation: 'Offshore entity, progressive decentralization' },
                   { risk: 'Bull underperformance', weight: '35%', mitigation: 'By design; disclosed upfront' },
@@ -632,13 +603,13 @@ export default function Investors() {
                     viewport={{ once: true }}
                     transition={{ duration: 0.5, delay: 0.5 + index * 0.1 }}
                   >
-                    <Card className="bg-white">
+                    <Card className="bg-gray-800 border-gray-700">
                       <CardContent className="p-4">
                         <div className="flex justify-between items-start mb-2">
-                          <span className="font-semibold text-gray-900">{item.risk}</span>
-                          <span className="text-sm text-gray-500">{item.weight}</span>
+                          <span className="font-semibold text-white">{item.risk}</span>
+                          <span className="text-sm text-gray-400">{item.weight}</span>
                         </div>
-                        <p className="text-sm text-gray-600">{item.mitigation}</p>
+                        <p className="text-sm text-gray-300">{item.mitigation}</p>
                       </CardContent>
                     </Card>
                   </motion.div>
@@ -650,11 +621,11 @@ export default function Investors() {
       </section>
 
       {/* Roadmap */}
-      <section className="py-24 bg-white">
+      <section className="py-24">
         <div className="max-w-6xl mx-auto px-6">
           <FadeIn className="text-center mb-16">
-            <h2 className="text-4xl font-black text-gray-900 mb-4">Roadmap & Budget</h2>
-            <p className="text-gray-600 text-lg max-w-2xl mx-auto">
+            <h2 className="text-4xl font-black text-white mb-4">Roadmap & Budget</h2>
+            <p className="text-gray-300 text-lg max-w-2xl mx-auto">
               12-month journey from testnet to scale.
             </p>
           </FadeIn>
@@ -662,7 +633,7 @@ export default function Investors() {
           <FadeIn delay={0.2}>
             <div className="relative">
               {/* Timeline Bar */}
-              <div className="hidden md:block h-4 bg-gray-100 rounded-full overflow-hidden mb-12">
+              <div className="hidden md:block h-4 bg-gray-800 rounded-full overflow-hidden mb-12">
                 <motion.div
                   initial={{ width: 0 }}
                   whileInView={{ width: '100%' }}
@@ -675,9 +646,9 @@ export default function Investors() {
               {/* Timeline Items */}
               <div className="grid md:grid-cols-3 gap-8">
                 {[
-                  { phase: 'Phase 1', title: 'MVP', months: 'Months 1-3', budget: '$330K', items: ['Testnet deployment', 'Security audit', '100+ beta testers'], bgColor: 'bg-blue-100', textColor: 'text-blue-700', priceColor: 'text-blue-600' },
-                  { phase: 'Phase 2', title: 'Launch', months: 'Months 4-6', budget: '$490K', items: ['Mainnet launch', 'ISPO begins', '$5-10M TVL target'], bgColor: 'bg-emerald-100', textColor: 'text-emerald-700', priceColor: 'text-emerald-600' },
-                  { phase: 'Phase 3', title: 'Scale', months: 'Months 7-12', budget: '$1.1M', items: ['LBP token launch', 'ML signal layer', 'Mobile app, full DAO'], bgColor: 'bg-amber-100', textColor: 'text-amber-700', priceColor: 'text-amber-600' },
+                  { phase: 'Phase 1', title: 'MVP', months: 'Months 1-3', budget: '$330K', items: ['Testnet deployment', 'Security audit', '100+ beta testers'], bgColor: 'bg-blue-600/20', textColor: 'text-blue-400', priceColor: 'text-blue-600' },
+                  { phase: 'Phase 2', title: 'Launch', months: 'Months 4-6', budget: '$490K', items: ['Mainnet launch', 'ISPO begins', '$5-10M TVL target'], bgColor: 'bg-emerald-600/20', textColor: 'text-emerald-400', priceColor: 'text-emerald-600' },
+                  { phase: 'Phase 3', title: 'Scale', months: 'Months 7-12', budget: '$1.1M', items: ['LBP token launch', 'ML signal layer', 'Mobile app, full DAO'], bgColor: 'bg-amber-600/20', textColor: 'text-amber-400', priceColor: 'text-amber-600' },
                 ].map((phase, index) => (
                   <motion.div
                     key={phase.phase}
@@ -690,10 +661,10 @@ export default function Investors() {
                     <div className={`inline-block px-4 py-2 rounded-full ${phase.bgColor} ${phase.textColor} font-bold text-sm mb-4`}>
                       {phase.phase}
                     </div>
-                    <h3 className="text-2xl font-bold text-gray-900 mb-2">{phase.title}</h3>
-                    <p className="text-gray-500 mb-2">{phase.months}</p>
+                    <h3 className="text-2xl font-bold text-white mb-2">{phase.title}</h3>
+                    <p className="text-gray-400 mb-2">{phase.months}</p>
                     <p className={`text-3xl font-black ${phase.priceColor} mb-4`}>{phase.budget}</p>
-                    <ul className="space-y-2 text-gray-600">
+                    <ul className="space-y-2 text-gray-300">
                       {phase.items.map((item) => (
                         <li key={item}>{item}</li>
                       ))}
@@ -707,11 +678,11 @@ export default function Investors() {
       </section>
 
       {/* Contact Section */}
-      <section id="contact" className="py-24 bg-gray-900">
+      <section id="contact" className="py-24">
         <div className="max-w-4xl mx-auto px-6">
           <FadeIn className="text-center mb-12">
             <h2 className="text-4xl font-black text-white mb-4">Get In Touch</h2>
-            <p className="text-gray-400 text-lg">
+            <p className="text-gray-300 text-lg">
               Interested in participating? Let&apos;s talk.
             </p>
           </FadeIn>
@@ -719,10 +690,10 @@ export default function Investors() {
           <FadeIn delay={0.2}>
             <Card className="bg-gray-800 border-gray-700">
               <CardContent className="p-8 md:p-12">
-                <div className="grid md:grid-cols-2 gap-8 mb-8">
-                  <div>
+                <div className="grid md:grid-cols-2 gap-8 mb-8 items-start">
+                  <div className="flex flex-col">
                     <h3 className="text-xl font-bold text-white mb-4">Links</h3>
-                    <div className="space-y-3">
+                    <div className="space-y-3 flex-1">
                       <p className="text-gray-300">
                         <span className="font-semibold">Web:</span>{' '}
                         <a href="https://chaosprotocol.io" className="text-blue-400 hover:underline">chaosprotocol.io</a>
@@ -733,9 +704,9 @@ export default function Investors() {
                       </p>
                     </div>
                   </div>
-                  <div>
+                  <div className="flex flex-col">
                     <h3 className="text-xl font-bold text-white mb-4">Resources</h3>
-                    <div className="space-y-3">
+                    <div className="space-y-3 flex-1">
                       <a href="/whitepaper/investor-brief.pdf" download>
                         <Card className="bg-gray-700/50 hover:bg-gray-700 cursor-pointer transition-colors border-gray-600">
                           <CardContent className="p-4">

@@ -2,19 +2,11 @@ import Head from "next/head";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { FadeIn, StaggerContainer, StaggerItem } from "@/components/animations";
-import { TrendingUp, Shield, Wallet, ArrowRight, LineChart, Sparkles, FileText, Zap, Lock, BarChart3, Users } from "lucide-react";
-import dynamic from "next/dynamic";
-
-// Lazy load AttractorBackground for better performance
-const AttractorBackground = dynamic(
-  () => import("@/components/chaos/core/AttractorBackground"),
-  { ssr: false }
-);
-
+import { FadeIn, StaggerContainer, StaggerItem, RevealOnScroll, ScaleOnScroll, GlowOnHover } from "@/components/animations";
+import { TrendingUp, Shield, Wallet, ArrowRight, Sparkles, FileText, Zap, Lock } from "lucide-react";
 export default function Home() {
   return (
-    <div className="bg-gray-900 min-h-screen">
+    <div className="min-h-screen relative" style={{ zIndex: 1 }}>
       <Head>
         <title>CHAOS | Antifragile Treasury Protocol</title>
         <meta name="description" content="CHAOS is a formally verified treasury management protocol that profits from crypto volatility." />
@@ -31,16 +23,6 @@ export default function Home() {
 
       {/* Hero Section */}
       <section className="relative pt-32 pb-20 overflow-hidden">
-        {/* Lorenz Attractor Background - Subtle, elegant motion */}
-        <AttractorBackground
-          type="lorenz"
-          volatility={0.4}
-          sentiment="neutral"
-          interactive={true}
-          performance="auto"
-          opacity={0.8}
-          className="absolute inset-0"
-        />
 
         {/* Additional Background Effects for depth */}
         <motion.div
@@ -67,8 +49,8 @@ export default function Home() {
           </FadeIn>
 
           <FadeIn delay={0.2}>
-            <p className="text-xl text-gray-400 max-w-2xl mb-12 leading-relaxed">
-              A formally verified treasury protocol that turns volatility into profit. 
+            <p className="text-xl text-gray-200 max-w-2xl mb-12 leading-relaxed">
+              A formally verified treasury protocol that turns volatility into profit.
               Mathematically proven with zero unproven assumptions.
             </p>
           </FadeIn>
@@ -94,7 +76,7 @@ export default function Home() {
       </section>
 
       {/* Stats Section */}
-      <section className="py-20 border-y border-gray-800 relative">
+      <section className="relative py-20 border-y border-gray-800/60 bg-gray-900/40 backdrop-blur-sm">
         <div className="max-w-7xl mx-auto px-6 relative">
           <StaggerContainer staggerDelay={0.1} className="grid grid-cols-2 md:grid-cols-4 gap-8">
             <StaggerItem>
@@ -158,116 +140,128 @@ export default function Home() {
       </section>
 
       {/* Features Section */}
-      <section className="py-32">
-        <div className="max-w-7xl mx-auto px-6">
-          <FadeIn className="text-center mb-20">
-            <h2 className="text-4xl md:text-5xl font-black text-white mb-6">Protocol Features</h2>
-            <p className="text-gray-400 text-xl max-w-2xl mx-auto">
-              A simple three-bucket approach that turns volatility into profit.
-            </p>
-          </FadeIn>
+      <section className="relative py-32 overflow-hidden">
+        <div className="max-w-7xl mx-auto px-6 relative">
+          <ScaleOnScroll>
+            <div className="text-center mb-20">
+              <h2 className="text-4xl md:text-5xl font-black text-white mb-6">Protocol Features</h2>
+              <p className="text-gray-300 text-xl max-w-2xl mx-auto">
+                A simple three-bucket approach that turns volatility into profit.
+              </p>
+            </div>
+          </ScaleOnScroll>
 
           <div className="space-y-12">
-            <FadeIn>
-              <div className="flex flex-col md:flex-row gap-8 items-start">
-                <div className="flex-shrink-0 w-16 h-16 bg-gradient-to-br from-blue-600 to-purple-600 rounded-2xl flex items-center justify-center">
-                  <span className="text-3xl font-black text-white">01</span>
-                </div>
-                <div className="flex-1">
-                  <h3 className="text-2xl font-bold text-white mb-4">Diversify and Democratize with Ease</h3>
-                  <p className="text-gray-400 text-lg leading-relaxed mb-4">
-                    Split your portfolio into three buckets: 50% volatile asset, 30% stablecoin, 20% LP positions. 
-                    Diversified from day one, reducing risk while maximizing returns.
-                  </p>
-                  <div className="flex items-center gap-2 text-blue-400 font-semibold">
-                    <Wallet className="w-5 h-5" />
-                    <span>Balanced Allocation</span>
+            <RevealOnScroll direction="right">
+              <GlowOnHover glowColor="rgba(59, 130, 246, 0.3)" intensity="medium">
+                <div className="flex flex-col md:flex-row gap-8 items-start p-8 rounded-3xl bg-gray-800 border border-gray-700 transition-all duration-300">
+                  <div className="flex-shrink-0 w-16 h-16 bg-gradient-to-br from-blue-600 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg">
+                    <span className="text-3xl font-black text-white">01</span>
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="text-2xl font-bold text-white mb-4">Diversify and Democratize with Ease</h3>
+                    <p className="text-gray-300 text-lg leading-relaxed mb-4">
+                      Split your portfolio into three buckets: 50% volatile asset, 30% stablecoin, 20% LP positions.
+                      Diversified from day one, reducing risk while maximizing returns.
+                    </p>
+                    <div className="flex items-center gap-2 text-blue-400 font-semibold">
+                      <Wallet className="w-5 h-5" />
+                      <span>Balanced Allocation</span>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </FadeIn>
+              </GlowOnHover>
+            </RevealOnScroll>
 
-            <FadeIn delay={0.1}>
-              <div className="flex flex-col md:flex-row gap-8 items-start">
-                <div className="flex-shrink-0 w-16 h-16 bg-gradient-to-br from-purple-600 to-emerald-600 rounded-2xl flex items-center justify-center">
-                  <span className="text-3xl font-black text-white">02</span>
-                </div>
-                <div className="flex-1">
-                  <h3 className="text-2xl font-bold text-white mb-4">Auto-Rebalance on Market Swings</h3>
-                  <p className="text-gray-400 text-lg leading-relaxed mb-4">
-                    When prices swing, the protocol sells high and buys low automatically. 
-                    Every price movement becomes an opportunity to profit. No emotional trading required.
-                  </p>
-                  <div className="flex items-center gap-2 text-purple-400 font-semibold">
-                    <Zap className="w-5 h-5" />
-                    <span>Real-Time Execution</span>
+            <RevealOnScroll direction="left" delay={0.1}>
+              <GlowOnHover glowColor="rgba(168, 85, 247, 0.3)" intensity="medium">
+                <div className="flex flex-col md:flex-row gap-8 items-start p-8 rounded-3xl bg-gray-800 border border-gray-700 transition-all duration-300">
+                  <div className="flex-shrink-0 w-16 h-16 bg-gradient-to-br from-purple-600 to-emerald-600 rounded-2xl flex items-center justify-center shadow-lg">
+                    <span className="text-3xl font-black text-white">02</span>
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="text-2xl font-bold text-white mb-4">Auto-Rebalance on Market Swings</h3>
+                    <p className="text-gray-300 text-lg leading-relaxed mb-4">
+                      When prices swing, the protocol sells high and buys low automatically.
+                      Every price movement becomes an opportunity to profit. No emotional trading required.
+                    </p>
+                    <div className="flex items-center gap-2 text-purple-400 font-semibold">
+                      <Zap className="w-5 h-5" />
+                      <span>Real-Time Execution</span>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </FadeIn>
+              </GlowOnHover>
+            </RevealOnScroll>
 
-            <FadeIn delay={0.2}>
-              <div className="flex flex-col md:flex-row gap-8 items-start">
-                <div className="flex-shrink-0 w-16 h-16 bg-gradient-to-br from-emerald-600 to-blue-600 rounded-2xl flex items-center justify-center">
-                  <span className="text-3xl font-black text-white">03</span>
-                </div>
-                <div className="flex-1">
-                  <h3 className="text-2xl font-bold text-white mb-4">Mathematically Proven</h3>
-                  <p className="text-gray-400 text-lg leading-relaxed mb-4">
-                    4 theorems formally verified in Lean 4. Zero unproven assumptions.
-                    The strategy&apos;s performance is backed by rigorous mathematical proof.
-                  </p>
-                  <div className="flex items-center gap-2 text-emerald-400 font-semibold">
-                    <Shield className="w-5 h-5" />
-                    <span>Formal Verification</span>
+            <RevealOnScroll direction="right" delay={0.2}>
+              <GlowOnHover glowColor="rgba(16, 185, 129, 0.3)" intensity="medium">
+                <div className="flex flex-col md:flex-row gap-8 items-start p-8 rounded-3xl bg-gray-800 border border-gray-700 transition-all duration-300">
+                  <div className="flex-shrink-0 w-16 h-16 bg-gradient-to-br from-emerald-600 to-blue-600 rounded-2xl flex items-center justify-center shadow-lg">
+                    <span className="text-3xl font-black text-white">03</span>
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="text-2xl font-bold text-white mb-4">Mathematically Proven</h3>
+                    <p className="text-gray-300 text-lg leading-relaxed mb-4">
+                      4 theorems formally verified in Lean 4. Zero unproven assumptions.
+                      The strategy&apos;s performance is backed by rigorous mathematical proof.
+                    </p>
+                    <div className="flex items-center gap-2 text-emerald-400 font-semibold">
+                      <Shield className="w-5 h-5" />
+                      <span>Formal Verification</span>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </FadeIn>
+              </GlowOnHover>
+            </RevealOnScroll>
 
-            <FadeIn delay={0.3}>
-              <div className="flex flex-col md:flex-row gap-8 items-start">
-                <div className="flex-shrink-0 w-16 h-16 bg-gradient-to-br from-amber-600 to-orange-600 rounded-2xl flex items-center justify-center">
-                  <span className="text-3xl font-black text-white">04</span>
-                </div>
-                <div className="flex-1">
-                  <h3 className="text-2xl font-bold text-white mb-4">LP Fee Floor Protection</h3>
-                  <p className="text-gray-400 text-lg leading-relaxed mb-4">
-                    Earn consistent ~20% APY from liquidity provision positions. 
-                    Creates a performance floor that protects against bear markets.
-                  </p>
-                  <div className="flex items-center gap-2 text-amber-400 font-semibold">
-                    <TrendingUp className="w-5 h-5" />
-                    <span>Yield Generation</span>
+            <RevealOnScroll direction="left" delay={0.3}>
+              <GlowOnHover glowColor="rgba(251, 191, 36, 0.3)" intensity="medium">
+                <div className="flex flex-col md:flex-row gap-8 items-start p-8 rounded-3xl bg-gray-800 border border-gray-700 transition-all duration-300">
+                  <div className="flex-shrink-0 w-16 h-16 bg-gradient-to-br from-amber-600 to-orange-600 rounded-2xl flex items-center justify-center shadow-lg">
+                    <span className="text-3xl font-black text-white">04</span>
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="text-2xl font-bold text-white mb-4">LP Fee Floor Protection</h3>
+                    <p className="text-gray-300 text-lg leading-relaxed mb-4">
+                      Earn consistent ~20% APY from liquidity provision positions.
+                      Creates a performance floor that protects against bear markets.
+                    </p>
+                    <div className="flex items-center gap-2 text-amber-400 font-semibold">
+                      <TrendingUp className="w-5 h-5" />
+                      <span>Yield Generation</span>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </FadeIn>
+              </GlowOnHover>
+            </RevealOnScroll>
 
-            <FadeIn delay={0.4}>
-              <div className="flex flex-col md:flex-row gap-8 items-start">
-                <div className="flex-shrink-0 w-16 h-16 bg-gradient-to-br from-rose-600 to-pink-600 rounded-2xl flex items-center justify-center">
-                  <span className="text-3xl font-black text-white">05</span>
-                </div>
-                <div className="flex-1">
-                  <h3 className="text-2xl font-bold text-white mb-4">Bounded Maximum Drawdown</h3>
-                  <p className="text-gray-400 text-lg leading-relaxed mb-4">
-                    Maximum drawdown is bounded by stablecoin allocation and rebalancing thresholds. 
-                    Even in the worst market conditions, losses are capped.
-                  </p>
-                  <div className="flex items-center gap-2 text-rose-400 font-semibold">
-                    <Lock className="w-5 h-5" />
-                    <span>Risk Protection</span>
+            <RevealOnScroll direction="right" delay={0.4}>
+              <GlowOnHover glowColor="rgba(244, 63, 94, 0.3)" intensity="medium">
+                <div className="flex flex-col md:flex-row gap-8 items-start p-8 rounded-3xl bg-gray-800 border border-gray-700 transition-all duration-300">
+                  <div className="flex-shrink-0 w-16 h-16 bg-gradient-to-br from-rose-600 to-pink-600 rounded-2xl flex items-center justify-center shadow-lg">
+                    <span className="text-3xl font-black text-white">05</span>
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="text-2xl font-bold text-white mb-4">Bounded Maximum Drawdown</h3>
+                    <p className="text-gray-300 text-lg leading-relaxed mb-4">
+                      Maximum drawdown is bounded by stablecoin allocation and rebalancing thresholds.
+                      Even in the worst market conditions, losses are capped.
+                    </p>
+                    <div className="flex items-center gap-2 text-rose-400 font-semibold">
+                      <Lock className="w-5 h-5" />
+                      <span>Risk Protection</span>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </FadeIn>
+              </GlowOnHover>
+            </RevealOnScroll>
           </div>
         </div>
       </section>
 
       {/* CTA Section */}
-      <section className="py-32 bg-gradient-to-b from-gray-800 to-gray-900">
+      <section className="relative py-32">
         <div className="max-w-4xl mx-auto px-6 text-center">
           <FadeIn>
             <motion.div
@@ -284,8 +278,8 @@ export default function Home() {
             </h2>
           </FadeIn>
           <FadeIn delay={0.1}>
-            <p className="text-gray-400 text-xl mb-12 leading-relaxed">
-              Join the community. Read the code. Run the backtest yourself. 
+            <p className="text-gray-300 text-xl mb-12 leading-relaxed">
+              Join the community. Read the code. Run the backtest yourself.
               See the strategy in action through market history.
             </p>
           </FadeIn>

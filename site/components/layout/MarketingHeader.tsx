@@ -10,8 +10,9 @@ import { Button } from '@/components/ui/button';
 
 const MARKETING_LINKS = [
   { href: '/', label: 'Home' },
-  { href: '/research', label: 'Research & Publications' },
   { href: '/how-it-works', label: 'How It Works' },
+  { href: '/research', label: 'Research' },
+  { href: '/investors', label: 'For Investors' },
 ];
 
 const RESOURCE_LINKS = [

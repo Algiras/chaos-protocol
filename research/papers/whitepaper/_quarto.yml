@@ -4,7 +4,7 @@ project:
 book:
   title: "CHAOS Token: Antifragile Volatility Harvesting on Cardano"
   subtitle: "A Formally Verified Approach to Cryptocurrency Treasury Management"
-  author: "CHAOS Foundation"
+  author: "Algimantas Krasauskas"
   date: "February 2026"
   chapters:
     - index.qmd

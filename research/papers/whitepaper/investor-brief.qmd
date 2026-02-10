@@ -72,7 +72,8 @@ format:
 \begin{center}
 {\fontsize{48}{54}\selectfont\bfseries\color{chaos} CHAOS}\\[8pt]
 {\Large\color{gray500} Antifragile Volatility Harvesting on Cardano}\\[4pt]
-{\normalsize\color{gray500} Investor Brief \enspace$\cdot$\enspace February 2026 \enspace$\cdot$\enspace Confidential}
+{\normalsize\color{gray500} Investor Brief \enspace$\cdot$\enspace February 2026 \enspace$\cdot$\enspace Confidential}\\[6pt]
+{\small\color{gray500} by Algimantas Krasauskas}
 \end{center}
 
 \vspace{16pt}
@@ -435,8 +436,7 @@ Language      & Aiken (functional, auditable) \\
 {\large\bfseries\color{chaos} Get In Touch}\\[6pt]
 {\small
 \textbf{Web:} chaosprotocol.io\\[2pt]
-\textbf{Whitepaper:} chaosprotocol.io/whitepaper\\[2pt]
-\textbf{GitHub:} github.com/Algiras/chaos\\[2pt]
+\textbf{GitHub:} github.com/Algiras/chaos-protocol\\[2pt]
 }
 \vspace{6pt}
 }}

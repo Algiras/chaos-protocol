@@ -499,8 +499,8 @@ Even with complete formal verification, our results depend on:
 
 ```bash
 # Clone the repository
-git clone https://github.com/Algiras/chaos.git
-cd chaos
+git clone https://github.com/Algiras/chaos-protocol.git
+cd chaos-protocol
 
 # Build the CHAOS strategy proofs (zero sorry)
 cd chaos-lean4

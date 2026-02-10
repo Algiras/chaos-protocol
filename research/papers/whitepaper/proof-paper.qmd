@@ -68,7 +68,8 @@ format:
 \begin{center}
 {\fontsize{48}{54}\selectfont\bfseries\color{chaos} CHAOS}\\[8pt]
 {\Large\color{gray500} Antifragile Volatility Harvesting on Cardano}\\[4pt]
-{\normalsize\color{gray500} Proof of Concept \enspace$\cdot$\enspace February 2026 \enspace$\cdot$\enspace Confidential}
+{\normalsize\color{gray500} Proof of Concept \enspace$\cdot$\enspace February 2026 \enspace$\cdot$\enspace Confidential}\\[6pt]
+{\small\color{gray500} by Algimantas Krasauskas}
 \end{center}
 
 \vspace{16pt}

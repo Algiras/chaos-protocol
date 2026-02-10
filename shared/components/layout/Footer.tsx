@@ -2,7 +2,7 @@ import Link from 'next/link';
 
 export function Footer() {
   return (
-    <footer className="bg-gray-950 py-12">
+    <footer className="bg-gray-950 py-12 relative" style={{ zIndex: 1 }}>
       <div className="max-w-6xl mx-auto px-6">
         <div className="grid md:grid-cols-3 gap-8 mb-8">
           <div>
@@ -47,7 +47,21 @@ export function Footer() {
             </ul>
           </div>
         </div>
-        <div className="border-t border-gray-800 pt-8 text-center">
+        {/* Social Links */}
+        <div className="border-t border-gray-800 pt-8 flex flex-wrap justify-center gap-6 text-sm">
+          <a href="https://github.com/Algiras/chaos-protocol" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white transition-colors">GitHub</a>
+        </div>
+
+        {/* Legal Links */}
+        <div className="pt-4 flex flex-wrap justify-center gap-2 text-xs">
+          <Link href="/privacy-policy" className="text-gray-500 hover:text-gray-300 transition-colors">Privacy Policy</Link>
+          <span className="text-gray-700">|</span>
+          <Link href="/terms" className="text-gray-500 hover:text-gray-300 transition-colors">Terms of Service</Link>
+          <span className="text-gray-700">|</span>
+          <Link href="/risk-disclosure" className="text-gray-500 hover:text-gray-300 transition-colors">Risk Disclosure</Link>
+        </div>
+
+        <div className="pt-4 text-center">
           <p className="text-gray-500 text-sm">
             &copy; 2026 CHAOS Protocol. All rights reserved.
           </p>
