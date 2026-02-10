@@ -68,13 +68,24 @@ Interactive notebooks with inline visualizations — click to view rendered resu
 | [Cardano Staking Sim](analysis/simulations/cardano_staking_sim.ipynb) | Nash equilibrium simulations |
 | [Deep Phase Transition](analysis/simulations/deep_phase_transition.ipynb) | Pool splitting profitability analysis |
 
-To run locally:
+To run locally and reproduce the charts:
 
 ```bash
 cd analysis/simulations
 pip install -r requirements.txt
+
+# Execute all notebooks to regenerate charts
+jupyter nbconvert --to notebook --execute stress_test.ipynb
+jupyter nbconvert --to notebook --execute equilibrium_dynamics.ipynb
+jupyter nbconvert --to notebook --execute bitcoin_feasibility.ipynb
+jupyter nbconvert --to notebook --execute cardano_staking_sim.ipynb
+jupyter nbconvert --to notebook --execute deep_phase_transition.ipynb
+
+# Or run interactively
 jupyter notebook
 ```
+
+All generated charts are saved to `analysis/simulations/results/`
 
 ## Smart Contracts
 
