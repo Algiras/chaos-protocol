@@ -157,7 +157,7 @@ cd site && pnpm run build
 ## Links
 
 - **Website**: [chaosprotocol.io](https://chaosprotocol.io)
-- **Documentation**: [docs/](docs/)
+- **Architecture Plan**: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)
 
 ## Citation
 

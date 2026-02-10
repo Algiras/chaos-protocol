@@ -276,14 +276,4 @@ By depositing ADA into the CHAOS treasury or acquiring CHAOS tokens, you acknowl
 
 ---
 
-## Contact
-
-**For questions about risks**: [risk@chaostoken.io](mailto:risk@chaostoken.io)
-
-**For legal inquiries**: [legal@chaostoken.io](mailto:legal@chaostoken.io)
-
-**For security vulnerabilities**: [security@chaostoken.io](mailto:security@chaostoken.io)
-
----
-
 *This Risk Disclosure was last updated on February 7, 2026. It may be updated as new risks are identified or as the regulatory environment evolves. It is the reader's responsibility to review the latest version.*
