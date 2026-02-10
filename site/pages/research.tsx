@@ -190,7 +190,7 @@ export default function Research() {
               const Icon = pub.icon;
               return (
                 <StaggerItem key={idx}>
-                  <Card className={`h-full bg-gray-800 border-gray-700 hover:border-purple-600/50 transition-all duration-300 ${pub.highlight ? 'ring-2 ring-purple-600/30' : ''}`}>
+                  <Card className={`h-full bg-gray-800 border-gray-700 hover:border-purple-600/50 transition-all duration-300 flex flex-col ${pub.highlight ? 'ring-2 ring-purple-600/30' : ''}`}>
                     <CardHeader>
                       <div className="w-14 h-14 bg-gradient-to-br from-purple-600 to-blue-600 rounded-xl flex items-center justify-center mb-4">
                         <Icon className="w-7 h-7 text-white" />
@@ -200,7 +200,7 @@ export default function Research() {
                         {pub.description}
                       </CardDescription>
                     </CardHeader>
-                    <CardContent>
+                    <CardContent className="mt-auto">
                       <div className="flex items-center justify-between mb-6">
                         <span className="text-gray-500 text-sm font-medium">{pub.pages} pages</span>
                         {pub.highlight && (
